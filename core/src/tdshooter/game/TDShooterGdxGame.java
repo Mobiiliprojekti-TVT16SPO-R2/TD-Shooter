@@ -14,6 +14,7 @@ public class TDShooterGdxGame extends ApplicationAdapter {
 	BitmapFont font;
 	int i = 0;
 
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
