@@ -7,32 +7,41 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class TDShooterGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	Texture testi;
-	BitmapFont font;
+	BitmapFont fpsFont;
 	int i = 0;
+	int fps = 0;
+
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
 		testi = new Texture("badlogic.jpg");
-		font = new BitmapFont();
-		font.getData().setScale(4,4);
+		fpsFont = new BitmapFont();
+		fpsFont.getData().setScale(4,4);
+
+
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		fps = Gdx.graphics.getFramesPerSecond();
 		batch.begin();
-		font.draw(batch, "" + i, 1000, 1000);
+		fpsFont.draw(batch, "" + fps, 10, 1070);
 		batch.draw(img, 0, 0);
 		batch.draw(testi, 400, 400);
 		batch.end();
-		i = i + 1;
+
 	}
 	
 	@Override
@@ -40,4 +49,5 @@ public class TDShooterGdxGame extends ApplicationAdapter {
 		batch.dispose();
 		img.dispose();
 	}
+
 }
