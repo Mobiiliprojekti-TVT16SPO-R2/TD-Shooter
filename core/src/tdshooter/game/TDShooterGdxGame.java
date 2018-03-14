@@ -8,18 +8,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TDShooterGdxGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	Texture testi;
-	BitmapFont font;
-	Texture testi43;
-	int i = 0;
+	private SpriteBatch batch;
+	private Texture img;
+	private BitmapFont font;
+	private Texture testi43;
+	private int i = 0;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("badlogic.jpg");
-		testi = new Texture("badlogic.jpg");
 		font = new BitmapFont();
 		font.getData().setScale(4,4);
 	}
@@ -31,7 +29,7 @@ public class TDShooterGdxGame extends ApplicationAdapter {
 		batch.begin();
 		font.draw(batch, "" + i, 1000, 1000);
 		batch.draw(img, 0, 0);
-		batch.draw(testi, 400, 400);
+		batch.draw(img, 400, 400);
 		batch.end();
 		i = i + 1;
 	}
