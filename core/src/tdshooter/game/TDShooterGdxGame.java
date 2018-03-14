@@ -10,6 +10,8 @@ public class TDShooterGdxGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	Texture testi;
+	Texture testi5;
+	Texture testi8;
 	
 	@Override
 	public void create () {
