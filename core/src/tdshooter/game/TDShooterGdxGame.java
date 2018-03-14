@@ -12,6 +12,7 @@ public class TDShooterGdxGame extends ApplicationAdapter {
 	Texture img;
 	Texture testi;
 	BitmapFont font;
+	Texture testi43;
 	int i = 0;
 
 	@Override
