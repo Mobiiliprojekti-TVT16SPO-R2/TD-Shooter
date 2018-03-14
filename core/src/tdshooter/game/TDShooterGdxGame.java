@@ -23,7 +23,6 @@ public class TDShooterGdxGame extends ApplicationAdapter {
 		fpsFont = new BitmapFont();
 		fpsFont.getData().setScale(4,4);
 
-
 	}
 
 	@Override
