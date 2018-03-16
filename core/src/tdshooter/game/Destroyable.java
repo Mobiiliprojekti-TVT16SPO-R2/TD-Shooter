@@ -31,4 +31,7 @@ public class Destroyable extends Collidable {
         }
     }
 
+    public int getHitPoints() {
+        return hitPoints;
+    }
 }

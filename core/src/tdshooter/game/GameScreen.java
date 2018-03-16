@@ -1,5 +1,6 @@
 package tdshooter.game;
 
+import java.sql.Time;
 import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -10,7 +11,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -26,13 +26,14 @@ public class GameScreen implements Screen {
 
     Player player;
     Texture dropImage;
-    Texture bucketImage;
     Sound dropSound;
     Music rainMusic;
     OrthographicCamera camera;
-    Rectangle bucket;
-    Array<Rectangle> raindrops;
+    Array<Encounter> raindrops;
+    Array<Projectile> playerProjectiles;
+
     long lastDropTime;
+    long lastBulletTime;
     int dropsGathered;
     //adding FPS-counter
     // private BitmapFont fpscounter;
@@ -51,7 +52,6 @@ public class GameScreen implements Screen {
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("droplet.png"));
-        bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
         // load the drop sound effect and the rain background "music"
         dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -63,19 +63,28 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, viewPortWidth, viewPortHeight);
 
         // create the raindrops array and spawn the first raindrop
-        raindrops = new Array<Rectangle>();
+        raindrops = new Array<Encounter>();
         spawnRaindrop();
+
+        //create playerprojectilearray
+        playerProjectiles = new Array<Projectile>();
 
     }
 
     private void spawnRaindrop() {
-        Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, viewPortWidth - 64);
-        raindrop.y = viewPortHeight;
-        raindrop.width = 64;
-        raindrop.height = 64;
+        Encounter raindrop = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+                64,64, 5, 5, "droplet.png");
+
         raindrops.add(raindrop);
         lastDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnBullet() {
+        Projectile bullet = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 10,
+                24, 36, 5, 400, "bullet.png");
+
+        playerProjectiles.add(bullet);
+        lastBulletTime = TimeUtils.nanoTime();
     }
 
     @Override
@@ -90,20 +99,29 @@ public class GameScreen implements Screen {
         // tell the camera to update its matrices.
         camera.update();
 
+        // make sure the player stays within the screen bounds
+        if (player.hitbox.x < 0)
+            player.hitbox.x= 0;
+        if (player.hitbox.x > viewPortWidth - 64)
+            player.hitbox.x = viewPortWidth - 64;
+
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
         fps = Gdx.graphics.getFramesPerSecond();
 
-        // begin a new batch and draw the bucket and
-        // all drops
+        // DRAW ALL OBJECTS HERE
         game.batch.begin();
         game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
         game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
-        for (Rectangle raindrop : raindrops) {
-            game.batch.draw(dropImage, raindrop.x, raindrop.y);
+        for (Encounter raindrop : raindrops) {
+            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
+        }
+        for (Projectile bullet : playerProjectiles) {
+            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
         }
         game.batch.end();
 
@@ -113,17 +131,15 @@ public class GameScreen implements Screen {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             player.hitbox.x = touchPos.x - 64 / 2;
+
+            // check if we need to create a new bullet
+            if (TimeUtils.nanoTime() - lastBulletTime > 200000000)
+                spawnBullet();
         }
 //        if (Gdx.input.isKeyPressed(Keys.LEFT))
 //            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
 //        if (Gdx.input.isKeyPressed(Keys.RIGHT))
 //            bucket.x += 200 * Gdx.graphics.getDeltaTime();
-
-        // make sure the player stays within the screen bounds
-        if (player.hitbox.x < 0)
-            player.hitbox.x= 0;
-        if (player.hitbox.x > viewPortWidth - 64)
-            player.hitbox.x = viewPortWidth - 64;
 
         // check if we need to create a new raindrop
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
@@ -132,18 +148,40 @@ public class GameScreen implements Screen {
         // move the raindrops, remove any that are beneath the bottom edge of
         // the screen or that hit the bucket. In the later case we increase the
         // value our drops counter and add a sound effect.
-        Iterator<Rectangle> iter = raindrops.iterator();
+        Iterator<Encounter> iter = raindrops.iterator();
+        Iterator<Projectile> playerBulletIter = playerProjectiles.iterator();
         while (iter.hasNext()) {
-            Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-            if (raindrop.y + 64 < 0)
+            Encounter raindrop = iter.next();
+            raindrop.hitbox.y -= 250 * Gdx.graphics.getDeltaTime();
+            if (raindrop.hitbox.y + 64 < 0)
                 iter.remove();
-            if (raindrop.overlaps(player.hitbox)) {
+            if (raindrop.collisionCheck(player.hitbox)){
                 dropsGathered++;
                 dropSound.play();
-                iter.remove();
+                raindrop.collidesWith(player);
+                player.collidesWith(raindrop);
+                if (raindrop.isDestroyed()){
+                    iter.remove();
+                }
             }
+            while (playerBulletIter.hasNext()) {
+                Projectile bullet = playerBulletIter.next();
+                bullet.hitbox.y += bullet.speed * Gdx.graphics.getDeltaTime();
+                if (bullet.hitbox.y > viewPortHeight - 100)
+                    playerBulletIter.remove();
+
+                if (bullet.collisionCheck(raindrop.hitbox)){
+                    dropSound.play();
+                    raindrop.getsDamage(bullet.damage);
+                    playerBulletIter.remove();
+                    if (raindrop.isDestroyed()){
+                        iter.remove();
+                    }
+                }
+            }
+
         }
+
     }
 
     @Override
@@ -172,7 +210,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         dropImage.dispose();
-        bucketImage.dispose();
         dropSound.dispose();
         rainMusic.dispose();
     }
