@@ -19,10 +19,8 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
-
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
-
     }
 
     @Override

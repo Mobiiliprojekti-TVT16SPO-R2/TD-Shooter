@@ -21,10 +21,10 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen implements Screen {
     final TDShooterGdxGame game;
-
     private final int viewPortHeight = 800;
     private final int viewPortWidth = 480;
 
+    Player player;
     Texture dropImage;
     Texture bucketImage;
     Sound dropSound;
@@ -47,6 +47,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
+        player = new Player(viewPortWidth / 2 - 64 / 2,20, 64 , 64, 100,50);
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("droplet.png"));
@@ -60,14 +61,6 @@ public class GameScreen implements Screen {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, viewPortWidth, viewPortHeight);
-
-        // create a Rectangle to logically represent the bucket
-        bucket = new Rectangle();
-        bucket.x = viewPortWidth / 2 - 64 / 2; // center the bucket horizontally
-        bucket.y = 20; // bottom left corner of the bucket is 20 pixels above
-        // the bottom screen edge
-        bucket.width = 64;
-        bucket.height = 64;
 
         // create the raindrops array and spawn the first raindrop
         raindrops = new Array<Rectangle>();
@@ -108,7 +101,7 @@ public class GameScreen implements Screen {
         game.batch.begin();
         game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
         game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
-        game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
+        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
         for (Rectangle raindrop : raindrops) {
             game.batch.draw(dropImage, raindrop.x, raindrop.y);
         }
@@ -119,18 +112,18 @@ public class GameScreen implements Screen {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
-            bucket.x = touchPos.x - 64 / 2;
+            player.hitbox.x = touchPos.x - 64 / 2;
         }
-        if (Gdx.input.isKeyPressed(Keys.LEFT))
-            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Keys.RIGHT))
-            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+//        if (Gdx.input.isKeyPressed(Keys.LEFT))
+//            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
+//        if (Gdx.input.isKeyPressed(Keys.RIGHT))
+//            bucket.x += 200 * Gdx.graphics.getDeltaTime();
 
-        // make sure the bucket stays within the screen bounds
-        if (bucket.x < 0)
-            bucket.x = 0;
-        if (bucket.x > viewPortWidth - 64)
-            bucket.x = viewPortWidth - 64;
+        // make sure the player stays within the screen bounds
+        if (player.hitbox.x < 0)
+            player.hitbox.x= 0;
+        if (player.hitbox.x > viewPortWidth - 64)
+            player.hitbox.x = viewPortWidth - 64;
 
         // check if we need to create a new raindrop
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
@@ -145,7 +138,7 @@ public class GameScreen implements Screen {
             raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
             if (raindrop.y + 64 < 0)
                 iter.remove();
-            if (raindrop.overlaps(bucket)) {
+            if (raindrop.overlaps(player.hitbox)) {
                 dropsGathered++;
                 dropSound.play();
                 iter.remove();
