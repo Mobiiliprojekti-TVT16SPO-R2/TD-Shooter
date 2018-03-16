@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen implements Screen {
     final TDShooterGdxGame game;
-
     private final int viewPortHeight = 800;
     private final int viewPortWidth = 480;
 
