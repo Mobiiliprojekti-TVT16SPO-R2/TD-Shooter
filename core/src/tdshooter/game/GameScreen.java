@@ -106,10 +106,15 @@ public class GameScreen implements Screen {
 
         // process user input
         if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
+            Vector3 touchPos = new Vector3(), moveDirection = new Vector3();
+
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
-            player.hitbox.x = touchPos.x - 64 / 2;
+            moveDirection.set(touchPos.x - player.hitbox.getX(), touchPos.y - player.hitbox.getY(), 0);
+            moveDirection.nor();
+            float playerSpeed = 480; // refaktoroi nopeus liikkuvan entiteetin luokkaan ja lisää nopeuden laskuun kiihtyvyys.
+            player.hitbox.x += moveDirection.x * delta * playerSpeed;
+            player.hitbox.y += moveDirection.y * delta * playerSpeed;
 
             // check if we need to create a new bullet
             if (TimeUtils.nanoTime() - lastBulletTime > 200000000)
