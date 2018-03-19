@@ -1,6 +1,7 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -9,6 +10,10 @@ import com.badlogic.gdx.math.Rectangle;
 // sisältää hitboxin(t)
 
 public class Collidable {
+
+    protected float speed;
+    protected float acceleration;
+    protected float maxSpeed;
 
     public Rectangle hitbox;
 
@@ -20,14 +25,12 @@ public class Collidable {
         hitbox.height = hitbox_height;
     }
 
-    public boolean overlaps(Rectangle other_hitbox){
-        if (other_hitbox.overlaps(hitbox)){
-            return true;
-        } else {
-            return false;
-        }
+    public boolean overlaps(Rectangle other_hitbox)
+    {
+        return other_hitbox.overlaps(hitbox);
     }
-//
+
+    //
 //    public float getX(){
 //        return hitbox.x;
 //    }

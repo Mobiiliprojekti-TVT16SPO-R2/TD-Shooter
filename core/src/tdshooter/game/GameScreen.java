@@ -115,25 +115,24 @@ public class GameScreen implements Screen {
         moveAllObjects();
 
         checkCollisions();
-
         drawAllObjects();
-
     }
 
     private void processUserInput() {
-        if (Gdx.input.isTouched()) {
+        if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
-            player.hitbox.x = touchPos.x - 64 / 2;
+            player.setDestination(touchPos);
+            player.setMoving(true);
             shooting = true;
-        } else {
+        }
+        else
+        {
+            player.setMoving(false);
             shooting = false;
         }
-//        if (Gdx.input.isKeyPressed(Keys.LEFT))
-//            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
-//        if (Gdx.input.isKeyPressed(Keys.RIGHT))
-//            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+
     }
 
 
@@ -233,6 +232,7 @@ public class GameScreen implements Screen {
     }
 
     private void moveAllObjects() {
+        player.move(Gdx.graphics.getDeltaTime());
         for (Projectile bullet : playerProjectiles){
             bullet.hitbox.y += bullet.speed * Gdx.graphics.getDeltaTime();
         }
