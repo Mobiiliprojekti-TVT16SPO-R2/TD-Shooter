@@ -20,7 +20,7 @@ public class Collidable {
         hitbox.height = hitbox_height;
     }
 
-    public boolean collisionCheck(Rectangle other_hitbox){
+    public boolean overlaps(Rectangle other_hitbox){
         if (other_hitbox.overlaps(hitbox)){
             return true;
         } else {

@@ -1,9 +1,7 @@
 package tdshooter.game;
 
-import java.sql.Time;
 import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -99,31 +97,12 @@ public class GameScreen implements Screen {
         // tell the camera to update its matrices.
         camera.update();
 
-        // make sure the player stays within the screen bounds
-        if (player.hitbox.x < 0)
-            player.hitbox.x= 0;
-        if (player.hitbox.x > viewPortWidth - 64)
-            player.hitbox.x = viewPortWidth - 64;
 
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
         fps = Gdx.graphics.getFramesPerSecond();
-
-        // DRAW ALL OBJECTS HERE
-        game.batch.begin();
-        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
-        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
-        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
-        for (Encounter raindrop : raindrops) {
-            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
-        }
-        for (Projectile bullet : playerProjectiles) {
-            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
-        }
-        game.batch.end();
 
         // process user input
         if (Gdx.input.isTouched()) {
@@ -142,8 +121,10 @@ public class GameScreen implements Screen {
 //            bucket.x += 200 * Gdx.graphics.getDeltaTime();
 
         // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+        if (TimeUtils.nanoTime() - lastDropTime > 400000000)
             spawnRaindrop();
+        
+        MoveAllObjects();
 
         // move the raindrops, remove any that are beneath the bottom edge of
         // the screen or that hit the bucket. In the later case we increase the
@@ -152,36 +133,60 @@ public class GameScreen implements Screen {
         Iterator<Projectile> playerBulletIter = playerProjectiles.iterator();
         while (iter.hasNext()) {
             Encounter raindrop = iter.next();
-            raindrop.hitbox.y -= 250 * Gdx.graphics.getDeltaTime();
             if (raindrop.hitbox.y + 64 < 0)
                 iter.remove();
-            if (raindrop.collisionCheck(player.hitbox)){
+            if (raindrop.overlaps(player.hitbox)){
                 dropsGathered++;
                 dropSound.play();
                 raindrop.collidesWith(player);
                 player.collidesWith(raindrop);
-                if (raindrop.isDestroyed()){
-                    iter.remove();
-                }
             }
             while (playerBulletIter.hasNext()) {
                 Projectile bullet = playerBulletIter.next();
-                bullet.hitbox.y += bullet.speed * Gdx.graphics.getDeltaTime();
-                if (bullet.hitbox.y > viewPortHeight - 100)
+                if (bullet.hitbox.y > viewPortHeight - 100) {
                     playerBulletIter.remove();
-
-                if (bullet.collisionCheck(raindrop.hitbox)){
+                } else if (bullet.overlaps(raindrop.hitbox)){
                     dropSound.play();
                     raindrop.getsDamage(bullet.damage);
                     playerBulletIter.remove();
-                    if (raindrop.isDestroyed()){
-                        iter.remove();
-                    }
+
                 }
             }
-
+            if (raindrop.isDestroyed()){
+                iter.remove();
+            }
         }
 
+        // make sure the player stays within the screen bounds
+        if (player.hitbox.x < 0)
+            player.hitbox.x= 0;
+        if (player.hitbox.x > viewPortWidth - 64)
+            player.hitbox.x = viewPortWidth - 64;
+
+        // DRAW ALL OBJECTS HERE
+        game.batch.begin();
+        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
+        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
+        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size, 0 , viewPortHeight - 90);
+        game.font.draw(game.batch, "Raindrops: " + raindrops.size, 0 , viewPortHeight - 120);
+        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
+        for (Encounter raindrop : raindrops) {
+            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
+        }
+        for (Projectile bullet : playerProjectiles) {
+            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
+        }
+        game.batch.end();
+    }
+
+    private void MoveAllObjects() {
+        for (Projectile bullet : playerProjectiles){
+            bullet.hitbox.y += bullet.speed * Gdx.graphics.getDeltaTime();
+        }
+        for (Encounter encounter : raindrops){
+            encounter.hitbox.y -= 250 * Gdx.graphics.getDeltaTime();
+        }
     }
 
     @Override
