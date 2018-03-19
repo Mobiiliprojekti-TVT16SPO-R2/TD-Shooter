@@ -126,6 +126,8 @@ public class GameScreen implements Screen {
         
         MoveAllObjects();
 
+        // this is collisionchecking
+
         // move the raindrops, remove any that are beneath the bottom edge of
         // the screen or that hit the bucket. In the later case we increase the
         // value our drops counter and add a sound effect.
