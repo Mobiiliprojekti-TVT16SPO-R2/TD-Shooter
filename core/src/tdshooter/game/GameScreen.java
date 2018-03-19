@@ -70,22 +70,6 @@ public class GameScreen implements Screen {
 
     }
 
-    private void spawnRaindrop() {
-        Encounter raindrop = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                64,64, 5, 5, "droplet.png");
-
-        raindrops.add(raindrop);
-        lastDropTime = TimeUtils.nanoTime();
-    }
-
-    private void spawnBullet() {
-        Projectile bullet = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 10,
-                24, 36, 5, 400, "bullet.png");
-
-        playerProjectiles.add(bullet);
-        lastBulletTime = TimeUtils.nanoTime();
-    }
-
     @Override
     public void render(float delta) {
         // clear the screen with a dark blue color. The
@@ -105,28 +89,55 @@ public class GameScreen implements Screen {
 
         fps = Gdx.graphics.getFramesPerSecond();
 
-        // process user input
+        processUserInput();
+
+        // check if we need to create a new bullet
+        if (TimeUtils.nanoTime() - lastBulletTime > 100000000)
+            spawnBullet();
+        // check if we need to create a new raindrop
+        if (TimeUtils.nanoTime() - lastDropTime > 200000000)
+            spawnRaindrop();
+        
+        moveAllObjects();
+
+        checkCollisions();
+
+        limitPlayerMovement();
+
+        drawAllObjects();
+    }
+
+    private void processUserInput() {
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             player.hitbox.x = touchPos.x - 64 / 2;
-
-            // check if we need to create a new bullet
-            if (TimeUtils.nanoTime() - lastBulletTime > 100000000)
-                spawnBullet();
         }
 //        if (Gdx.input.isKeyPressed(Keys.LEFT))
 //            bucket.x -= 200 * Gdx.graphics.getDeltaTime();
 //        if (Gdx.input.isKeyPressed(Keys.RIGHT))
 //            bucket.x += 200 * Gdx.graphics.getDeltaTime();
+    }
 
-        // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 200000000)
-            spawnRaindrop();
-        
-        MoveAllObjects();
+    private void spawnRaindrop() {
+        Encounter raindrop = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+                64,64, 5, 5, "droplet.png");
 
+        raindrops.add(raindrop);
+        lastDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnBullet() {
+        Projectile bullet = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 10,
+                24, 36, 5, 400, "bullet.png");
+
+        playerProjectiles.add(bullet);
+        lastBulletTime = TimeUtils.nanoTime();
+    }
+
+
+    private void checkCollisions() {
         // this is collisionchecking
 
         // move the raindrops, remove any that are beneath the bottom edge of
@@ -157,13 +168,17 @@ public class GameScreen implements Screen {
                 raindrops.remove(i);
             }
         }
+    }
 
+    private void limitPlayerMovement() {
         // make sure the player stays within the screen bounds
         if (player.hitbox.x < 0)
             player.hitbox.x= 0;
         if (player.hitbox.x > viewPortWidth - 64)
             player.hitbox.x = viewPortWidth - 64;
+    }
 
+    private void drawAllObjects() {
         // DRAW ALL OBJECTS HERE
         game.batch.begin();
         game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
@@ -181,7 +196,7 @@ public class GameScreen implements Screen {
         game.batch.end();
     }
 
-    private void MoveAllObjects() {
+    private void moveAllObjects() {
         for (Projectile bullet : playerProjectiles){
             bullet.hitbox.y += bullet.speed * Gdx.graphics.getDeltaTime();
         }
