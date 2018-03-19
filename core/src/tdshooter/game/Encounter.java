@@ -13,8 +13,8 @@ public class Encounter extends Destroyable{
 
     Texture encounterImage;
 
-    public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, String imageName) {
+    public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
-        encounterImage = new Texture(Gdx.files.internal(imageName));
+        encounterImage = image;
     }
 }
