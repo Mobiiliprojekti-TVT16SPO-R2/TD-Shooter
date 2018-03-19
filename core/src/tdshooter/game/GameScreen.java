@@ -121,6 +121,7 @@ public class GameScreen implements Screen {
 //            bucket.x += 200 * Gdx.graphics.getDeltaTime();
     }
 
+
     private void spawnRaindrop() {
         Encounter raindrop = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
                 64,64, 5, 5, "droplet.png");
