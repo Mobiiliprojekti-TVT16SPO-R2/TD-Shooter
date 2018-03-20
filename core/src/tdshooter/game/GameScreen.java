@@ -21,7 +21,6 @@ public class GameScreen implements Screen {
     final TDShooterGdxGame game;
     private final int viewPortHeight = 800;
     private final int viewPortWidth = 480;
-    private boolean shooting = false;
     private float background_y = 0;
     private int scrollSpeed = 100;
 
@@ -108,7 +107,7 @@ public class GameScreen implements Screen {
         limitPlayerMovement();
 
         // check if we need to create a new bullet
-        if (shooting){
+        if (player.isShooting()){
             if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
                 spawnBullet();
         }
@@ -130,14 +129,13 @@ public class GameScreen implements Screen {
             camera.unproject(touchPos);
             player.setDestination(touchPos);
             player.setMoving(true);
-            shooting = true;
+            player.setShooting(true);
         }
         else
         {
             player.setMoving(false);
-            shooting = false;
+            player.setShooting(false);
         }
-
     }
 
 

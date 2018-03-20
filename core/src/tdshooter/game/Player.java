@@ -13,6 +13,7 @@ public class Player extends Destroyable{
     Texture playerImage;
     private Vector3 destination;
     private boolean moving;
+    private boolean shooting;
 
     public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
@@ -55,5 +56,15 @@ public class Player extends Destroyable{
     public void setMoving(boolean moving)
     {
         this.moving = moving;
+    }
+
+    public void setShooting(boolean shooting)
+    {
+        this.shooting = shooting;
+    }
+
+    public boolean isShooting()
+    {
+        return this.shooting;
     }
 }
