@@ -41,7 +41,6 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
     ArrayList<Encounter> encounters;
     ArrayList<Projectile> playerProjectiles;
-    Projectile bullet;
     Random random;
 
     long lastDropTime;
