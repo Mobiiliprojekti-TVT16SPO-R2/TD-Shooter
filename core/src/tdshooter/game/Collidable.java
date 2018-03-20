@@ -25,9 +25,9 @@ public class Collidable {
         hitbox.height = hitbox_height;
     }
 
-    public boolean overlaps(Rectangle other_hitbox)
+    public boolean overlaps(Collidable collidable)
     {
-        return other_hitbox.overlaps(hitbox);
+        return collidable.hitbox.overlaps(hitbox);
     }
 
     //

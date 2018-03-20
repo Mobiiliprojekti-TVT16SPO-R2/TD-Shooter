@@ -5,6 +5,8 @@ import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,6 +36,8 @@ public class GameScreen implements Screen {
     Texture background_2;
 //    Sound dropSound;
 //    Music rainMusic;
+    Sound hitSound;
+    Music rainMusic;
     OrthographicCamera camera;
     ArrayList<Encounter> encounters;
     ArrayList<Projectile> playerProjectiles;
@@ -43,6 +47,9 @@ public class GameScreen implements Screen {
     long lastDropTime;
     long lastBulletTime;
     private int encountersDestroyed;
+    long oldHitsound;
+    long oldHitsound2;
+    int dropsGathered;
     //adding FPS-counter
     // private BitmapFont fpscounter;
     private int fps;
@@ -69,9 +76,9 @@ public class GameScreen implements Screen {
         background_2 = background;
 
         // load the drop sound effect and the rain background "music"
- //       dropSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
- //       rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-//        rainMusic.setLooping(true);
+        hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
+        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        rainMusic.setLooping(true);
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -84,6 +91,9 @@ public class GameScreen implements Screen {
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
 
+        //Play sound Effects once, to initialize prev_sound_id
+        oldHitsound = hitSound.play(0.0f);
+        oldHitsound2 = hitSound.play(0.0f);
     }
 
     @Override
@@ -104,7 +114,6 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         fps = Gdx.graphics.getFramesPerSecond();
-
 
         processUserInput();
 
@@ -170,23 +179,14 @@ public class GameScreen implements Screen {
                 24, 36, 5, 400, bulletImage);
 
         playerProjectiles.add(bullet);
-
         Projectile bullet2 = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 32,
                 24, 36, 5, 400, bulletImage);
 
-//        Projectile bullet2 = bullet;
-//        bullet2.hitbox.x = player.hitbox.x;
-//        bullet2.hitbox.y = player.hitbox.y + 32;
         playerProjectiles.add(bullet2);
-
         Projectile bullet3 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 32,
                 24, 36, 5, 400, bulletImage);
 
-//        Projectile bullet3 = bullet;
-//        bullet3.hitbox.x = player.hitbox.x + 32;
-//        bullet3.hitbox.y = player.hitbox.y + 32;
         playerProjectiles.add(bullet3);
-
         lastBulletTime = TimeUtils.nanoTime();
     }
 
@@ -194,25 +194,26 @@ public class GameScreen implements Screen {
         // this is collisionchecking
 
         // move the encounters, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we increase the
-        // value our drops counter and add a sound effect.
-
+        // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
             Encounter encounter = encounters.get(i);
             if (encounter.hitbox.y + 64 < 0) {
-                encounters.remove(i);
-            } else if (encounter.overlaps(player.hitbox)){
-
-//                dropSound.play();
+                encounter.getsDamage(1000);
+            } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
+                hitSound.stop(oldHitsound2);
+                oldHitsound2 = oldHitsound;
+                oldHitsound = hitSound.play();
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if (bullet.hitbox.y > viewPortHeight - 100) {
+                if (bullet.hitbox.y > viewPortHeight + 64) {
                     playerProjectiles.remove(j);
-                } else if (bullet.overlaps(encounter.hitbox)){
-//                    dropSound.play();
+                } else if (bullet.overlaps(encounter)){
+                    hitSound.stop(oldHitsound2);
+                    oldHitsound2 = oldHitsound;
+                    oldHitsound = hitSound.play();
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                 }
@@ -303,7 +304,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         basicEnemy.dispose();
-//        dropSound.dispose();
-//        rainMusic.dispose();
+        hitSound.dispose();
+        rainMusic.dispose();
     }
 }
