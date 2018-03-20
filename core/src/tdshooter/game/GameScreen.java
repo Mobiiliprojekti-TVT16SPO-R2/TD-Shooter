@@ -41,6 +41,7 @@ public class GameScreen implements Screen {
     OrthographicCamera camera;
     ArrayList<Encounter> encounters;
     ArrayList<Projectile> playerProjectiles;
+    ArrayList<Projectile> enemyProjectiles;
     Random random;
 
     long lastDropTime;
@@ -89,6 +90,7 @@ public class GameScreen implements Screen {
 
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
+        enemyProjectiles = new ArrayList<Projectile>();
 
         //Play sound Effects once, to initialize prev_sound_id
         oldHitsound = hitSound.play(0.0f);
@@ -131,6 +133,12 @@ public class GameScreen implements Screen {
                 spawnEncounter(randomNumber);
             }
 
+        if (TimeUtils.nanoTime() - lastDropTime > 600000000) {
+
+            randomNumber= random.nextInt(2);
+            spawnEncounter(randomNumber);
+        }
+
         moveAllObjects();
 
         checkCollisions();
@@ -159,16 +167,16 @@ public class GameScreen implements Screen {
 
         if (random == 0) {
             Encounter encounter = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 200, 5, basicEnemy);
+                    64, 64, 50, 5, 150, basicEnemy);
 
             encounters.add(encounter);
             lastDropTime = TimeUtils.nanoTime();
         }
         else if (random == 1){
-            Encounter encounter2 = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 200, 5, shootingEnemy);
+            ShootingEnemy encounterS = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+                    64, 64, 100, 5, 150, shootingEnemy);
 
-            encounters.add(encounter2);
+            encounters.add(encounterS);
             lastDropTime = TimeUtils.nanoTime();
         }
     }
@@ -215,11 +223,13 @@ public class GameScreen implements Screen {
                     oldHitsound = hitSound.play();
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
+                    if (encounter.isDestroyed()){
+                        encountersDestroyed++;
+                    }
                 }
             }
             if (encounter.isDestroyed()){
                 encounters.remove(i);
-                encountersDestroyed++;
             }
         }
         if (player.isDestroyed()){
@@ -255,6 +265,9 @@ public class GameScreen implements Screen {
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
         }
+        for (Projectile bullet : enemyProjectiles) {
+            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
+        }
         game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
         game.font.draw(game.batch, "Encounters destroyed: " + encountersDestroyed, 0, viewPortHeight);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
@@ -266,11 +279,20 @@ public class GameScreen implements Screen {
     private void moveAllObjects() {
         player.move(Gdx.graphics.getDeltaTime());
         for (Projectile bullet : playerProjectiles){
-            bullet.hitbox.y += bullet.speed * Gdx.graphics.getDeltaTime();
+            bullet.update();
+        }
+        for (Projectile bullet : enemyProjectiles){
+            bullet.update();
         }
         for (Encounter encounter : encounters){
-            encounter.hitbox.y -= 150 * Gdx.graphics.getDeltaTime();
+            if (encounter instanceof ShootingEnemy) {
+                encounter.update();
+                ((ShootingEnemy) encounter).shoot(enemyProjectiles);
+            } else {
+                encounter.update();
+            }
         }
+
         background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
         if (background_y < -3199) {
             background_y = 0;
