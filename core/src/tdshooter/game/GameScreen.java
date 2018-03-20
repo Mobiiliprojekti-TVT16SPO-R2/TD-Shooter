@@ -30,7 +30,7 @@ public class GameScreen implements Screen {
     Texture bulletImage;
     Texture background;
     Texture background_2;
-    Sound dropSound;
+    Sound hitSound;
     Music rainMusic;
     OrthographicCamera camera;
     ArrayList<Encounter> encounters;
@@ -38,6 +38,8 @@ public class GameScreen implements Screen {
 
     long lastDropTime;
     long lastBulletTime;
+    long oldHitsound;
+    long oldHitsound2;
     int dropsGathered;
     //adding FPS-counter
     // private BitmapFont fpscounter;
@@ -62,7 +64,7 @@ public class GameScreen implements Screen {
         background_2 = background;
 
         // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         rainMusic.setLooping(true);
 
@@ -77,6 +79,9 @@ public class GameScreen implements Screen {
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
 
+        //Play sound Effects once, to initialize prev_sound_id
+        oldHitsound = hitSound.play(0.0f);
+        oldHitsound2 = hitSound.play(0.0f);
     }
 
     @Override
@@ -104,7 +109,7 @@ public class GameScreen implements Screen {
 
         // check if we need to create a new bullet
         if (shooting){
-            if (TimeUtils.nanoTime() - lastBulletTime > 100000000)
+            if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
                 spawnBullet();
         }
 
@@ -137,52 +142,59 @@ public class GameScreen implements Screen {
 
 
     private void spawnRaindrop() {
-        Encounter raindrop = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                64,64, 5, 5, basicEnemy);
+        Encounter raindrop = new Encounter(MathUtils.random(128, viewPortWidth - 64), viewPortHeight,
+                64,64, 220, 1, basicEnemy);
 
         encounters.add(raindrop);
         lastDropTime = TimeUtils.nanoTime();
     }
 
-    private void spawnBullet() {
-        Projectile bullet = new Projectile((int)player.hitbox.x + 16,(int)player.hitbox.y + 46,
-                24, 36, 5, 400, bulletImage);
-
+    private void spawnBullet() {   //Bullet positions with these images and hitboxes,  x: 24= mid, 0 and 48 wing edges
+        Projectile bullet = new Projectile((int)player.hitbox.x + 24,(int)player.hitbox.y + 48,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet);
-        Projectile bullet2 = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 32,
-                24, 36, 5, 400, bulletImage);
 
+        Projectile bullet2 = new Projectile((int)player.hitbox.x ,(int)player.hitbox.y + 32,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet2);
-        Projectile bullet3 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 32,
-                24, 36, 5, 400, bulletImage);
 
+        Projectile bullet3 = new Projectile((int)player.hitbox.x + 48,(int)player.hitbox.y + 32,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet3);
+
+        Projectile bullet4 = new Projectile((int)player.hitbox.x + 16,(int)player.hitbox.y + 40,
+                24, 36, 5, 800, bulletImage);
+        playerProjectiles.add(bullet4);
+
+        Projectile bullet5 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 40,
+                24, 36, 5, 800, bulletImage);
+        playerProjectiles.add(bullet5);
+
         lastBulletTime = TimeUtils.nanoTime();
     }
 
     private void checkCollisions() {
-        // this is collisionchecking
-
         // move the encounters, remove any that are beneath the bottom edge of
-        // the screen or that hit the bucket. In the later case we increase the
-        // value our drops counter and add a sound effect.
-
+        // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
             Encounter encounter = encounters.get(i);
             if (encounter.hitbox.y + 64 < 0) {
-                encounters.remove(i);
-            } else if (encounter.overlaps(player.hitbox)){
-                dropsGathered++;
-                dropSound.play();
+                encounter.getsDamage(1000);
+            } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
+                hitSound.stop(oldHitsound2);
+                oldHitsound2 = oldHitsound;
+                oldHitsound = hitSound.play();
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if (bullet.hitbox.y > viewPortHeight - 100) {
+                if (bullet.hitbox.y > viewPortHeight + 64) {
                     playerProjectiles.remove(j);
-                } else if (bullet.overlaps(encounter.hitbox)){
-                    dropSound.play();
+                } else if (bullet.overlaps(encounter)){
+                    hitSound.stop(oldHitsound2);
+                    oldHitsound2 = oldHitsound;
+                    oldHitsound = hitSound.play();
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                 }
@@ -271,7 +283,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         basicEnemy.dispose();
-        dropSound.dispose();
+        hitSound.dispose();
         rainMusic.dispose();
     }
 }
