@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -17,4 +18,12 @@ public class Encounter extends Destroyable{
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
         encounterImage = image;
     }
+
+    public void draw(SpriteBatch batch) {
+        batch.draw(encounterImage, hitbox.x, hitbox.y);
+    }
+
+    //Flight patterns
+
+    //
 }
