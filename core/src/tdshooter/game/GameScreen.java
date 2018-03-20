@@ -21,8 +21,20 @@ public class GameScreen implements Screen {
     final TDShooterGdxGame game;
     private final int viewPortHeight = 800;
     private final int viewPortWidth = 480;
+    private final int VIEWPORTHEIGHT = 800;
+    private final int VIEWPORTWIDTH = 480;
+    private final int PLAYERSIZE_X = 64;
+    private final int PLAYERSIZE_Y = 64;
+    private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
+    private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
+    private final int FLIGHTZONE_Y_MIN = 64;
+    private final int FLIGHTZONE_Y_MAX = 300;  //((VIEWPORTHEIGHT / 4) + 100);
+
     private float background_y = 0;
     private int scrollSpeed = 100;
+
+    private float x_input;
+    private float y_input;
 
     Player player;
     Texture basicEnemy;
@@ -39,21 +51,15 @@ public class GameScreen implements Screen {
     long lastBulletTime;
     long oldHitsound;
     long oldHitsound2;
-    int dropsGathered;
-    //adding FPS-counter
-    // private BitmapFont fpscounter;
-    private int fps;
-//    fpscounter = new BitmapFont();
-//		fpscounter.setColor(Color.RED);
-//		fpscounter.getData().setScale(4,4);
-//
-//    fps = Gdx.graphics.getFramesPerSecond();
-//		fpscounter.draw(batch, "" + fps, 20, 450);
 
+    //adding FPS-counter
+    private int fps;
+    private float touchPos_x;
+    private float touchPos_y;
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(viewPortWidth / 2 - 64 / 2,20, 64 , 64, 100,50);
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
@@ -69,7 +75,7 @@ public class GameScreen implements Screen {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, viewPortWidth, viewPortHeight);
+        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
 
         // create the encounters arraylist and spawn the first raindrop
         encounters = new ArrayList<Encounter>();
@@ -104,8 +110,6 @@ public class GameScreen implements Screen {
 
         processUserInput();
 
-        limitPlayerMovement();
-
         // check if we need to create a new bullet
         if (player.isShooting()){
             if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
@@ -125,8 +129,25 @@ public class GameScreen implements Screen {
     private void processUserInput() {
         if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+
+            x_input = Gdx.input.getX();
+            y_input = Gdx.input.getY();
+
+            touchPos.set(x_input, y_input, 0);
             camera.unproject(touchPos);
+
+            // Limit player movement to flightzone
+            if (touchPos.x < FLIGHTZONE_X_MIN){
+                touchPos.x = FLIGHTZONE_X_MIN;
+            } else if (touchPos.x > FLIGHTZONE_X_MAX) {
+                touchPos.x = FLIGHTZONE_X_MAX;
+            }
+            if (touchPos.y < FLIGHTZONE_Y_MIN) {
+                touchPos.y = FLIGHTZONE_Y_MIN;
+            } else if ( touchPos.y > FLIGHTZONE_Y_MAX) {
+                touchPos.y = FLIGHTZONE_Y_MAX;
+            }
+
             player.setDestination(touchPos);
             player.setMoving(true);
             player.setShooting(true);
@@ -140,7 +161,7 @@ public class GameScreen implements Screen {
 
 
     private void spawnRaindrop() {
-        Encounter raindrop = new Encounter(MathUtils.random(128, viewPortWidth - 64), viewPortHeight,
+        Encounter raindrop = new Encounter(MathUtils.random(128, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
                 64,64, 220, 1, basicEnemy);
 
         encounters.add(raindrop);
@@ -187,7 +208,7 @@ public class GameScreen implements Screen {
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if (bullet.hitbox.y > viewPortHeight + 64) {
+                if (bullet.hitbox.y > VIEWPORTHEIGHT + 64) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
                     hitSound.stop(oldHitsound2);
@@ -211,14 +232,6 @@ public class GameScreen implements Screen {
         dispose();
     }
 
-    private void limitPlayerMovement() {
-        // make sure the player stays within the screen bounds
-        if (player.hitbox.x < 0)
-            player.hitbox.x= 0;
-        if (player.hitbox.x > viewPortWidth - 64)
-            player.hitbox.x = viewPortWidth - 64;
-    }
-
     private void drawAllObjects() {
         // DRAW ALL OBJECTS HERE
         game.batch.begin();
@@ -226,14 +239,13 @@ public class GameScreen implements Screen {
         if (background_y < -2400) {
             game.batch.draw(background_2, 0, background_y + 3200);
         }
-        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
-        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
-        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
-        game.font.draw(game.batch, "Raindrops: " + encounters.size(), 0 , viewPortHeight - 120);
-        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
-        for (Encounter raindrop : encounters) {
-            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
+        game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
+        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , VIEWPORTHEIGHT - 90);
+        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
+        player.draw(game.batch);
+        for (Encounter encounter : encounters) {
+            encounter.draw(game.batch);
         }
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
