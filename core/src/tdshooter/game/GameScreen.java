@@ -1,11 +1,10 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,21 +23,26 @@ public class GameScreen implements Screen {
     private boolean shooting = false;
     private float background_y = 0;
     private int scrollSpeed = 100;
+    private float countDown;
+    private int randomNumber;
 
     Player player;
     Texture basicEnemy;
+    Texture shootingEnemy;
     Texture bulletImage;
     Texture background;
     Texture background_2;
-    Sound dropSound;
-    Music rainMusic;
+//    Sound dropSound;
+//    Music rainMusic;
     OrthographicCamera camera;
     ArrayList<Encounter> encounters;
     ArrayList<Projectile> playerProjectiles;
+    Projectile bullet;
+    Random random;
 
     long lastDropTime;
     long lastBulletTime;
-    int dropsGathered;
+    private int encountersDestroyed;
     //adding FPS-counter
     // private BitmapFont fpscounter;
     private int fps;
@@ -52,19 +56,22 @@ public class GameScreen implements Screen {
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(viewPortWidth / 2 - 64 / 2,20, 64 , 64, 100,50);
+        player = new Player(viewPortWidth / 2 - 64 / 2,20, 64 , 64, 100,200);
+
+        random = new Random();
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
+        shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
 
         background = new Texture(Gdx.files.internal("testistausta.png"));
         background_2 = background;
 
         // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        rainMusic.setLooping(true);
+ //       dropSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
+ //       rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+//        rainMusic.setLooping(true);
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -72,7 +79,7 @@ public class GameScreen implements Screen {
 
         // create the encounters arraylist and spawn the first raindrop
         encounters = new ArrayList<Encounter>();
-        spawnRaindrop();
+     //   spawnEncounter();
 
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
@@ -98,6 +105,7 @@ public class GameScreen implements Screen {
 
         fps = Gdx.graphics.getFramesPerSecond();
 
+
         processUserInput();
 
         limitPlayerMovement();
@@ -109,9 +117,12 @@ public class GameScreen implements Screen {
         }
 
         // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 200000000)
-            spawnRaindrop();
-        
+        if (TimeUtils.nanoTime() - lastDropTime > 600000000) {
+
+                randomNumber= random.nextInt(2);
+                spawnEncounter(randomNumber);
+            }
+
         moveAllObjects();
 
         checkCollisions();
@@ -136,12 +147,22 @@ public class GameScreen implements Screen {
     }
 
 
-    private void spawnRaindrop() {
-        Encounter raindrop = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                64,64, 5, 5, basicEnemy);
+    private void spawnEncounter(int random) {
 
-        encounters.add(raindrop);
-        lastDropTime = TimeUtils.nanoTime();
+        if (random == 0) {
+            Encounter encounter = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+                    64, 64, 200, 5, basicEnemy);
+
+            encounters.add(encounter);
+            lastDropTime = TimeUtils.nanoTime();
+        }
+        else if (random == 1){
+            Encounter encounter2 = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+                    64, 64, 200, 5, shootingEnemy);
+
+            encounters.add(encounter2);
+            lastDropTime = TimeUtils.nanoTime();
+        }
     }
 
     private void spawnBullet() {
@@ -149,14 +170,23 @@ public class GameScreen implements Screen {
                 24, 36, 5, 400, bulletImage);
 
         playerProjectiles.add(bullet);
+
         Projectile bullet2 = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 32,
                 24, 36, 5, 400, bulletImage);
 
+//        Projectile bullet2 = bullet;
+//        bullet2.hitbox.x = player.hitbox.x;
+//        bullet2.hitbox.y = player.hitbox.y + 32;
         playerProjectiles.add(bullet2);
+
         Projectile bullet3 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 32,
                 24, 36, 5, 400, bulletImage);
 
+//        Projectile bullet3 = bullet;
+//        bullet3.hitbox.x = player.hitbox.x + 32;
+//        bullet3.hitbox.y = player.hitbox.y + 32;
         playerProjectiles.add(bullet3);
+
         lastBulletTime = TimeUtils.nanoTime();
     }
 
@@ -172,8 +202,8 @@ public class GameScreen implements Screen {
             if (encounter.hitbox.y + 64 < 0) {
                 encounters.remove(i);
             } else if (encounter.overlaps(player.hitbox)){
-                dropsGathered++;
-                dropSound.play();
+
+//                dropSound.play();
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
             }
@@ -182,13 +212,14 @@ public class GameScreen implements Screen {
                 if (bullet.hitbox.y > viewPortHeight - 100) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter.hitbox)){
-                    dropSound.play();
+//                    dropSound.play();
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                 }
             }
             if (encounter.isDestroyed()){
                 encounters.remove(i);
+                encountersDestroyed++;
             }
         }
         if (player.isDestroyed()){
@@ -216,11 +247,7 @@ public class GameScreen implements Screen {
         if (background_y < -2400) {
             game.batch.draw(background_2, 0, background_y + 3200);
         }
-        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
-        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
-        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
-        game.font.draw(game.batch, "Raindrops: " + encounters.size(), 0 , viewPortHeight - 120);
+
         game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
         for (Encounter raindrop : encounters) {
             game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
@@ -228,6 +255,11 @@ public class GameScreen implements Screen {
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
         }
+        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
+        game.font.draw(game.batch, "Encounters destroyed: " + encountersDestroyed, 0, viewPortHeight);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
+        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
+        game.font.draw(game.batch, "Raindrops: " + encounters.size(), 0 , viewPortHeight - 120);
         game.batch.end();
     }
 
@@ -253,7 +285,7 @@ public class GameScreen implements Screen {
     public void show() {
         // start the playback of the background music
         // when the screen is shown
-        rainMusic.play();
+//        rainMusic.play();
     }
 
     @Override
@@ -271,7 +303,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         basicEnemy.dispose();
-        dropSound.dispose();
-        rainMusic.dispose();
+//        dropSound.dispose();
+//        rainMusic.dispose();
     }
 }
