@@ -3,6 +3,7 @@ package tdshooter.game;
 import java.util.ArrayList;
 import java.util.Random;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -24,8 +25,8 @@ public class GameScreen implements Screen {
     private final int viewPortWidth = 480;
     private final int VIEWPORTHEIGHT = 800;
     private final int VIEWPORTWIDTH = 480;
-    private final int PLAYERSIZE_X = 64;
-    private final int PLAYERSIZE_Y = 64;
+    private final int PLAYERSIZE_X = 90;
+    private final int PLAYERSIZE_Y = 90;
     private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
     private final int FLIGHTZONE_Y_MIN = 64;
@@ -122,25 +123,18 @@ public class GameScreen implements Screen {
 
         // check if we need to create a new bullet
         if (player.isShooting()){
-            if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
+            if (TimeUtils.nanoTime() - lastBulletTime > 100000000)
                 spawnBullet();
         }
 
         // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 600000000) {
+        if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
 
-                randomNumber= random.nextInt(2);
+                randomNumber = random.nextInt(2);
                 spawnEncounter(randomNumber);
             }
 
-        if (TimeUtils.nanoTime() - lastDropTime > 600000000) {
-
-            randomNumber= random.nextInt(2);
-            spawnEncounter(randomNumber);
-        }
-
         moveAllObjects();
-
         checkCollisions();
         drawAllObjects();
     }
@@ -184,14 +178,14 @@ public class GameScreen implements Screen {
 
         if (random == 0) {
             Encounter encounter = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 50, 5, 150, basicEnemy);
+                    64, 64, 100, 5, 120, basicEnemy);
 
             encounters.add(encounter);
             lastDropTime = TimeUtils.nanoTime();
         }
         else if (random == 1){
             ShootingEnemy encounterS = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 100, 5, 150, shootingEnemy);
+                    64, 64, 75, 5, 120, shootingEnemy);
 
             encounters.add(encounterS);
             lastDropTime = TimeUtils.nanoTime();
@@ -199,24 +193,24 @@ public class GameScreen implements Screen {
     }
 
     private void spawnBullet() {
-        Projectile bullet = new Projectile((int)player.hitbox.x + 16,(int)player.hitbox.y + 46,
-                24, 36, 5, 400, bulletImage);
+        Projectile bullet = new Projectile((int)player.hitbox.x + 96 - 6,(int)player.hitbox.y + 42,
+                24, 36, 5, 800, 35, bulletImage);
 
         playerProjectiles.add(bullet);
 
-        Projectile bullet2 = new Projectile((int)player.hitbox.x ,(int)player.hitbox.y + 32,
-                24, 36, 5, 800, bulletImage);
+        Projectile bullet2 = new Projectile((int)player.hitbox.x - 6,(int)player.hitbox.y + 42,
+                24, 36, 5, 800, -35, bulletImage);
         playerProjectiles.add(bullet2);
 
-        Projectile bullet3 = new Projectile((int)player.hitbox.x + 48,(int)player.hitbox.y + 32,
-                24, 36, 5, 800, bulletImage);
+        Projectile bullet3 = new Projectile((int)player.hitbox.x + 72 - 6,(int)player.hitbox.y + 50,
+                24, 36, 5, 800, 25, bulletImage);
         playerProjectiles.add(bullet3);
 
-        Projectile bullet4 = new Projectile((int)player.hitbox.x + 16,(int)player.hitbox.y + 40,
-                24, 36, 5, 800, bulletImage);
+        Projectile bullet4 = new Projectile((int)player.hitbox.x + 24 - 6,(int)player.hitbox.y + 50,
+                24, 36, 5, 800,  -25,  bulletImage);
         playerProjectiles.add(bullet4);
 
-        Projectile bullet5 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 40,
+        Projectile bullet5 = new Projectile((int)player.hitbox.x + 48 - 6,(int)player.hitbox.y + 58,
                 24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet5);
 
@@ -287,15 +281,15 @@ public class GameScreen implements Screen {
             game.batch.draw(background_2, 0, background_y + 3200);
         }
 
-        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
+        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth() + 6, player.hitbox.getHeight() +6);
         for (Encounter raindrop : encounters) {
-            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
+            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y, raindrop.hitbox.getWidth(), raindrop.hitbox.getHeight() * 2);
         }
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
         }
         for (Projectile bullet : enemyProjectiles) {
-            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
+            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y, bullet.hitbox.getWidth(), bullet.hitbox.getHeight());
         }
         game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
         game.font.draw(game.batch, "Encounters destroyed: " + encountersDestroyed, 0, viewPortHeight);
@@ -314,11 +308,10 @@ public class GameScreen implements Screen {
             bullet.update();
         }
         for (Encounter encounter : encounters){
+            encounter.update();
             if (encounter instanceof ShootingEnemy) {
-                encounter.update();
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
-            } else {
-                encounter.update();
+
             }
         }
         background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
