@@ -63,7 +63,6 @@ public class GameScreen implements Screen {
         player = new Player(viewPortWidth / 2 - 64 / 2,20, 96 , 96, 100,200);
 
         random = new Random();
-
         // load the images for the enemies, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
