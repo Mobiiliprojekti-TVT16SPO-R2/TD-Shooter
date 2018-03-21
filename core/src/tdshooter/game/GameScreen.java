@@ -60,7 +60,6 @@ public class GameScreen implements Screen {
     long oldHitsound2;
 
     //adding FPS-counter
-    // private BitmapFont fpscounter;
     private int fps;
     private float touchPos_x;
     private float touchPos_y;
@@ -123,7 +122,7 @@ public class GameScreen implements Screen {
 
         // check if we need to create a new bullet
         if (player.isShooting()){
-            if (TimeUtils.nanoTime() - lastBulletTime > 100000000)
+            if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
                 spawnBullet();
         }
 
@@ -135,6 +134,7 @@ public class GameScreen implements Screen {
             }
 
         moveAllObjects();
+
         checkCollisions();
         drawAllObjects();
     }
@@ -170,7 +170,6 @@ public class GameScreen implements Screen {
             player.setMoving(false);
             player.setShooting(false);
         }
-
     }
 
 
@@ -291,11 +290,12 @@ public class GameScreen implements Screen {
         for (Projectile bullet : enemyProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y, bullet.hitbox.getWidth(), bullet.hitbox.getHeight());
         }
-        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
+
+        game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
         game.font.draw(game.batch, "Encounters destroyed: " + encountersDestroyed, 0, viewPortHeight);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
-        game.font.draw(game.batch, "Raindrops: " + encounters.size(), 0 , viewPortHeight - 120);
+        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
         game.batch.end();
     }
 
