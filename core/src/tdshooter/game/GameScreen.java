@@ -25,7 +25,6 @@ public class GameScreen implements Screen {
     private boolean shooting = false;
     private float background_y = 0;
     private int scrollSpeed = 100;
-    private float countDown;
     private int randomNumber;
 
     Player player;
@@ -34,8 +33,6 @@ public class GameScreen implements Screen {
     Texture bulletImage;
     Texture background;
     Texture background_2;
-//    Sound dropSound;
-//    Music rainMusic;
     Sound hitSound;
     Music rainMusic;
     OrthographicCamera camera;
@@ -63,11 +60,11 @@ public class GameScreen implements Screen {
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(viewPortWidth / 2 - 64 / 2,20, 64 , 64, 100,200);
+        player = new Player(viewPortWidth / 2 - 64 / 2,20, 96 , 96, 100,200);
 
         random = new Random();
 
-        // load the images for the droplet and the bucket, 64x64 pixels each
+        // load the images for the enemies, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
@@ -230,6 +227,19 @@ public class GameScreen implements Screen {
             }
             if (encounter.isDestroyed()){
                 encounters.remove(i);
+            }
+        }
+        for (int i = 0; i < enemyProjectiles.size() ; i++) {
+            Projectile bullet = enemyProjectiles.get(i);
+            if (bullet.hitbox.y < 0) {
+                enemyProjectiles.remove(i);
+            }
+            else if (bullet.overlaps(player)){
+                hitSound.stop(oldHitsound2);
+                oldHitsound2 = oldHitsound;
+                oldHitsound = hitSound.play();
+                player.getsDamage(bullet.damage);
+                enemyProjectiles.remove(i);
             }
         }
         if (player.isDestroyed()){

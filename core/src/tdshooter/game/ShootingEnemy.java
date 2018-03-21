@@ -25,12 +25,12 @@ public class ShootingEnemy extends Encounter {
     public Projectile spawnBullet() {
 
         bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y - 46,
-                24, 36, 5, -400, bulletImage);
+                24, 36, 5, -200, bulletImage);
 
         return bullet;
     }
     public void shoot(ArrayList<Projectile> projectileList) {
-        if (TimeUtils.nanoTime() - lastShootTime > 600000000) {
+        if (TimeUtils.nanoTime() - lastShootTime > 1700000000) {
 
             Projectile bullet = spawnBullet();
             projectileList.add(bullet);
