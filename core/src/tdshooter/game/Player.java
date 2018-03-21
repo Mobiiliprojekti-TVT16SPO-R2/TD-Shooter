@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -13,6 +14,7 @@ public class Player extends Destroyable{
     Texture playerImage;
     private Vector3 destination;
     private boolean moving;
+    private boolean shooting;
 
     public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
@@ -49,11 +51,26 @@ public class Player extends Destroyable{
 
     public void setDestination(Vector3 destination)
     {
+        destination.x = (destination.x - (hitbox.width / 2));
         this.destination = destination;
     }
 
     public void setMoving(boolean moving)
     {
         this.moving = moving;
+    }
+
+    public void setShooting(boolean shooting)
+    {
+        this.shooting = shooting;
+    }
+
+    public boolean isShooting()
+    {
+        return this.shooting;
+    }
+
+    public void draw(SpriteBatch batch) {
+        batch.draw(playerImage, hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
 }

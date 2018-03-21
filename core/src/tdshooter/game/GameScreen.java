@@ -22,10 +22,21 @@ public class GameScreen implements Screen {
     final TDShooterGdxGame game;
     private final int viewPortHeight = 800;
     private final int viewPortWidth = 480;
-    private boolean shooting = false;
+    private final int VIEWPORTHEIGHT = 800;
+    private final int VIEWPORTWIDTH = 480;
+    private final int PLAYERSIZE_X = 64;
+    private final int PLAYERSIZE_Y = 64;
+    private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
+    private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
+    private final int FLIGHTZONE_Y_MIN = 64;
+    private final int FLIGHTZONE_Y_MAX = 300;  //((VIEWPORTHEIGHT / 4) + 100);
+
     private float background_y = 0;
     private int scrollSpeed = 100;
     private int randomNumber;
+
+    private float x_input;
+    private float y_input;
 
     Player player;
     Texture basicEnemy;
@@ -46,21 +57,16 @@ public class GameScreen implements Screen {
     private int encountersDestroyed;
     long oldHitsound;
     long oldHitsound2;
-    int dropsGathered;
+
     //adding FPS-counter
     // private BitmapFont fpscounter;
     private int fps;
-//    fpscounter = new BitmapFont();
-//		fpscounter.setColor(Color.RED);
-//		fpscounter.getData().setScale(4,4);
-//
-//    fps = Gdx.graphics.getFramesPerSecond();
-//		fpscounter.draw(batch, "" + fps, 20, 450);
-
+    private float touchPos_x;
+    private float touchPos_y;
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(viewPortWidth / 2 - 64 / 2,20, 96 , 96, 100,200);
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
 
         random = new Random();
         // load the images for the enemies, 64x64 pixels each
@@ -78,7 +84,7 @@ public class GameScreen implements Screen {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, viewPortWidth, viewPortHeight);
+        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
 
         // create the encounters arraylist and spawn the first raindrop
         encounters = new ArrayList<Encounter>();
@@ -114,11 +120,9 @@ public class GameScreen implements Screen {
 
         processUserInput();
 
-        limitPlayerMovement();
-
         // check if we need to create a new bullet
-        if (shooting){
-            if (TimeUtils.nanoTime() - lastBulletTime > 100000000)
+        if (player.isShooting()){
+            if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
                 spawnBullet();
         }
 
@@ -144,16 +148,33 @@ public class GameScreen implements Screen {
     private void processUserInput() {
         if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+
+            x_input = Gdx.input.getX();
+            y_input = Gdx.input.getY();
+
+            touchPos.set(x_input, y_input, 0);
             camera.unproject(touchPos);
+
+            // Limit player movement to flightzone
+            if (touchPos.x < FLIGHTZONE_X_MIN){
+                touchPos.x = FLIGHTZONE_X_MIN;
+            } else if (touchPos.x > FLIGHTZONE_X_MAX) {
+                touchPos.x = FLIGHTZONE_X_MAX;
+            }
+            if (touchPos.y < FLIGHTZONE_Y_MIN) {
+                touchPos.y = FLIGHTZONE_Y_MIN;
+            } else if ( touchPos.y > FLIGHTZONE_Y_MAX) {
+                touchPos.y = FLIGHTZONE_Y_MAX;
+            }
+
             player.setDestination(touchPos);
             player.setMoving(true);
-            shooting = true;
+            player.setShooting(true);
         }
         else
         {
             player.setMoving(false);
-            shooting = false;
+            player.setShooting(false);
         }
 
     }
@@ -182,20 +203,27 @@ public class GameScreen implements Screen {
                 24, 36, 5, 400, bulletImage);
 
         playerProjectiles.add(bullet);
-        Projectile bullet2 = new Projectile((int)player.hitbox.x,(int)player.hitbox.y + 32,
-                24, 36, 5, 400, bulletImage);
 
+        Projectile bullet2 = new Projectile((int)player.hitbox.x ,(int)player.hitbox.y + 32,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet2);
-        Projectile bullet3 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 32,
-                24, 36, 5, 400, bulletImage);
 
+        Projectile bullet3 = new Projectile((int)player.hitbox.x + 48,(int)player.hitbox.y + 32,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet3);
+
+        Projectile bullet4 = new Projectile((int)player.hitbox.x + 16,(int)player.hitbox.y + 40,
+                24, 36, 5, 800, bulletImage);
+        playerProjectiles.add(bullet4);
+
+        Projectile bullet5 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 40,
+                24, 36, 5, 800, bulletImage);
+        playerProjectiles.add(bullet5);
+
         lastBulletTime = TimeUtils.nanoTime();
     }
 
     private void checkCollisions() {
-        // this is collisionchecking
-
         // move the encounters, remove any that are beneath the bottom edge of
         // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
@@ -211,7 +239,7 @@ public class GameScreen implements Screen {
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if (bullet.hitbox.y > viewPortHeight + 64) {
+                if (bullet.hitbox.y > VIEWPORTHEIGHT + 64) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
                     hitSound.stop(oldHitsound2);
@@ -249,14 +277,6 @@ public class GameScreen implements Screen {
     private void endGame() {
         game.setScreen(new MainMenuScreen(game));
         dispose();
-    }
-
-    private void limitPlayerMovement() {
-        // make sure the player stays within the screen bounds
-        if (player.hitbox.x < 0)
-            player.hitbox.x= 0;
-        if (player.hitbox.x > viewPortWidth - 64)
-            player.hitbox.x = viewPortWidth - 64;
     }
 
     private void drawAllObjects() {
@@ -301,7 +321,6 @@ public class GameScreen implements Screen {
                 encounter.update();
             }
         }
-
         background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
         if (background_y < -3199) {
             background_y = 0;
