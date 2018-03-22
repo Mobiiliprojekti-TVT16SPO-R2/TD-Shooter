@@ -34,15 +34,24 @@ public class GameScreen implements Screen {
 
     private float background_y = 0;
     private int scrollSpeed = 100;
-    private int randomNumber;
+    private int randomNumber = 0;
+    private int randomNumber2 = 0;
+    private int encountersDestroyed;
+    private int points = 0;
 
     private float x_input;
     private float y_input;
+
+    Item item;
+//    int item_x = 0;
+//    int item_y = 0;
 
     Player player;
     Texture basicEnemy;
     Texture shootingEnemy;
     Texture bulletImage;
+    Texture healtpackTexture;
+    Texture flightSpeedTexture;
     Texture background;
     Texture background_2;
     Sound hitSound;
@@ -51,13 +60,13 @@ public class GameScreen implements Screen {
     ArrayList<Encounter> encounters;
     ArrayList<Projectile> playerProjectiles;
     ArrayList<Projectile> enemyProjectiles;
+    ArrayList<Item> items;
     Random random;
 
-    long lastDropTime;
-    long lastBulletTime;
-    private int encountersDestroyed;
-    long oldHitsound;
-    long oldHitsound2;
+    private long lastDropTime;
+    private long lastBulletTime;
+    private long oldHitsound;
+    private long oldHitsound2;
 
     //adding FPS-counter
     private int fps;
@@ -66,13 +75,15 @@ public class GameScreen implements Screen {
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 1500,50);
 
-        random = new Random();
+
         // load the images for the enemies, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
+        healtpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));
+        flightSpeedTexture = new Texture(Gdx.files.internal("items/flightspeed_test.png"));
 
         background = new Texture(Gdx.files.internal("testistausta.png"));
         background_2 = background;
@@ -93,6 +104,7 @@ public class GameScreen implements Screen {
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
+        items = new ArrayList<Item>();
 
         //Play sound Effects once, to initialize prev_sound_id
         oldHitsound = hitSound.play(0.0f);
@@ -128,9 +140,10 @@ public class GameScreen implements Screen {
 
         // check if we need to create a new raindrop
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
-
-                randomNumber = random.nextInt(2);
-                spawnEncounter(randomNumber);
+            long randomSeed = TimeUtils.nanoTime();
+            random = new Random(randomSeed);
+            randomNumber = random.nextInt(2);
+            spawnEncounter(randomNumber);
             }
 
         moveAllObjects();
@@ -184,7 +197,7 @@ public class GameScreen implements Screen {
         }
         else if (random == 1){
             ShootingEnemy encounterS = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 75, 5, 120, shootingEnemy);
+                    64, 64, 75, 5, 120, 50, shootingEnemy);
 
             encounters.add(encounterS);
             lastDropTime = TimeUtils.nanoTime();
@@ -242,6 +255,22 @@ public class GameScreen implements Screen {
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
                         encountersDestroyed++;
+                        points += encounter.getPoints();
+                        randomNumber2 = random.nextInt(2);
+                        if (randomNumber2 == 0) {
+                            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, "healtpack", healtpackTexture);
+                            items.add(item);
+                        }
+                        else if (randomNumber2 == 1){
+                            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, "flightspeed", flightSpeedTexture);
+                            items.add(item);
+                        }
+//                        if (encounter instanceof ShootingEnemy) {
+//                            points +=  encounter.getPoints();
+//                        }
+//                        else {
+//                            points += encounter.getPoints();
+//                        }
                     }
                 }
             }
@@ -263,7 +292,18 @@ public class GameScreen implements Screen {
             }
         }
         if (player.isDestroyed()){
+            Gdx.app.log("Points", "Player points: " + points);
             endGame();
+        }
+        for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            if (item.hitbox.y < 0) {
+                items.remove(i);
+            }
+            else if (item.overlaps(player)) {
+                player.pickUp(item);
+                items.remove(i);
+            }
         }
     }
 
@@ -289,10 +329,12 @@ public class GameScreen implements Screen {
         }
         for (Projectile bullet : enemyProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y, bullet.hitbox.getWidth(), bullet.hitbox.getHeight());
+        }for (Item item : items) {
+            game.batch.draw(item.itemTexture, item.hitbox.x, item.hitbox.y, item.hitbox.getWidth(), item.hitbox.getHeight());
         }
 
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
-        game.font.draw(game.batch, "Encounters destroyed: " + encountersDestroyed, 0, viewPortHeight);
+        game.font.draw(game.batch, "Player points: " + points, 0, viewPortHeight);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
@@ -313,6 +355,9 @@ public class GameScreen implements Screen {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
 
             }
+        }
+        for (Item item : items){
+            item.update();
         }
         background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
         if (background_y < -3199) {

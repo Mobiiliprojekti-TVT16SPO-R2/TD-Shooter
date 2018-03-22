@@ -20,11 +20,19 @@ public class ShootingEnemy extends Encounter {
     private int randomNumber = 0;
 
 
+
     public ShootingEnemy(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, image);
 
         bulletImage = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
-        random = new Random();
+
+
+    }
+    public ShootingEnemy(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, Texture image) {
+        super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, points, image);
+
+        bulletImage = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
+
 
     }
     public Projectile spawnBullet() {
@@ -50,9 +58,10 @@ public class ShootingEnemy extends Encounter {
     }
     public void shoot(ArrayList<Projectile> projectileList) {
         if (TimeUtils.nanoTime() - lastShootTime > 2100000000) {
-
-            randomNumber = random.nextInt(2);
-            if (randomNumber == 1) {
+            long randomSeed = TimeUtils.nanoTime();
+            random = new Random(randomSeed);
+            randomNumber = random.nextInt(300) + 1;
+            if (randomNumber >= 299) {
 
                 Projectile bullet = spawnBullet();
                 Projectile bullet2 = spawnBulletType2();
