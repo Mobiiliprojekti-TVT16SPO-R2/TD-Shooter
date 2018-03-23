@@ -112,3 +112,29 @@ class Weapon {
         }
     }
 }
+
+//
+//    private void spawnBullet() {
+//        Projectile bullet = new Projectile((int)player.hitbox.x + 96 - 6,(int)player.hitbox.y + 42,
+//                24, 36, 5, 800, 35, bulletImage);
+//
+//        playerProjectiles.add(bullet);
+//
+//        Projectile bullet2 = new Projectile((int)player.hitbox.x - 6,(int)player.hitbox.y + 42,
+//                24, 36, 5, 800, -35, bulletImage);
+//        playerProjectiles.add(bullet2);
+//
+//        Projectile bullet3 = new Projectile((int)player.hitbox.x + 72 - 6,(int)player.hitbox.y + 50,
+//                24, 36, 5, 800, 25, bulletImage);
+//        playerProjectiles.add(bullet3);
+//
+//        Projectile bullet4 = new Projectile((int)player.hitbox.x + 24 - 6,(int)player.hitbox.y + 50,
+//                24, 36, 5, 800,  -25,  bulletImage);
+//        playerProjectiles.add(bullet4);
+//
+//        Projectile bullet5 = new Projectile((int)player.hitbox.x + 48 - 6,(int)player.hitbox.y + 58,
+//                24, 36, 5, 800, bulletImage);
+//        playerProjectiles.add(bullet5);
+//
+//    }
+

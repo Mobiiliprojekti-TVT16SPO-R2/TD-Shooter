@@ -54,15 +54,12 @@ public class GameScreen implements Screen {
     Random random;
 
     long lastDropTime;
-    long lastBulletTime;
     private int encountersDestroyed;
     long oldHitsound;
     long oldHitsound2;
 
     //adding FPS-counter
     private int fps;
-    private float touchPos_x;
-    private float touchPos_y;
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
@@ -90,11 +87,10 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
 
-        // create the encounters arraylist and spawn the first raindrop
+        // create the encounters arraylist
         encounters = new ArrayList<Encounter>();
-     //   spawnEncounter();
 
-        //create playerprojectilearraylist
+        //create projectile-arraylists
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
 
@@ -114,8 +110,6 @@ public class GameScreen implements Screen {
 
         // tell the camera to update its matrices.
         camera.update();
-
-
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
@@ -178,41 +172,14 @@ public class GameScreen implements Screen {
         if (random == 0) {
             Encounter encounter = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
                     64, 128, 100, 5, 120, basicEnemy);
-
             encounters.add(encounter);
-            lastDropTime = TimeUtils.nanoTime();
         }
         else if (random == 1){
-            ShootingEnemy encounterS = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+            ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
                     64, 128, 75, 5, 120, shootingEnemy);
-
-            encounters.add(encounterS);
-            lastDropTime = TimeUtils.nanoTime();
+            encounters.add(encounter);
         }
-    }
-
-    private void spawnBullet() {
-        Projectile bullet = new Projectile((int)player.hitbox.x + 96 - 6,(int)player.hitbox.y + 42,
-                24, 36, 5, 800, 35, bulletImage);
-
-        playerProjectiles.add(bullet);
-
-        Projectile bullet2 = new Projectile((int)player.hitbox.x - 6,(int)player.hitbox.y + 42,
-                24, 36, 5, 800, -35, bulletImage);
-        playerProjectiles.add(bullet2);
-
-        Projectile bullet3 = new Projectile((int)player.hitbox.x + 72 - 6,(int)player.hitbox.y + 50,
-                24, 36, 5, 800, 25, bulletImage);
-        playerProjectiles.add(bullet3);
-
-        Projectile bullet4 = new Projectile((int)player.hitbox.x + 24 - 6,(int)player.hitbox.y + 50,
-                24, 36, 5, 800,  -25,  bulletImage);
-        playerProjectiles.add(bullet4);
-
-        Projectile bullet5 = new Projectile((int)player.hitbox.x + 48 - 6,(int)player.hitbox.y + 58,
-                24, 36, 5, 800, bulletImage);
-        playerProjectiles.add(bullet5);
-
+        lastDropTime = TimeUtils.nanoTime();
     }
 
     private void checkCollisions() {
@@ -231,7 +198,9 @@ public class GameScreen implements Screen {
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if (bullet.hitbox.y > VIEWPORTHEIGHT + 64) {
+                if ( (bullet.hitbox.y > VIEWPORTHEIGHT + 64)
+                        || (bullet.hitbox.y < -32)
+                        || (bullet.hitbox.y < VIEWPORTWIDTH + 32) ) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
                     hitSound.stop(oldHitsound2);
@@ -310,7 +279,6 @@ public class GameScreen implements Screen {
             encounter.update();
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
-
             }
         }
         background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
@@ -345,6 +313,10 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         basicEnemy.dispose();
+        shootingEnemy.dispose();
+        bulletImage.dispose();
+        background.dispose();
+        background_2.dispose();
         hitSound.dispose();
         rainMusic.dispose();
     }
