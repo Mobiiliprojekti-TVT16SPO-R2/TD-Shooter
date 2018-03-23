@@ -6,7 +6,7 @@ package tdshooter.game;
 
 public class Destroyable extends Collidable {
 
-    private int hitPoints = 0;
+    protected int hitPoints = 0;
     private int hitDamage = 0;
 
     public Destroyable(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD){

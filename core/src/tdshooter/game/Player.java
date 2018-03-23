@@ -18,6 +18,10 @@ public class Player extends Destroyable{
     Texture playerImage;
     private Vector3 destination;
     private boolean moving;
+    private boolean shooting;
+    private int maxHitpoints = 0;
+    private int currency = 0;
+    private float[] items;
     private Weapon weapon1;
     private Weapon weapon2;
     private Weapon weapon3;
@@ -36,6 +40,7 @@ public class Player extends Destroyable{
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
         playerImage = new Texture(Gdx.files.internal("planes/FighterPlane_Test_1_128.png"));
 
+        maxHitpoints = hitP;
         speed = 0;
         maxSpeed = 720;
         acceleration = maxSpeed * 5;
@@ -53,6 +58,8 @@ public class Player extends Destroyable{
         weapon3 = new Weapon(5, 1, (long) 70000000, false, firingSound1, firingImage1);
         weapon4 = new Weapon(2, 2, (long) 200000000, false, firingSound2, firingImage2);
         weapon5 = new Weapon(4, 2, (long) 200000000, false, firingSound2, firingImage2);
+
+        items = new float[4];
     }
 
     public void move(float delta)
@@ -133,5 +140,35 @@ public class Player extends Destroyable{
 
     public int getWeaponChoice(){
         return weaponChoice;
+    }
+
+    public void pickUp(Item item){
+
+        items = item.getStats();
+
+        this.hitPoints += items[0];
+        this.maxSpeed += items[1];
+        this.currency += items[3];
+
+        if (this.maxSpeed > 2000) {
+            this.maxSpeed = 2000;
+        }
+        if (this.hitPoints > maxHitpoints) {
+            this.hitPoints = maxHitpoints;
+        }
+
+
+//        if (item.getName() == "healtpack") {
+//            if (this.hitPoints < maxHitpoints) {
+//                this.hitPoints += item.getStats();
+//                if (this.hitPoints > maxHitpoints) {
+//                    this.hitPoints = maxHitpoints;
+//                }
+//            }
+//        }
+//        if (item.getName() == "flightspeed") {
+//            this.maxSpeed = this.maxSpeed * item.getStats();
+//
+//        }
     }
 }
