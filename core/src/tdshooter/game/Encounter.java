@@ -24,7 +24,7 @@ public class Encounter extends Destroyable{
     }
 
     public void draw(SpriteBatch batch) {
-        batch.draw(encounterImage, hitbox.x, hitbox.y);
+        batch.draw(encounterImage, hitbox.x-3, hitbox.y-3, hitbox.width+6, hitbox.height+6);
     }
 
     //Flight patterns

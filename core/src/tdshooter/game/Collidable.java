@@ -1,7 +1,6 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -17,7 +16,7 @@ public class Collidable {
 
     public Rectangle hitbox;
 
-    public Collidable (int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height ){
+    public Collidable (float hitbox_x, float hitbox_y, float hitbox_width, float hitbox_height ){
         hitbox = new Rectangle();
         hitbox.x = hitbox_x;
         hitbox.y = hitbox_y;

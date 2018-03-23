@@ -23,28 +23,28 @@ public class ShootingEnemy extends Encounter {
     public ShootingEnemy(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, image);
 
-        bulletImage = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
+        bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1.png"));
         random = new Random();
 
     }
     public Projectile spawnBullet() {
 
-        bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y - 46,
-                12, 12, 5, -200, bulletImage);
+        bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y - 32,
+                24, 24, 5, -200, bulletImage);
 
         return bullet;
     }
     public Projectile spawnBulletType2() {
 
-        bullet = new Projectile((int)this.hitbox.x ,(int)this.hitbox.y - 46,
-                12, 12, 5, -200, -50, bulletImage);
+        bullet = new Projectile((int)this.hitbox.x ,(int)this.hitbox.y - 32,
+                24, 24, 5, -200, -50, bulletImage);
 
         return bullet;
     }
     public Projectile spawnBulletType3() {
 
-        bullet = new Projectile((int)this.hitbox.x + 64,(int)this.hitbox.y - 46,
-                12, 12, 5, -200, 50, bulletImage);
+        bullet = new Projectile((int)this.hitbox.x + 64,(int)this.hitbox.y - 32,
+                24, 24, 5, -200, 50, bulletImage);
 
         return bullet;
     }

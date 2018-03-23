@@ -1,9 +1,13 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
+
+import java.util.ArrayList;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -14,7 +18,19 @@ public class Player extends Destroyable{
     Texture playerImage;
     private Vector3 destination;
     private boolean moving;
-    private boolean shooting;
+    private Weapon weapon1;
+    private Weapon weapon2;
+    private Weapon weapon3;
+    private Weapon weapon4;
+    private Weapon weapon5;
+    private int weaponChoice = 1;
+    private long lastChangeTime;
+
+    private Sound firingSound1;
+    private Sound firingSound2;
+    private Sound firingSound3;
+    private Texture firingImage1;
+    private Texture firingImage2;
 
     public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
@@ -25,6 +41,18 @@ public class Player extends Destroyable{
         acceleration = maxSpeed * 5;
 
         destination = new Vector3();
+
+        // LOAD ALL WEAPON SOUNDS AND FIRINGIMAGES/animations
+        firingSound1 = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
+        firingSound2 = firingSound1;
+        firingImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
+        firingImage2 = firingImage1;
+
+        weapon1 = new Weapon(1, 1, (long) 70000000, false, firingSound1, firingImage1);
+        weapon2 = new Weapon(2, 1, (long) 70000000, false, firingSound1, firingImage1);
+        weapon3 = new Weapon(5, 1, (long) 70000000, false, firingSound1, firingImage1);
+        weapon4 = new Weapon(2, 2, (long) 200000000, false, firingSound2, firingImage2);
+        weapon5 = new Weapon(4, 2, (long) 200000000, false, firingSound2, firingImage2);
     }
 
     public void move(float delta)
@@ -60,17 +88,50 @@ public class Player extends Destroyable{
         this.moving = moving;
     }
 
-    public void setShooting(boolean shooting)
-    {
-        this.shooting = shooting;
-    }
-
-    public boolean isShooting()
-    {
-        return this.shooting;
-    }
-
     public void draw(SpriteBatch batch) {
-        batch.draw(playerImage, hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+        //player image will be drawn a little bit bigger than its hitbox
+        batch.draw(playerImage, hitbox.x-3, hitbox.y-3, hitbox.width+6, hitbox.height+6);
+    }
+
+    public void shoot(ArrayList<Projectile> playerProjectiles) {
+        int plane_mid_x = (int) (hitbox.x + (hitbox.width /2)); //middle of the plane
+        int plane_mid_y = (int) (hitbox.y + hitbox.height);  // top of the plane
+        switch (weaponChoice) {
+            case 0:
+                break;
+            case 1:
+                weapon1.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
+            case 2:
+                weapon2.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
+            case 3:
+                weapon3.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
+            case 4:
+                weapon4.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
+            case 5:
+                weapon5.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    public void swapWeapons() {
+        if (TimeUtils.nanoTime() - lastChangeTime > 200000000) {
+            if (weaponChoice == 0) {
+                weaponChoice = 5;
+            } else {
+                weaponChoice--;
+            }
+            lastChangeTime = TimeUtils.nanoTime();
+        }
+    }
+
+    public int getWeaponChoice(){
+        return weaponChoice;
     }
 }

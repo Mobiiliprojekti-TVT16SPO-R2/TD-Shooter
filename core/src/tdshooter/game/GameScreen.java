@@ -73,14 +73,18 @@ public class GameScreen implements Screen {
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
+        Gdx.app.log("LOADING", "bullet and encounters loaded");
 
         background = new Texture(Gdx.files.internal("testistausta.png"));
+        Gdx.app.log("LOADING", "testistausta loaded");
         background_2 = background;
 
         // load the drop sound effect and the rain background "music"
         hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
         rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         rainMusic.setLooping(true);
+
+        Gdx.app.log("LOADING", "all assets loaded");
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -120,12 +124,6 @@ public class GameScreen implements Screen {
 
         processUserInput();
 
-        // check if we need to create a new bullet
-        if (player.isShooting()){
-            if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
-                spawnBullet();
-        }
-
         // check if we need to create a new raindrop
         if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
 
@@ -163,12 +161,14 @@ public class GameScreen implements Screen {
 
             player.setDestination(touchPos);
             player.setMoving(true);
-            player.setShooting(true);
+            player.shoot(playerProjectiles);
         }
         else
         {
             player.setMoving(false);
-            player.setShooting(false);
+        }
+        if (Gdx.input.isTouched(1)) {
+            player.swapWeapons();
         }
     }
 
@@ -177,14 +177,14 @@ public class GameScreen implements Screen {
 
         if (random == 0) {
             Encounter encounter = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 100, 5, 120, basicEnemy);
+                    64, 128, 100, 5, 120, basicEnemy);
 
             encounters.add(encounter);
             lastDropTime = TimeUtils.nanoTime();
         }
         else if (random == 1){
             ShootingEnemy encounterS = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
-                    64, 64, 75, 5, 120, shootingEnemy);
+                    64, 128, 75, 5, 120, shootingEnemy);
 
             encounters.add(encounterS);
             lastDropTime = TimeUtils.nanoTime();
@@ -213,7 +213,6 @@ public class GameScreen implements Screen {
                 24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet5);
 
-        lastBulletTime = TimeUtils.nanoTime();
     }
 
     private void checkCollisions() {
@@ -279,16 +278,15 @@ public class GameScreen implements Screen {
         if (background_y < -2400) {
             game.batch.draw(background_2, 0, background_y + 3200);
         }
-
-        game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth() + 6, player.hitbox.getHeight() +6);
-        for (Encounter raindrop : encounters) {
-            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y, raindrop.hitbox.getWidth(), raindrop.hitbox.getHeight() * 2);
+        player.draw(game.batch);
+        for (Encounter encounter : encounters) {
+            encounter.draw(game.batch);
         }
         for (Projectile bullet : playerProjectiles) {
-            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
+            bullet.draw(game.batch);
         }
         for (Projectile bullet : enemyProjectiles) {
-            game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y, bullet.hitbox.getWidth(), bullet.hitbox.getHeight());
+            bullet.draw(game.batch);
         }
 
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
@@ -296,6 +294,7 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
+        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , viewPortHeight - 150);
         game.batch.end();
     }
 
