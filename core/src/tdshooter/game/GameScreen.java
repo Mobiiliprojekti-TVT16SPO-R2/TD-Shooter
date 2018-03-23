@@ -36,7 +36,6 @@ public class GameScreen implements Screen {
     private int scrollSpeed = 100;
     private int randomNumber = 0;
     private int randomNumber2 = 0;
-    private int encountersDestroyed;
 
     private float x_input;
     private float y_input;
@@ -63,7 +62,6 @@ public class GameScreen implements Screen {
 
     long lastDropTime;
     long lastBulletTime;
-    private int encountersDestroyed;
     long oldHitsound;
     long oldHitsound2;
 
@@ -79,6 +77,9 @@ public class GameScreen implements Screen {
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
+        healtpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));;
+        flightSpeedTexture = new Texture(Gdx.files.internal("items/flightspeed_test.png"));;
+        currencyTexture = new Texture(Gdx.files.internal("items/currency_test.png"));;
         Gdx.app.log("LOADING", "bullet and encounters loaded");
 
         background = new Texture(Gdx.files.internal("testistausta.png"));
@@ -196,6 +197,23 @@ public class GameScreen implements Screen {
         lastDropTime = TimeUtils.nanoTime();
     }
 
+    private void spawnItem(Encounter encounter){
+        randomNumber2 = random.nextInt(3);
+
+        if (randomNumber2 == 0) {
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 1, healtpackTexture);
+            items.add(item);
+        }
+        else if (randomNumber2 == 1){
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 2, flightSpeedTexture);
+            items.add(item);
+        }
+        else if (randomNumber2 == 2){
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 4, currencyTexture);
+            items.add(item);
+        }
+    }
+
     private void checkCollisions() {
         // move the encounters, remove any that are beneath the bottom edge of
         // the screen or that hit the player.
@@ -213,8 +231,8 @@ public class GameScreen implements Screen {
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
                 if ( (bullet.hitbox.y > VIEWPORTHEIGHT + 64)
-                        || (bullet.hitbox.y < -32)
-                        || (bullet.hitbox.y < VIEWPORTWIDTH + 32) ) {
+                        || (bullet.hitbox.x < -32)
+                        || (bullet.hitbox.x > VIEWPORTWIDTH + 32) ) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
                     hitSound.stop(oldHitsound2);
@@ -223,14 +241,20 @@ public class GameScreen implements Screen {
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
-                        encountersDestroyed++;
+                        Gdx.app.log("DEBUG", "setting points for player");
                         player.setPoints(encounter.getPoints());
+
+                        Gdx.app.log("DEBUG", "spawning item");
                         spawnItem(encounter);
+                        Gdx.app.log("DEBUG", "items spawned");
                     }
                 }
             }
             if (encounter.isDestroyed()){
+
+                Gdx.app.log("DEBUG", "removinq encounter");
                 encounters.remove(i);
+                Gdx.app.log("DEBUG", "encounter removed");
             }
         }
         for (int i = 0; i < enemyProjectiles.size() ; i++) {
@@ -247,19 +271,24 @@ public class GameScreen implements Screen {
             }
         }
         if (player.isDestroyed()){
-            Gdx.app.log("Points", "Player points: " + points);
+            Gdx.app.log("Points", "Player points: " + player.getPoints());
             endGame();
         }
+
+        Gdx.app.log("DEBUG", "start moving items");
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
             if (item.hitbox.y < 0) {
                 items.remove(i);
             }
             else if (item.overlaps(player)) {
+
+                Gdx.app.log("DEBUG", "item overlaps player");
                 player.pickUp(item);
                 items.remove(i);
             }
         }
+        Gdx.app.log("DEBUG", "items moved");
     }
 
     private void endGame() {
@@ -284,9 +313,13 @@ public class GameScreen implements Screen {
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
         }
+
+        Gdx.app.log("DEBUG", "start drawing items");
         for (Item item : items) {
             game.batch.draw(item.itemTexture, item.hitbox.x, item.hitbox.y, item.hitbox.getWidth(), item.hitbox.getHeight());
         }
+
+        Gdx.app.log("DEBUG", "items drawed");
 
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
         game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, viewPortHeight);

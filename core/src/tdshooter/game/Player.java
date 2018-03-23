@@ -21,6 +21,7 @@ public class Player extends Destroyable{
     private boolean shooting;
     private int maxHitpoints = 0;
     private int currency = 0;
+    private int points = 0;
     private float[] items;
     private Weapon weapon1;
     private Weapon weapon2;
@@ -124,7 +125,6 @@ public class Player extends Destroyable{
             default:
                 break;
         }
-
     }
 
     public void swapWeapons() {
@@ -157,7 +157,6 @@ public class Player extends Destroyable{
             this.hitPoints = maxHitpoints;
         }
 
-
 //        if (item.getName() == "healtpack") {
 //            if (this.hitPoints < maxHitpoints) {
 //                this.hitPoints += item.getStats();
@@ -170,5 +169,13 @@ public class Player extends Destroyable{
 //            this.maxSpeed = this.maxSpeed * item.getStats();
 //
 //        }
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 }
