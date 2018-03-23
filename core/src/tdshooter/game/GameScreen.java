@@ -52,6 +52,7 @@ public class GameScreen implements Screen {
     Texture bulletImage;
     Texture healtpackTexture;
     Texture flightSpeedTexture;
+    Texture currencyTexture;
     Texture background;
     Texture background_2;
     Sound hitSound;
@@ -84,6 +85,7 @@ public class GameScreen implements Screen {
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         healtpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));
         flightSpeedTexture = new Texture(Gdx.files.internal("items/flightspeed_test.png"));
+        currencyTexture = new Texture(Gdx.files.internal("items/currency_test.png"));
 
         background = new Texture(Gdx.files.internal("testistausta.png"));
         background_2 = background;
@@ -205,28 +207,33 @@ public class GameScreen implements Screen {
     }
 
     private void spawnBullet() {
-        Projectile bullet = new Projectile((int)player.hitbox.x + 96 - 6,(int)player.hitbox.y + 42,
-                24, 36, 5, 800, 35, bulletImage);
 
+        Projectile bullet = new Projectile((int)player.hitbox.x + 48 - 6,(int)player.hitbox.y + 58,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet);
-
-        Projectile bullet2 = new Projectile((int)player.hitbox.x - 6,(int)player.hitbox.y + 42,
-                24, 36, 5, 800, -35, bulletImage);
+        Projectile bullet2 = new Projectile((int)player.hitbox.x + 6,(int)player.hitbox.y + 50,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet2);
-
-        Projectile bullet3 = new Projectile((int)player.hitbox.x + 72 - 6,(int)player.hitbox.y + 50,
-                24, 36, 5, 800, 25, bulletImage);
+        Projectile bullet3 = new Projectile((int)player.hitbox.x + 96 - 6,(int)player.hitbox.y + 50,
+                24, 36, 5, 800, bulletImage);
         playerProjectiles.add(bullet3);
 
-        Projectile bullet4 = new Projectile((int)player.hitbox.x + 24 - 6,(int)player.hitbox.y + 50,
-                24, 36, 5, 800,  -25,  bulletImage);
-        playerProjectiles.add(bullet4);
-
-        Projectile bullet5 = new Projectile((int)player.hitbox.x + 48 - 6,(int)player.hitbox.y + 58,
-                24, 36, 5, 800, bulletImage);
-        playerProjectiles.add(bullet5);
-
         lastBulletTime = TimeUtils.nanoTime();
+    }
+    private void spawnItem(Encounter encounter){
+        randomNumber2 = random.nextInt(3);
+        if (randomNumber2 == 0) {
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 1, healtpackTexture);
+            items.add(item);
+        }
+        else if (randomNumber2 == 1){
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 2, flightSpeedTexture);
+            items.add(item);
+        }
+        else if (randomNumber2 == 2){
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 4, currencyTexture);
+            items.add(item);
+        }
     }
 
     private void checkCollisions() {
@@ -256,15 +263,8 @@ public class GameScreen implements Screen {
                     if (encounter.isDestroyed()){
                         encountersDestroyed++;
                         points += encounter.getPoints();
-                        randomNumber2 = random.nextInt(2);
-                        if (randomNumber2 == 0) {
-                            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, "healtpack", healtpackTexture);
-                            items.add(item);
-                        }
-                        else if (randomNumber2 == 1){
-                            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, "flightspeed", flightSpeedTexture);
-                            items.add(item);
-                        }
+                        spawnItem(encounter);
+
 //                        if (encounter instanceof ShootingEnemy) {
 //                            points +=  encounter.getPoints();
 //                        }
@@ -338,6 +338,7 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
+        game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0, viewPortHeight -150);
         game.batch.end();
     }
 

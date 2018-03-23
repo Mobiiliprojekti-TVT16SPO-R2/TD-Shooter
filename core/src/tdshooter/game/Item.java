@@ -10,34 +10,42 @@ import com.badlogic.gdx.graphics.Texture;
 public class Item extends Collidable {
 
     Texture itemTexture;
-    private String itemName;
+    private float[] items;
+    private int itemIndex;
     private float heal = 0;
     private float flightSpeed = 0;
+    private float projectile = 0;
+    private float currency = 0;
 
-    public Item(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int speed, String itemName, Texture itemTexture) {
+    public Item(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int speed, int itemIndex, Texture itemTexture) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height);
 
-        this.itemName = itemName;
+        this.itemIndex = itemIndex;
         this.itemTexture = itemTexture;
         this.speed = speed;
+        items = new float[4];
 
 
     }
-    public float getStats() {
-        if (itemName == "healtpack") {
+    public float[] getStats() {
+        if (itemIndex == 1) {
             heal = 50;
-            return heal;
         }
-        else if (itemName == "flightspeed") {
-            flightSpeed = 2;
-            return flightSpeed;
+        else if (itemIndex == 2) {
+            flightSpeed = 100f;
         }
-        else {
-            return 0;
+        else if (itemIndex == 3){
+            projectile = 1;
         }
-    }
-    public String getName(){
-        return itemName;
+        else if (itemIndex == 4){
+            currency = 10;
+        }
+        items[0] = heal;
+        items[1] = flightSpeed;
+        items[2] = projectile;
+        items[3] = currency;
+            return items;
+
     }
     public void update(){
         this.hitbox.y -= this.speed * Gdx.graphics.getDeltaTime();

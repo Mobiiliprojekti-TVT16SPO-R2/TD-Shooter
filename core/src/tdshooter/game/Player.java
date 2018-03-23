@@ -15,7 +15,9 @@ public class Player extends Destroyable{
     private Vector3 destination;
     private boolean moving;
     private boolean shooting;
-     private int maxHitpoints =0;
+    private int maxHitpoints = 0;
+    private int currency = 0;
+    private float[] items;
 
     public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
@@ -27,6 +29,8 @@ public class Player extends Destroyable{
         acceleration = maxSpeed * 5;
 
         destination = new Vector3();
+
+        items = new float[4];
     }
 
     public void move(float delta)
@@ -72,21 +76,39 @@ public class Player extends Destroyable{
         return this.shooting;
     }
 
+    public int getCurrency(){
+        return currency;
+    }
     public void draw(SpriteBatch batch) {
         batch.draw(playerImage, hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
     public void pickUp(Item item){
 
-        if (item.getName() == "healtpack") {
-            if (this.hitPoints < maxHitpoints) {
-                this.hitPoints += item.getStats();
-                if (this.hitPoints > maxHitpoints) {
-                    this.hitPoints = maxHitpoints;
-                }
-            }
+        items = item.getStats();
+
+        this.hitPoints += items[0];
+        this.maxSpeed += items[1];
+        this.currency += items[3];
+
+        if (this.maxSpeed > 2000) {
+            this.maxSpeed = 2000;
         }
-        if (item.getName() == "flightspeed") {
-            this.maxSpeed = this.maxSpeed * item.getStats();
+        if (this.hitPoints > maxHitpoints) {
+            this.hitPoints = maxHitpoints;
         }
+
+
+//        if (item.getName() == "healtpack") {
+//            if (this.hitPoints < maxHitpoints) {
+//                this.hitPoints += item.getStats();
+//                if (this.hitPoints > maxHitpoints) {
+//                    this.hitPoints = maxHitpoints;
+//                }
+//            }
+//        }
+//        if (item.getName() == "flightspeed") {
+//            this.maxSpeed = this.maxSpeed * item.getStats();
+//
+//        }
     }
 }
