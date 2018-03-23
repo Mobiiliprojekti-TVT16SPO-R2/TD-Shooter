@@ -3,6 +3,8 @@ package tdshooter.game;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Random;
+
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -27,25 +29,30 @@ public class GameScreen implements Screen {
     private final int viewPortWidth = 480;
     private final int VIEWPORTHEIGHT = 800;
     private final int VIEWPORTWIDTH = 480;
-    private final int PLAYERSIZE_X = 64;
-    private final int PLAYERSIZE_Y = 64;
+    private final int PLAYERSIZE_X = 90;
+    private final int PLAYERSIZE_Y = 90;
     private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
     private final int FLIGHTZONE_Y_MIN = 64;
     private final int FLIGHTZONE_Y_MAX = 300;  //((VIEWPORTHEIGHT / 4) + 100);
 
-    Player player;
-    ScrollingBackground background;
-    OrthographicCamera camera;
-    ArrayList<Encounter> encounters;
-    ArrayList<Projectile> playerProjectiles;
-    Mission mission;
-    
-    AssetContainer assets;
+    private int randomNumber;
 
-    long lastDropTime;
-    long lastBulletTime;
-    ArrayList<Long> oldSoundIds;
+    private Player player;
+    private ScrollingBackground background;
+    private OrthographicCamera camera;
+    private ArrayList<Encounter> encounters;
+    private ArrayList<Projectile> playerProjectiles;
+    private Mission mission;
+
+    private AssetContainer assets;
+    private ArrayList<Projectile> enemyProjectiles;
+    private Random random;
+
+    private long lastDropTime;
+    private long lastBulletTime;
+    private ArrayList<Long> oldSoundIds;
+    private int encountersDestroyed;
 
     //adding FPS-counter
     private int fps;
@@ -56,10 +63,12 @@ public class GameScreen implements Screen {
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
         assets = new AssetContainer();
+        random = new Random();
 
         oldSoundIds = new ArrayList<Long>();
 
         assets.textures.put("enemy01", new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png")));
+        assets.textures.put("enemy02", new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png");
         assets.textures.put("playerBullet01", new Texture(Gdx.files.internal("Bullets/bullet1_small.png")));
         assets.textures.put("background01", new Texture(Gdx.files.internal("testistausta.png")));
         assets.sounds.put("hitSound01", Gdx.audio.newSound(Gdx.files.internal("hitSound.wav")));
@@ -94,16 +103,11 @@ public class GameScreen implements Screen {
 
         processUserInput();
 
-        if (player.isShooting()){
-            if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
-                spawnBullet();
-        }
-
         if(mission.isMissionOver())
         {
             background.setLooping(false);
         }
-        
+
         moveAllObjects(delta);
         checkCollisions();
         mission.update(delta);
@@ -141,30 +145,6 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void spawnBullet() {   //Bullet positions with these images and hitboxes,  x: 24= mid, 0 and 48 wing edges
-        Projectile bullet = new Projectile((int)player.hitbox.x + 24,(int)player.hitbox.y + 48,
-                24, 36, 5, 800, assets.textures.get("playerBullet01"));
-        playerProjectiles.add(bullet);
-
-        Projectile bullet2 = new Projectile((int)player.hitbox.x ,(int)player.hitbox.y + 32,
-                24, 36, 5, 800, assets.textures.get("playerBullet01"));
-        playerProjectiles.add(bullet2);
-
-        Projectile bullet3 = new Projectile((int)player.hitbox.x + 48,(int)player.hitbox.y + 32,
-                24, 36, 5, 800, assets.textures.get("playerBullet01"));
-        playerProjectiles.add(bullet3);
-
-        Projectile bullet4 = new Projectile((int)player.hitbox.x + 16,(int)player.hitbox.y + 40,
-                24, 36, 5, 800, assets.textures.get("playerBullet01"));
-        playerProjectiles.add(bullet4);
-
-        Projectile bullet5 = new Projectile((int)player.hitbox.x + 32,(int)player.hitbox.y + 40,
-                24, 36, 5, 800, assets.textures.get("playerBullet01"));
-        playerProjectiles.add(bullet5);
-
-        lastBulletTime = TimeUtils.nanoTime();
-    }
-
     private void checkCollisions() {
         // move the encounters, remove any that are beneath the bottom edge of
         // the screen or that hit the player.
@@ -193,6 +173,20 @@ public class GameScreen implements Screen {
             }
             if (encounter.isDestroyed()){
                 encounters.remove(i);
+                encountersDestroyed++;
+            }
+        }
+        for (int i = 0; i < enemyProjectiles.size() ; i++) {
+            Projectile bullet = enemyProjectiles.get(i);
+            if (bullet.hitbox.y < 0) {
+                enemyProjectiles.remove(i);
+            }
+            else if (bullet.overlaps(player)){
+                assets.sounds.get("hitSound01").stop(oldSoundIds.get(0)); //stop oldest
+                oldSoundIds.remove(0); // remove oldest
+                oldSoundIds.add(assets.sounds.get("hitSound01").play());
+                player.getsDamage(bullet.damage);
+                enemyProjectiles.remove(i);
             }
         }
         if (player.isDestroyed()){
@@ -209,10 +203,6 @@ public class GameScreen implements Screen {
     {
         game.batch.begin();
         background.draw(game.batch);
-        game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
-        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , VIEWPORTHEIGHT - 90);
-        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
         player.draw(game.batch);
         for (Encounter encounter : encounters) {
             encounter.draw(game.batch);
@@ -220,6 +210,11 @@ public class GameScreen implements Screen {
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
         }
+        game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
+        game.font.draw(game.batch, "Encounters destroyed: " + encountersDestroyed, 0, viewPortHeight);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
+        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
+        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
         game.batch.end();
     }
 
@@ -228,10 +223,17 @@ public class GameScreen implements Screen {
         background.update(delta);
         player.move(delta);
         for (Projectile bullet : playerProjectiles){
-            bullet.hitbox.y += bullet.speed * delta;
+            bullet.update();
+        }
+        for (Projectile bullet : enemyProjectiles){
+            bullet.update();
         }
         for (Encounter encounter : encounters){
             encounter.hitbox.y -= 150 * delta;
+            encounter.update();
+            if (encounter instanceof ShootingEnemy) {
+                ((ShootingEnemy) encounter).shoot(enemyProjectiles);
+            }
         }
     }
 

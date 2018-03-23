@@ -1,5 +1,7 @@
 package tdshooter.game;
 
+import com.badlogic.gdx.Gdx;
+
 /**
  * Created by leevi on 16.3.2018.
  */

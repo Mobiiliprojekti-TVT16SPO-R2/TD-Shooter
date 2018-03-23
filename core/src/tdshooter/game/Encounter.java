@@ -14,9 +14,13 @@ public class Encounter extends Destroyable{
 
     Texture encounterImage;
 
-    public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, Texture image) {
+    public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
         encounterImage = image;
+        this.speed = speed;
+    }
+    public void update(){
+        this.hitbox.y -= this.speed * Gdx.graphics.getDeltaTime();
     }
 
     public void draw(SpriteBatch batch) {
