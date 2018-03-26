@@ -176,6 +176,10 @@ public class Player extends Destroyable{
     }
 
     public void setPoints(int points) {
-        this.points = points;
+        this.points += points;
+    }
+
+    public int getCurrency() {
+        return currency;
     }
 }

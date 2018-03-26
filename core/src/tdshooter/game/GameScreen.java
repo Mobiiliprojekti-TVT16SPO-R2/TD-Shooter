@@ -177,7 +177,7 @@ public class GameScreen implements Screen {
         }
         else if (random == 1){
             ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    64, 128, 75, 5, 120, shootingEnemy);
+                    64, 128, 75, 5, 120,50 , shootingEnemy);
             encounters.add(encounter);
         }
         lastEnemySpawn = TimeUtils.nanoTime();
@@ -299,7 +299,8 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
         game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , VIEWPORTHEIGHT - 90);
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
-        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 150);
+        game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , VIEWPORTHEIGHT - 150);
+        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
         game.batch.end();
     }
 

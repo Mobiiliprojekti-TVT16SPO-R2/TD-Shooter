@@ -8,6 +8,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -15,12 +26,63 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class MainMenuScreen implements Screen {
     final TDShooterGdxGame game;
-    OrthographicCamera camera;
+    private OrthographicCamera camera;
+    private TextureAtlas atlas;
+    private Viewport viewport;
+    private Skin skin;
+    private Stage stage;
+
 
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 480, 800);
+        viewport = new FitViewport(480, 800, camera);
+        viewport.apply();
+
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.update();
+//        camera.setToOrtho(false, 480, 800);
+        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
+        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+
+        stage = new Stage(viewport, game.batch);
+    }
+    @Override
+    public void show() {
+
+        Gdx.input.setInputProcessor(stage);
+
+        Table mainTable = new Table();
+        //Set table to fill stage
+        mainTable.setFillParent(true);
+        //Set alignment of contents in the table.
+        mainTable.center();
+//        mainTable.top();
+
+        TextButton playButton = new TextButton("Play", skin);
+        TextButton optionsButton = new TextButton("Options", skin);
+        TextButton exitButton = new TextButton("Exit", skin);
+
+        playButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new GameScreen(game));
+            }
+        });
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
+        mainTable.add(playButton);
+        mainTable.row();
+        mainTable.add(optionsButton);
+        mainTable.row();
+        mainTable.add(exitButton);
+
+        stage.addActor(mainTable);
     }
 
     @Override
@@ -28,27 +90,21 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        stage.act();
+        stage.draw();
 
-        game.batch.begin();
-        game.font.draw(game.batch, "Welcome to TDShooter!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
-        game.batch.end();
+//        camera.update();
+//        game.batch.setProjectionMatrix(camera.combined);
 
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
+
+
     }
 
     @Override
     public void resize(int width, int height) {
     }
 
-    @Override
-    public void show() {
-    }
+
 
     @Override
     public void hide() {
@@ -64,5 +120,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+        skin.dispose();
+        atlas.dispose();
     }
 }
