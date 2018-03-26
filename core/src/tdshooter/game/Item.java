@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * Created by johan on 22.3.2018.
@@ -49,5 +50,9 @@ public class Item extends Collidable {
     }
     public void update(){
         this.hitbox.y -= this.speed * Gdx.graphics.getDeltaTime();
+    }
+
+    public void draw(SpriteBatch batch) {
+        batch.draw(itemTexture, hitbox.x, hitbox.y, hitbox.getWidth(), hitbox.getHeight());
     }
 }

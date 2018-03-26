@@ -21,15 +21,13 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class GameScreen implements Screen {
     final TDShooterGdxGame game;
-    private final int viewPortHeight = 800;
-    private final int viewPortWidth = 480;
     private final int VIEWPORTHEIGHT = 800;
     private final int VIEWPORTWIDTH = 480;
     private final int PLAYERSIZE_X = 90;
     private final int PLAYERSIZE_Y = 90;
     private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
-    private final int FLIGHTZONE_Y_MIN = 64;
+    private final int FLIGHTZONE_Y_MIN = 32;
     private final int FLIGHTZONE_Y_MAX = 300;  //((VIEWPORTHEIGHT / 4) + 100);
 
     private float background_y = 0;
@@ -37,40 +35,36 @@ public class GameScreen implements Screen {
     private int randomNumber = 0;
     private int randomNumber2 = 0;
 
-    private float x_input;
-    private float y_input;
+    private Item item;
 
-    Item item;
+    private Player player;
+    private Texture basicEnemy;
+    private Texture shootingEnemy;
+    private Texture bulletImage;
+    private Texture healtpackTexture;
+    private Texture flightSpeedTexture;
+    private Texture currencyTexture;
+    private Texture background;
+    private Texture background_2;
+    private Sound hitSound;
+    private Music rainMusic;
+    private OrthographicCamera camera;
+    private ArrayList<Encounter> encounters;
+    private ArrayList<Projectile> playerProjectiles;
+    private ArrayList<Projectile> enemyProjectiles;
+    private ArrayList<Item> items;
+    private Random random;
 
-    Player player;
-    Texture basicEnemy;
-    Texture shootingEnemy;
-    Texture bulletImage;
-    Texture healtpackTexture;
-    Texture flightSpeedTexture;
-    Texture currencyTexture;
-    Texture background;
-    Texture background_2;
-    Sound hitSound;
-    Music rainMusic;
-    OrthographicCamera camera;
-    ArrayList<Encounter> encounters;
-    ArrayList<Projectile> playerProjectiles;
-    ArrayList<Projectile> enemyProjectiles;
-    ArrayList<Item> items;
-    Random random;
-
-    long lastDropTime;
-    long lastBulletTime;
-    long oldHitsound;
-    long oldHitsound2;
+    private long lastEnemySpawn;
+    private long oldHitsound;
+    private long oldHitsound2;
 
     //adding FPS-counter
     private int fps;
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
+        player = new Player(VIEWPORTWIDTH / 2 - PLAYERSIZE_X / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
 
         random = new Random();
         // load the images for the enemies, 64x64 pixels each
@@ -123,7 +117,6 @@ public class GameScreen implements Screen {
         // tell the camera to update its matrices.
         camera.update();
 
-
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
@@ -132,8 +125,8 @@ public class GameScreen implements Screen {
 
         processUserInput();
 
-        // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
+        // check if we need to create a new enemy
+        if (TimeUtils.nanoTime() - lastEnemySpawn > 1000000000) {
             long randomSeed = TimeUtils.nanoTime();
             random = new Random(randomSeed);
             randomNumber = random.nextInt(2);
@@ -141,7 +134,6 @@ public class GameScreen implements Screen {
             }
 
         moveAllObjects();
-
         checkCollisions();
         drawAllObjects();
     }
@@ -149,11 +141,7 @@ public class GameScreen implements Screen {
     private void processUserInput() {
         if(Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
-
-            x_input = Gdx.input.getX();
-            y_input = Gdx.input.getY();
-
-            touchPos.set(x_input, y_input, 0);
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
 
             // Limit player movement to flightzone
@@ -167,7 +155,6 @@ public class GameScreen implements Screen {
             } else if ( touchPos.y > FLIGHTZONE_Y_MAX) {
                 touchPos.y = FLIGHTZONE_Y_MAX;
             }
-
             player.setDestination(touchPos);
             player.setMoving(true);
             player.shoot(playerProjectiles);
@@ -181,20 +168,19 @@ public class GameScreen implements Screen {
         }
     }
 
-
     private void spawnEncounter(int random) {
 
         if (random == 0) {
-            Encounter encounter = new Encounter(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+            Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
                     64, 128, 100, 5, 120, basicEnemy);
             encounters.add(encounter);
         }
         else if (random == 1){
-            ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, viewPortWidth - 64), viewPortHeight,
+            ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
                     64, 128, 75, 5, 120, shootingEnemy);
             encounters.add(encounter);
         }
-        lastDropTime = TimeUtils.nanoTime();
+        lastEnemySpawn = TimeUtils.nanoTime();
     }
 
     private void spawnItem(Encounter encounter){
@@ -241,20 +227,13 @@ public class GameScreen implements Screen {
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
-                        Gdx.app.log("DEBUG", "setting points for player");
                         player.setPoints(encounter.getPoints());
-
-                        Gdx.app.log("DEBUG", "spawning item");
                         spawnItem(encounter);
-                        Gdx.app.log("DEBUG", "items spawned");
                     }
                 }
             }
             if (encounter.isDestroyed()){
-
-                Gdx.app.log("DEBUG", "removinq encounter");
                 encounters.remove(i);
-                Gdx.app.log("DEBUG", "encounter removed");
             }
         }
         for (int i = 0; i < enemyProjectiles.size() ; i++) {
@@ -275,20 +254,17 @@ public class GameScreen implements Screen {
             endGame();
         }
 
-        Gdx.app.log("DEBUG", "start moving items");
         for (int i = 0; i < items.size(); i++) {
             Item item = items.get(i);
             if (item.hitbox.y < 0) {
                 items.remove(i);
             }
             else if (item.overlaps(player)) {
-
                 Gdx.app.log("DEBUG", "item overlaps player");
                 player.pickUp(item);
                 items.remove(i);
             }
         }
-        Gdx.app.log("DEBUG", "items moved");
     }
 
     private void endGame() {
@@ -314,19 +290,16 @@ public class GameScreen implements Screen {
             bullet.draw(game.batch);
         }
 
-        Gdx.app.log("DEBUG", "start drawing items");
         for (Item item : items) {
-            game.batch.draw(item.itemTexture, item.hitbox.x, item.hitbox.y, item.hitbox.getWidth(), item.hitbox.getHeight());
+            item.draw(game.batch);
         }
 
-        Gdx.app.log("DEBUG", "items drawed");
-
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
-        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, viewPortHeight);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
-        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
-        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
-        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , viewPortHeight - 150);
+        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, VIEWPORTHEIGHT);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
+        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , VIEWPORTHEIGHT - 90);
+        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
+        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 150);
         game.batch.end();
     }
 
@@ -342,7 +315,6 @@ public class GameScreen implements Screen {
             encounter.update();
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
-
             }
         }
         for (Item item : items){
