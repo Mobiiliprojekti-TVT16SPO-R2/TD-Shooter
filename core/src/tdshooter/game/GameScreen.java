@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -38,6 +40,7 @@ public class GameScreen implements Screen {
     private Item item;
 
     private Player player;
+    private Random random;
     private Texture basicEnemy;
     private Texture shootingEnemy;
     private Texture bulletImage;
@@ -53,7 +56,6 @@ public class GameScreen implements Screen {
     private ArrayList<Projectile> playerProjectiles;
     private ArrayList<Projectile> enemyProjectiles;
     private ArrayList<Item> items;
-    private Random random;
 
     private long lastEnemySpawn;
     private long oldHitsound;
