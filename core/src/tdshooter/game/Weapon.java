@@ -45,10 +45,10 @@ class Weapon {
                 bulletModel = new Projectile(-500,0, 24, 32, 5, 1000, bulletImage1);
                 break;
             case 2:
-                bulletModel = new Projectile(-500,0, 18, 64, 10, 1400, bulletImage1);
+                bulletModel = new Projectile(-500,0, 18, 64, 10, 2000, bulletImage1);
                 break;
             case 3:
-                bulletModel = new Projectile(-500,0, 32, 48, 13, 2000, bulletImage2);
+                bulletModel = new Projectile(-500,0, 32, 48, 13, 1400, bulletImage2);
                 break;
             default: //same as basic
                 bulletModel = new Projectile(-500,0, 32, 32, 5, 700, bulletImage1);

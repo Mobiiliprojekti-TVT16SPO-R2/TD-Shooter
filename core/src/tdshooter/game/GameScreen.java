@@ -73,13 +73,22 @@ public class GameScreen implements Screen, InputProcessor {
         player = new Player(VIEWPORTWIDTH / 2 - PLAYERSIZE_X / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
 
         random = new Random();
+        Gdx.app.log("LOADING", "Start loading assets..");
+
         // load the images for the enemies, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_LVL_1_Test.png"));
+
+        Gdx.app.log("LOADING", "Asset 1 loaded..");
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_LVL_1_Test.png"));
+
+        Gdx.app.log("LOADING", "Asset 2 loaded..");
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        healthpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));;
-        flightSpeedTexture = new Texture(Gdx.files.internal("items/flightspeed_test.png"));;
-        currencyTexture = new Texture(Gdx.files.internal("items/currency_test.png"));;
+        Gdx.app.log("LOADING", "Asset 3 loaded..");
+        healthpackTexture = new Texture(Gdx.files.internal("Items/healthpack_test.png"));
+        Gdx.app.log("LOADING", "Asset 4 loaded..");
+        flightSpeedTexture = new Texture(Gdx.files.internal("Items/flightspeed_test.png"));
+        Gdx.app.log("LOADING", "Asset 5 loaded..");
+        currencyTexture = new Texture(Gdx.files.internal("Items/currency_test.png"));
         Gdx.app.log("LOADING", "bullet and encounters loaded");
 
 //        background = new Texture(Gdx.files.internal("testistausta.png"));
@@ -117,6 +126,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+
+        Gdx.app.log("DEBUG", "rendering..");
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
