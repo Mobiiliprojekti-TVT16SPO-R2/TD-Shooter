@@ -23,14 +23,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen implements Screen {
     final TDShooterGdxGame game;
-    private final int VIEWPORTHEIGHT = 800;
-    private final int VIEWPORTWIDTH = 480;
-    private final int PLAYERSIZE_X = 90;
-    private final int PLAYERSIZE_Y = 90;
-    private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
-    private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
-    private final int FLIGHTZONE_Y_MIN = 32;
-    private final int FLIGHTZONE_Y_MAX = 300;  //((VIEWPORTHEIGHT / 4) + 100);
+    private final int VIEWPORTHEIGHT = 1280; // 800
+    private final int VIEWPORTWIDTH = 720; //480
+    private final int PLAYERSIZE_X = 135; // 90
+    private final int PLAYERSIZE_Y = 135; //90
+    private final int FLIGHTZONE_X_MIN = 64; //(PLAYERSIZE_X / 2);
+    private final int FLIGHTZONE_X_MAX = 658; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
+    private final int FLIGHTZONE_Y_MIN = 64;
+    private final int FLIGHTZONE_Y_MAX = 1000;  //((VIEWPORTHEIGHT / 4) + 100);
 
     private float background_y = 0;
     private int scrollSpeed = 100;
@@ -70,15 +70,16 @@ public class GameScreen implements Screen {
 
         random = new Random();
         // load the images for the enemies, 64x64 pixels each
-        basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
-        shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
+        basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_LVL_1_Test.png"));
+        shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_LVL_1_Test.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        healtpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));;
-        flightSpeedTexture = new Texture(Gdx.files.internal("items/flightspeed_test.png"));;
-        currencyTexture = new Texture(Gdx.files.internal("items/currency_test.png"));;
+        healtpackTexture = new Texture(Gdx.files.internal("Items/healtpack_test.png"));;
+        flightSpeedTexture = new Texture(Gdx.files.internal("Items/flightspeed_test.png"));;
+        currencyTexture = new Texture(Gdx.files.internal("Items/currency_test.png"));;
         Gdx.app.log("LOADING", "bullet and encounters loaded");
 
-        background = new Texture(Gdx.files.internal("testistausta.png"));
+//        background = new Texture(Gdx.files.internal("testistausta.png"));
+        background = new Texture(Gdx.files.internal("Backgrounds/Map_Test_720_2297_2.png"));
         Gdx.app.log("LOADING", "testistausta loaded");
         background_2 = background;
 
@@ -131,7 +132,7 @@ public class GameScreen implements Screen {
         if (TimeUtils.nanoTime() - lastEnemySpawn > 1000000000) {
             long randomSeed = TimeUtils.nanoTime();
             random = new Random(randomSeed);
-            randomNumber = random.nextInt(2);
+            randomNumber = random.nextInt(3);
             spawnEncounter(randomNumber);
             }
 
@@ -172,14 +173,14 @@ public class GameScreen implements Screen {
 
     private void spawnEncounter(int random) {
 
-        if (random == 0) {
+        if (random <= 1) {
             Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    64, 128, 100, 5, 120, basicEnemy);
+                    100, 128, 100, 5, 120, basicEnemy);
             encounters.add(encounter);
         }
-        else if (random == 1){
+        else if (random == 2){
             ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    64, 128, 75, 5, 120,50 , shootingEnemy);
+                    62, 111, 75, 5, 120,50 , shootingEnemy);
             encounters.add(encounter);
         }
         lastEnemySpawn = TimeUtils.nanoTime();
@@ -189,15 +190,15 @@ public class GameScreen implements Screen {
         randomNumber2 = random.nextInt(3);
 
         if (randomNumber2 == 0) {
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 1, healtpackTexture);
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 1, healtpackTexture);
             items.add(item);
         }
         else if (randomNumber2 == 1){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 2, flightSpeedTexture);
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 2, flightSpeedTexture);
             items.add(item);
         }
         else if (randomNumber2 == 2){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 4, currencyTexture);
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 4, currencyTexture);
             items.add(item);
         }
     }
@@ -278,8 +279,8 @@ public class GameScreen implements Screen {
         // DRAW ALL OBJECTS HERE
         game.batch.begin();
         game.batch.draw(background, 0 , background_y);
-        if (background_y < -2400) {
-            game.batch.draw(background_2, 0, background_y + 3200);
+        if (background_y < -1017) { //2400
+            game.batch.draw(background_2, 0, background_y + 2297); //3200
         }
         player.draw(game.batch);
         for (Encounter encounter : encounters) {
@@ -324,7 +325,7 @@ public class GameScreen implements Screen {
             item.update();
         }
         background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
-        if (background_y < -3199) {
+        if (background_y < -2297) {
             background_y = 0;
         }
     }

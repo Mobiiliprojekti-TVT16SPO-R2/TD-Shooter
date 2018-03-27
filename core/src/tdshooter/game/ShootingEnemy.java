@@ -31,22 +31,22 @@ public class ShootingEnemy extends Encounter {
     }
     public Projectile spawnBullet() {
 
-        bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y - 32,
-                12, 12, 5, -200, bulletImage);
+        bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y ,
+                24, 24, 5, -200, bulletImage);
 
         return bullet;
     }
     public Projectile spawnBulletType2() {
 
-        bullet = new Projectile((int)this.hitbox.x ,(int)this.hitbox.y - 32,
-                12, 12, 5, -200, -50, bulletImage);
+        bullet = new Projectile((int)this.hitbox.x + 32 ,(int)this.hitbox.y ,
+                24, 24, 5, -200, -50, bulletImage);
 
         return bullet;
     }
     public Projectile spawnBulletType3() {
 
-        bullet = new Projectile((int)this.hitbox.x + 64,(int)this.hitbox.y - 32,
-                12, 12, 5, -200, 50, bulletImage);
+        bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y ,
+                24, 24, 5, -200, 50, bulletImage);
 
         return bullet;
     }
