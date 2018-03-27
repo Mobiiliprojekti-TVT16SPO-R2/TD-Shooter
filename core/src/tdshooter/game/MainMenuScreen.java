@@ -6,6 +6,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -93,19 +94,11 @@ public class MainMenuScreen implements Screen {
 
         stage.act();
         stage.draw();
-
-//        camera.update();
-//        game.batch.setProjectionMatrix(camera.combined);
-
-
-
     }
 
     @Override
     public void resize(int width, int height) {
     }
-
-
 
     @Override
     public void hide() {

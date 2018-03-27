@@ -1,22 +1,22 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Random;
-
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -36,115 +36,56 @@ public class GameScreen implements Screen, InputProcessor {
     private final int FLIGHTZONE_Y_MAX = ((VIEWPORTHEIGHT / 4) + 100);
 
     private boolean gamePaused = false;
-    private float background_y = 0;
-    private int scrollSpeed = 100;
-    private int randomNumber = 0;
-    private int randomNumber2 = 0;
-
-    private Item item;
-
     private Player player;
-    private Texture basicEnemy;
-    private Texture shootingEnemy;
-    private Texture bulletImage;
-    private Texture healthpackTexture;
-    private Texture flightSpeedTexture;
-    private Texture currencyTexture;
-    private Texture weaponUpgradeTexture;
-    private Texture background;
-    private Texture background_2;
-    private Sound hitSound;
-    private Music rainMusic;
+    private ScrollingBackground background;
+    private Music backgroundMusic;
     private OrthographicCamera camera;
     private ArrayList<Encounter> encounters;
     private ArrayList<Projectile> playerProjectiles;
+    private Mission mission;
     private ArrayList<Projectile> enemyProjectiles;
     private ArrayList<Item> items;
-    private Random random;
 
-    private long lastEnemySpawn;
-    private long oldHitsound;
-    private long oldHitsound2;
+    private int encountersDestroyed;
+    private ArrayList<Long> oldSoundIds;
 
-    //adding FPS-counter
     private int fps;
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
-        player = new Player(VIEWPORTWIDTH / 2 - PLAYERSIZE_X / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
-
-        random = new Random();
-        Gdx.app.log("LOADING", "Start loading assets..");
-
-        // load the images for the enemies, 64x64 pixels each
-        basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_LVL_1_Test.png"));
-
-        Gdx.app.log("LOADING", "Asset 1 loaded..");
-        shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_LVL_1_Test.png"));
-
-        Gdx.app.log("LOADING", "Asset 2 loaded..");
-        bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        Gdx.app.log("LOADING", "Asset 3 loaded..");
-        healthpackTexture = new Texture(Gdx.files.internal("Items/healthpack_test.png"));
-        Gdx.app.log("LOADING", "Asset 4 loaded..");
-        flightSpeedTexture = new Texture(Gdx.files.internal("Items/flightspeed_test.png"));
-        Gdx.app.log("LOADING", "Asset 5 loaded..");
-        currencyTexture = new Texture(Gdx.files.internal("Items/currency_test.png"));
-        Gdx.app.log("LOADING", "Asset 6 loaded..");
-        weaponUpgradeTexture = new Texture(Gdx.files.internal("Items/armor_test.png"));
-        Gdx.app.log("LOADING", "bullet and encounters loaded");
-
-//        background = new Texture(Gdx.files.internal("testistausta.png"));
-        background = new Texture(Gdx.files.internal("Backgrounds/Map_Test_720_2297_2.png"));
-        Gdx.app.log("LOADING", "testistausta loaded");
-        background_2 = background;
-
-        // load the drop sound effect and the rain background "music"
-        hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        rainMusic.setLooping(true);
-
-        Gdx.app.log("LOADING", "all assets loaded");
-
-        // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
-
-        // create the encounters arraylist
         encounters = new ArrayList<Encounter>();
-     //   spawnEncounter();
-
-        //create projectile-arraylists
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
+
+        oldSoundIds = new ArrayList<Long>();
+
+        mission = new Mission("Missions/mission01.txt", game.assets, encounters);
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
+        background = new ScrollingBackground(mission.getBackground());
+        background.setLooping(mission.isBackgroundLooping());
+        background.setScrollSpeed(mission.getScrollSpeed());
+        backgroundMusic = mission.getBackgroundMusic();
+        backgroundMusic.play();
         items = new ArrayList<Item>();
 
         //Play sound Effects once, to initialize prev_sound_id
-        oldHitsound = hitSound.play(0.0f);
-        oldHitsound2 = hitSound.play(0.0f);
+        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
 
+        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
     }
 
     @Override
-    public void render(float delta) {
-
-        Gdx.app.log("DEBUG", "rendering..");
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
+    public void render(float delta)
+    {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // tell the camera to update its matrices.
         camera.update();
-
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
-
         fps = Gdx.graphics.getFramesPerSecond();
 
         if (gamePaused){
@@ -152,16 +93,13 @@ public class GameScreen implements Screen, InputProcessor {
         } else {
             processUserInput();
 
-        // check if we need to create a new enemy
-        if (TimeUtils.nanoTime() - lastEnemySpawn > 1000000000) {
-            long randomSeed = TimeUtils.nanoTime();
-            random = new Random(randomSeed);
-            randomNumber = random.nextInt(3);
-            spawnEncounter(randomNumber);
+            if (mission.isMissionOver()) {
+                endGame();
             }
 
-            moveAllObjects();
+            moveAllObjects(delta);
             checkCollisions();
+            mission.update(delta);
         }
         drawAllObjects();
     }
@@ -202,42 +140,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
-    private void spawnEncounter(int random) {
-
-        if (random <= 1) {
-            Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    100, 128, 100, 5, 120, basicEnemy);
-            encounters.add(encounter);
-        }
-        else if (random == 2){
-            ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    62, 111, 75, 5, 120,50 , shootingEnemy);
-            encounters.add(encounter);
-        }
-        lastEnemySpawn = TimeUtils.nanoTime();
-    }
-
-    private void spawnItem(Encounter encounter){
-        randomNumber2 = random.nextInt(4);
-
-        if (randomNumber2 == 0) {
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 1, healthpackTexture);
-            items.add(item);
-        }
-        else if (randomNumber2 == 1){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 2, flightSpeedTexture);
-            items.add(item);
-        }
-        else if (randomNumber2 == 2){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 3, weaponUpgradeTexture);
-            items.add(item);
-        }
-        else if (randomNumber2 == 3){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 4, currencyTexture);
-            items.add(item);
-        }
-    }
-
     private void checkCollisions() {
         // move the encounters, remove any that are beneath the bottom edge of
         // the screen or that hit the player.
@@ -248,9 +150,9 @@ public class GameScreen implements Screen, InputProcessor {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-                hitSound.stop(oldHitsound2);
-                oldHitsound2 = oldHitsound;
-                oldHitsound = hitSound.play();
+                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                oldSoundIds.remove(0); // remove oldest
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
@@ -259,14 +161,13 @@ public class GameScreen implements Screen, InputProcessor {
                         || (bullet.hitbox.x > VIEWPORTWIDTH + 32) ) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
-                    hitSound.stop(oldHitsound2);
-                    oldHitsound2 = oldHitsound;
-                    oldHitsound = hitSound.play();
+                    ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                    oldSoundIds.remove(0); // remove oldest
+                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
                         player.setPoints(encounter.getPoints());
-                        spawnItem(encounter);
                     }
                 }
             }
@@ -280,15 +181,14 @@ public class GameScreen implements Screen, InputProcessor {
                 enemyProjectiles.remove(i);
             }
             else if (bullet.overlaps(player)){
-                hitSound.stop(oldHitsound2);
-                oldHitsound2 = oldHitsound;
-                oldHitsound = hitSound.play();
+                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                oldSoundIds.remove(0); // remove oldest
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play());
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
         }
         if (player.isDestroyed()){
-            Gdx.app.log("Points", "Player points: " + player.getPoints());
             endGame();
         }
 
@@ -306,17 +206,14 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void endGame() {
-        game.setScreen(new MainMenuScreen(game));
+        game.setScreen(new StageClearedScreen(game, encountersDestroyed, player.getHitPoints()));
         dispose();
     }
 
-    private void drawAllObjects() {
-        // DRAW ALL OBJECTS HERE
+    private void drawAllObjects()
+    {
         game.batch.begin();
-        game.batch.draw(background, 0 , background_y);
-        if (background_y < -(2297-VIEWPORTHEIGHT)) {
-            game.batch.draw(background_2, 0, background_y + 2297);
-        }
+        background.draw(game.batch);
         player.draw(game.batch);
         for (Encounter encounter : encounters) {
             encounter.draw(game.batch);
@@ -344,8 +241,10 @@ public class GameScreen implements Screen, InputProcessor {
         game.batch.end();
     }
 
-    private void moveAllObjects() {
-        player.move(Gdx.graphics.getDeltaTime());
+    private void moveAllObjects(float delta)
+    {
+        background.update(delta);
+        player.move(delta);
         for (Projectile bullet : playerProjectiles){
             bullet.update();
         }
@@ -361,10 +260,6 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
-        background_y -= scrollSpeed * Gdx.graphics.getDeltaTime();
-        if (background_y < -2297) {
-            background_y = 0;
-        }
     }
 
     @Override
@@ -373,9 +268,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        // start the playback of the background music
-        // when the screen is shown
-//        rainMusic.play();
+        // backgroundMusic.play();
     }
 
     @Override
@@ -394,13 +287,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        basicEnemy.dispose();
-        shootingEnemy.dispose();
-        bulletImage.dispose();
-        background.dispose();
-        background_2.dispose();
-        hitSound.dispose();
-        rainMusic.dispose();
     }
 
     @Override
