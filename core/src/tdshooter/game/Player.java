@@ -32,6 +32,7 @@ public class Player extends Destroyable{
     private Weapon weapon7;
     private int weaponChoice = 1;
     private int turretCount = 1;
+    private int cooldownReduction = 0;
     private long lastChangeTime;
 
     private Sound firingSound1;
@@ -158,14 +159,22 @@ public class Player extends Destroyable{
         items = item.getStats();
 
         this.hitPoints += items[0];
-        this.maxSpeed += items[1];
-        this.currency += items[3];
+        if (this.cooldownReduction < 60) {
+            this.cooldownReduction += items[1];
+        }
         if (this.turretCount < 7){
             this.turretCount += items[2];
         }
+        this.currency += items[3];
+
         weapon1.setTurretCount(this.turretCount);
         weapon2.setTurretCount(this.turretCount);
         weapon3.setTurretCount(this.turretCount);
+        weapon1.setCooldownReduction(this.cooldownReduction);
+        weapon2.setCooldownReduction(this.cooldownReduction);
+        weapon3.setCooldownReduction(this.cooldownReduction);
+
+        Gdx.app.log("DEBUG", "weapon CDR from player: " + cooldownReduction);
 
         if (this.maxSpeed > 2000) {
             this.maxSpeed = 2000;

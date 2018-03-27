@@ -14,8 +14,9 @@ import java.util.ArrayList;
 class Weapon {
     int turretCount = 1;
     int projectileType = 1;
-    Long cooldownTime = (long) 500000000; // half a second
-    Long lastBulletTime = (long )0;
+    long cooldownTime = (long) 500000000; // half a second
+    private float cooldownReduction = 0;
+    long lastBulletTime = (long )0;
     boolean autoTargetting = false;
     int spread = 0;
     Sound firingSound;
@@ -38,6 +39,7 @@ class Weapon {
         //load all bullet textures
         bulletImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         bulletImage2 = new Texture(Gdx.files.internal("Bullets/bullet1.png"));
+        bulletImage3 = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
 
         //first create bulletmodel by type
         switch (projectileType) {
@@ -49,6 +51,11 @@ class Weapon {
                 break;
             case 3:
                 bulletModel = new Projectile(-500,0, 32, 48, 13, 1400, bulletImage2);
+                break;
+
+                //ENEMY BULLETS HERE
+            case 4:
+                bulletModel = new Projectile(-500,0, 24, 24, 5, -250, bulletImage3);
                 break;
             default: //same as basic
                 bulletModel = new Projectile(-500,0, 32, 32, 5, 700, bulletImage1);
@@ -76,8 +83,9 @@ class Weapon {
         }
 
         int fixed_x_pos = x - (int)(bulletModel.hitbox.width / 2);
+        float cooldownFactor = ((100-cooldownReduction)/100);
 
-        if (TimeUtils.nanoTime() - lastBulletTime > cooldownTime){
+        if (TimeUtils.nanoTime() - lastBulletTime > ((long)(cooldownTime * cooldownFactor))) {
             switch (turretCount){
                 case 1:
                     bullet1.setPosition(fixed_x_pos,y);
@@ -158,6 +166,14 @@ class Weapon {
 
     public void setTurretCount(int turretCount) {
         this.turretCount = turretCount;
+    }
+
+    public void setCooldownReduction(int percent) {
+
+        Gdx.app.log("DEBUG", "setting weapon CDR inside weapon-class: " + percent);
+        this.cooldownReduction = percent;
+
+        Gdx.app.log("DEBUG", "new CDR is: " + this.cooldownReduction);
     }
 }
 

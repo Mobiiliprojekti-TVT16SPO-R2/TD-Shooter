@@ -39,18 +39,11 @@ public class GameScreen implements Screen, InputProcessor {
     private float background_y = 0;
     private int scrollSpeed = 100;
     private int randomNumber = 0;
-    private int randomNumber2 = 0;
-
-    private Item item;
 
     private Player player;
     private Texture basicEnemy;
     private Texture shootingEnemy;
     private Texture bulletImage;
-    private Texture healthpackTexture;
-    private Texture flightSpeedTexture;
-    private Texture currencyTexture;
-    private Texture weaponUpgradeTexture;
     private Texture background;
     private Texture background_2;
     private Sound hitSound;
@@ -81,18 +74,9 @@ public class GameScreen implements Screen, InputProcessor {
 
         Gdx.app.log("LOADING", "Asset 1 loaded..");
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_LVL_1_Test.png"));
-
         Gdx.app.log("LOADING", "Asset 2 loaded..");
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         Gdx.app.log("LOADING", "Asset 3 loaded..");
-        healthpackTexture = new Texture(Gdx.files.internal("Items/healthpack_test.png"));
-        Gdx.app.log("LOADING", "Asset 4 loaded..");
-        flightSpeedTexture = new Texture(Gdx.files.internal("Items/flightspeed_test.png"));
-        Gdx.app.log("LOADING", "Asset 5 loaded..");
-        currencyTexture = new Texture(Gdx.files.internal("Items/currency_test.png"));
-        Gdx.app.log("LOADING", "Asset 6 loaded..");
-        weaponUpgradeTexture = new Texture(Gdx.files.internal("Items/armor_test.png"));
-        Gdx.app.log("LOADING", "bullet and encounters loaded");
 
 //        background = new Texture(Gdx.files.internal("testistausta.png"));
         background = new Texture(Gdx.files.internal("Backgrounds/Map_Test_720_2297_2.png"));
@@ -129,8 +113,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-
-        Gdx.app.log("DEBUG", "rendering..");
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
@@ -173,7 +155,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void processUserInput() {
-        if(Gdx.input.isTouched()) {
+        if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
@@ -203,7 +185,6 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void spawnEncounter(int random) {
-
         if (random <= 1) {
             Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
                     100, 128, 100, 5, 120, basicEnemy);
@@ -211,31 +192,10 @@ public class GameScreen implements Screen, InputProcessor {
         }
         else if (random == 2){
             ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    62, 111, 75, 5, 120,50 , shootingEnemy);
+                    62, 111, 75, 5, 120,50 , 1, shootingEnemy);
             encounters.add(encounter);
         }
         lastEnemySpawn = TimeUtils.nanoTime();
-    }
-
-    private void spawnItem(Encounter encounter){
-        randomNumber2 = random.nextInt(4);
-
-        if (randomNumber2 == 0) {
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 1, healthpackTexture);
-            items.add(item);
-        }
-        else if (randomNumber2 == 1){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 2, flightSpeedTexture);
-            items.add(item);
-        }
-        else if (randomNumber2 == 2){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 3, weaponUpgradeTexture);
-            items.add(item);
-        }
-        else if (randomNumber2 == 3){
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 4, currencyTexture);
-            items.add(item);
-        }
     }
 
     private void checkCollisions() {
@@ -266,7 +226,7 @@ public class GameScreen implements Screen, InputProcessor {
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
                         player.setPoints(encounter.getPoints());
-                        spawnItem(encounter);
+                        encounter.dropItem(items, scrollSpeed);
                     }
                 }
             }
@@ -318,6 +278,11 @@ public class GameScreen implements Screen, InputProcessor {
             game.batch.draw(background_2, 0, background_y + 2297);
         }
         player.draw(game.batch);
+
+        for (Item item : items) {
+            item.draw(game.batch);
+        }
+
         for (Encounter encounter : encounters) {
             encounter.draw(game.batch);
         }
@@ -328,9 +293,6 @@ public class GameScreen implements Screen, InputProcessor {
             bullet.draw(game.batch);
         }
 
-        for (Item item : items) {
-            item.draw(game.batch);
-        }
         if (gamePaused){
             game.font.draw(game.batch, "GAME PAUSED", 150, 400, 200, 200, true);
         }

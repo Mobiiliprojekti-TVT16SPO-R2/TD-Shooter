@@ -29,6 +29,12 @@ public class ShootingEnemy extends Encounter {
         bulletImage = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
 
     }
+    public ShootingEnemy(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, int itemDrop, Texture image) {
+        super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, points, itemDrop, image);
+
+        bulletImage = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
+
+    }
     public Projectile spawnBullet() {
 
         bullet = new Projectile((int)this.hitbox.x + 32,(int)this.hitbox.y ,
