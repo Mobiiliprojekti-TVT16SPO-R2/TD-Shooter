@@ -50,6 +50,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Texture healthpackTexture;
     private Texture flightSpeedTexture;
     private Texture currencyTexture;
+    private Texture weaponUpgradeTexture;
     private Texture background;
     private Texture background_2;
     private Sound hitSound;
@@ -89,6 +90,8 @@ public class GameScreen implements Screen, InputProcessor {
         flightSpeedTexture = new Texture(Gdx.files.internal("Items/flightspeed_test.png"));
         Gdx.app.log("LOADING", "Asset 5 loaded..");
         currencyTexture = new Texture(Gdx.files.internal("Items/currency_test.png"));
+        Gdx.app.log("LOADING", "Asset 6 loaded..");
+        weaponUpgradeTexture = new Texture(Gdx.files.internal("Items/armor_test.png"));
         Gdx.app.log("LOADING", "bullet and encounters loaded");
 
 //        background = new Texture(Gdx.files.internal("testistausta.png"));
@@ -215,7 +218,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void spawnItem(Encounter encounter){
-        randomNumber2 = random.nextInt(3);
+        randomNumber2 = random.nextInt(4);
 
         if (randomNumber2 == 0) {
             item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 1, healthpackTexture);
@@ -226,6 +229,10 @@ public class GameScreen implements Screen, InputProcessor {
             items.add(item);
         }
         else if (randomNumber2 == 2){
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 3, weaponUpgradeTexture);
+            items.add(item);
+        }
+        else if (randomNumber2 == 3){
             item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 48, 48, scrollSpeed, 4, currencyTexture);
             items.add(item);
         }

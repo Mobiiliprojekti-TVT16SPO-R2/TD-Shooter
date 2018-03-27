@@ -31,6 +31,7 @@ public class Player extends Destroyable{
     private Weapon weapon6;
     private Weapon weapon7;
     private int weaponChoice = 1;
+    private int turretCount = 1;
     private long lastChangeTime;
 
     private Sound firingSound1;
@@ -56,13 +57,13 @@ public class Player extends Destroyable{
         firingImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         firingImage2 = firingImage1;
 
-        weapon1 = new Weapon(3, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
-        weapon2 = new Weapon(5, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
-        weapon3 = new Weapon(7, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
-        weapon4 = new Weapon(2, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
-        weapon5 = new Weapon(4, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
-        weapon6 = new Weapon(4, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
-        weapon7 = new Weapon(6, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
+        weapon1 = new Weapon(1, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+        weapon2 = new Weapon(1, 2, (long) 90000000, false, 0, firingSound1, firingImage1);
+        weapon3 = new Weapon(1, 3, (long) 300000000, false, 80, firingSound1, firingImage1);
+//        weapon4 = new Weapon(2, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
+//        weapon5 = new Weapon(4, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
+//        weapon6 = new Weapon(4, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
+//        weapon7 = new Weapon(6, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
 
         items = new float[4];
     }
@@ -120,18 +121,18 @@ public class Player extends Destroyable{
             case 3:
                 weapon3.fire(plane_mid_x, plane_mid_y, playerProjectiles);
                 break;
-            case 4:
-                weapon4.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
-            case 5:
-                weapon5.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
-            case 6:
-                weapon6.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
-            case 7:
-                weapon7.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
+//            case 4:
+//                weapon4.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+//                break;
+//            case 5:
+//                weapon5.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+//                break;
+//            case 6:
+//                weapon6.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+//                break;
+//            case 7:
+//                weapon7.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+//                break;
             default:
                 break;
         }
@@ -139,7 +140,7 @@ public class Player extends Destroyable{
 
     public void swapWeapons() {
         if (TimeUtils.nanoTime() - lastChangeTime > 200000000) {
-            if (weaponChoice == 7) {
+            if (weaponChoice == 3) {
                 weaponChoice = 0;
             } else {
                 weaponChoice++;
@@ -159,6 +160,12 @@ public class Player extends Destroyable{
         this.hitPoints += items[0];
         this.maxSpeed += items[1];
         this.currency += items[3];
+        if (this.turretCount < 7){
+            this.turretCount += items[2];
+        }
+        weapon1.setTurretCount(this.turretCount);
+        weapon2.setTurretCount(this.turretCount);
+        weapon3.setTurretCount(this.turretCount);
 
         if (this.maxSpeed > 2000) {
             this.maxSpeed = 2000;
