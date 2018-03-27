@@ -1,19 +1,16 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
-import java.util.Random;
-
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -33,7 +30,7 @@ public class GameScreen implements Screen, InputProcessor {
     private final int FLIGHTZONE_X_MIN = (PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_X_MAX = (VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
     private final int FLIGHTZONE_Y_MIN = (PLAYERSIZE_X / 2);
-    private final int FLIGHTZONE_Y_MAX = ((VIEWPORTHEIGHT / 4) + 100);
+    private final int FLIGHTZONE_Y_MAX = (VIEWPORTHEIGHT - 200);
 
     private boolean gamePaused = false;
     private float background_y = 0;
@@ -43,27 +40,30 @@ public class GameScreen implements Screen, InputProcessor {
 
     private Item item;
 
+    private RandomXS128 random;
+    private RandomXS128 randomSpawnPoint;
+
     private Player player;
     private Texture basicEnemy;
     private Texture shootingEnemy;
+    private Texture shootingEnemyLVL2;
     private Texture bulletImage;
     private Texture healthpackTexture;
     private Texture flightSpeedTexture;
     private Texture currencyTexture;
     private Texture background;
     private Texture background_2;
-    private Sound hitSound;
-    private Music rainMusic;
+//    private Sound hitSound;
+//    private Music rainMusic;
     private OrthographicCamera camera;
     private ArrayList<Encounter> encounters;
     private ArrayList<Projectile> playerProjectiles;
     private ArrayList<Projectile> enemyProjectiles;
     private ArrayList<Item> items;
-    private Random random;
 
     private long lastEnemySpawn;
-    private long oldHitsound;
-    private long oldHitsound2;
+//    private long oldHitsound;
+//    private long oldHitsound2;
 
     //adding FPS-counter
     private int fps;
@@ -72,7 +72,8 @@ public class GameScreen implements Screen, InputProcessor {
         this.game = game;
         player = new Player(VIEWPORTWIDTH / 2 - PLAYERSIZE_X / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
 
-        random = new Random();
+        random = new RandomXS128();
+        randomSpawnPoint = new RandomXS128();
         Gdx.app.log("LOADING", "Start loading assets..");
 
         // load the images for the enemies, 64x64 pixels each
@@ -80,6 +81,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         Gdx.app.log("LOADING", "Asset 1 loaded..");
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_LVL_1_Test.png"));
+        shootingEnemyLVL2 = new Texture(Gdx.files.internal("Encounters/AlienFighter_LVL_2.png"));
 
         Gdx.app.log("LOADING", "Asset 2 loaded..");
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
@@ -97,9 +99,9 @@ public class GameScreen implements Screen, InputProcessor {
         background_2 = background;
 
         // load the drop sound effect and the rain background "music"
-        hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        rainMusic.setLooping(true);
+//        hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
+//        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+//        rainMusic.setLooping(true);
 
         Gdx.app.log("LOADING", "all assets loaded");
 
@@ -117,8 +119,8 @@ public class GameScreen implements Screen, InputProcessor {
         items = new ArrayList<Item>();
 
         //Play sound Effects once, to initialize prev_sound_id
-        oldHitsound = hitSound.play(0.0f);
-        oldHitsound2 = hitSound.play(0.0f);
+//        oldHitsound = hitSound.play(0.0f);
+//        oldHitsound2 = hitSound.play(0.0f);
 
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
@@ -152,7 +154,7 @@ public class GameScreen implements Screen, InputProcessor {
         // check if we need to create a new enemy
         if (TimeUtils.nanoTime() - lastEnemySpawn > 1000000000) {
             long randomSeed = TimeUtils.nanoTime();
-            random = new Random(randomSeed);
+            random = new RandomXS128(randomSeed);
             randomNumber = random.nextInt(3);
             spawnEncounter(randomNumber);
             }
@@ -201,14 +203,21 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void spawnEncounter(int random) {
 
-        if (random <= 1) {
-            Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    100, 128, 100, 5, 120, basicEnemy);
+        if (random == 0) {
+            Encounter encounter = new Encounter(randomSpawnPoint.nextInt( VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
+                    100, 128, 100, 5, 350, basicEnemy);
+//            Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
+//                    100, 128, 100, 5, 350, basicEnemy);
+            encounters.add(encounter);
+        }
+        else if (random == 1){
+            ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
+                    62, 111, 75, 15, 320,1, 0 , 500000000, 30, 50, shootingEnemy);
             encounters.add(encounter);
         }
         else if (random == 2){
             ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    62, 111, 75, 5, 120,50 , shootingEnemy);
+                    96, 128, 150, 5, 120,7, 60 , 2100000000, 300, 50, shootingEnemyLVL2);
             encounters.add(encounter);
         }
         lastEnemySpawn = TimeUtils.nanoTime();
@@ -241,9 +250,9 @@ public class GameScreen implements Screen, InputProcessor {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-                hitSound.stop(oldHitsound2);
-                oldHitsound2 = oldHitsound;
-                oldHitsound = hitSound.play();
+//                hitSound.stop(oldHitsound2);
+//                oldHitsound2 = oldHitsound;
+//                oldHitsound = hitSound.play();
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
@@ -252,9 +261,9 @@ public class GameScreen implements Screen, InputProcessor {
                         || (bullet.hitbox.x > VIEWPORTWIDTH + 32) ) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
-                    hitSound.stop(oldHitsound2);
-                    oldHitsound2 = oldHitsound;
-                    oldHitsound = hitSound.play();
+//                    hitSound.stop(oldHitsound2);
+//                    oldHitsound2 = oldHitsound;
+//                    oldHitsound = hitSound.play();
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
@@ -273,9 +282,9 @@ public class GameScreen implements Screen, InputProcessor {
                 enemyProjectiles.remove(i);
             }
             else if (bullet.overlaps(player)){
-                hitSound.stop(oldHitsound2);
-                oldHitsound2 = oldHitsound;
-                oldHitsound = hitSound.play();
+//                hitSound.stop(oldHitsound2);
+//                oldHitsound2 = oldHitsound;
+//                oldHitsound = hitSound.play();
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
@@ -311,6 +320,9 @@ public class GameScreen implements Screen, InputProcessor {
             game.batch.draw(background_2, 0, background_y + 2297);
         }
         player.draw(game.batch);
+        for (Item item : items) {
+            item.draw(game.batch);
+        }
         for (Encounter encounter : encounters) {
             encounter.draw(game.batch);
         }
@@ -319,10 +331,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
-        }
-
-        for (Item item : items) {
-            item.draw(game.batch);
         }
         if (gamePaused){
             game.font.draw(game.batch, "GAME PAUSED", 150, 400, 200, 200, true);
@@ -392,8 +400,8 @@ public class GameScreen implements Screen, InputProcessor {
         bulletImage.dispose();
         background.dispose();
         background_2.dispose();
-        hitSound.dispose();
-        rainMusic.dispose();
+//        hitSound.dispose();
+//        rainMusic.dispose();
     }
 
     @Override

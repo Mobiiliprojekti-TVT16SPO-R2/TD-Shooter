@@ -38,6 +38,7 @@ class Weapon {
         //load all bullet textures
         bulletImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         bulletImage2 = new Texture(Gdx.files.internal("Bullets/bullet1.png"));
+        bulletImage3 = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
 
         //first create bulletmodel by type
         switch (projectileType) {
@@ -49,6 +50,9 @@ class Weapon {
                 break;
             case 3:
                 bulletModel = new Projectile(-500,0, 32, 48, 13, 1400, bulletImage2);
+                break;
+            case 4:
+                bulletModel = new Projectile(-500,0, 24, 24, 5, -500, bulletImage3);
                 break;
             default: //same as basic
                 bulletModel = new Projectile(-500,0, 32, 32, 5, 700, bulletImage1);

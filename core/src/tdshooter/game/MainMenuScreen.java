@@ -36,7 +36,7 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(480, 800, camera);
+        viewport = new FitViewport(720, 1280, camera);
         viewport.apply();
 
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
