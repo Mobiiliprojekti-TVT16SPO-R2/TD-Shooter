@@ -190,22 +190,24 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void spawnEncounter(int random) {
-
+        RandomXS128 randomizer = new RandomXS128();
+        int randomItem = randomizer.nextInt(4) + 1;
+        int randomBetterItem = randomizer.nextInt(3) + 1;
         if (random == 0) {
             Encounter encounter = new Encounter(randomSpawnPoint.nextInt( VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    100, 128, 100, 5, 350, basicEnemy);
+                    100, 128, 100, 5, 350, 25, basicEnemy);
 //            Encounter encounter = new Encounter(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
 //                    100, 128, 100, 5, 350, basicEnemy);
             encounters.add(encounter);
         }
         else if (random == 1){
             ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    62, 111, 75, 15, 320,1, 0 , 500000000, 30, 50, shootingEnemy);
+                    62, 111, 75, 15, 320,1, 0 , 500000000, 30, 50, 4, shootingEnemy);
             encounters.add(encounter);
         }
         else if (random == 2){
             ShootingEnemy encounter = new ShootingEnemy(MathUtils.random(0, VIEWPORTWIDTH - 64), VIEWPORTHEIGHT,
-                    96, 128, 150, 5, 120,7, 60 , 2100000000, 300, 50, shootingEnemyLVL2);
+                    96, 128, 150, 5, 120,7, 60 , 2100000000, 300, 50, randomBetterItem, shootingEnemyLVL2);
             encounters.add(encounter);
         }
         lastEnemySpawn = TimeUtils.nanoTime();

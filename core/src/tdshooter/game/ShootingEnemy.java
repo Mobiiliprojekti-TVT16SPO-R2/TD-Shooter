@@ -55,15 +55,21 @@ public class ShootingEnemy extends Encounter {
 
         weapon1 = new Weapon(this.turretCount, 4, this.cooldownTime, false, this.spread, firingSound1, firingImage1);
     }
-    public ShootingEnemy(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, int itemDrop, Texture image) {
+    public ShootingEnemy(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int turretCount, int spread, long cooldownTime, int shootRNG, int points, int itemDrop, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, points, itemDrop, image);
 
+        this.turretCount = turretCount;
+        this.spread = spread;
+        this.cooldownTime = cooldownTime;
+        this.shootRNG = shootRNG;
+
         bulletImage = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
+        firingSound1 = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
+        firingImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
 
+        weapon1 = new Weapon(this.turretCount, 4, this.cooldownTime, false, this.spread, firingSound1, firingImage1);
     }
-    public Projectile spawnBullet() {
 
-    }
     public void shoot(ArrayList<Projectile> projectileList) {
 
             long randomSeed = TimeUtils.nanoTime();
