@@ -3,12 +3,11 @@ package tdshooter.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Created by leevi on 16.3.2018.
  */
-
-//this class is for all encounters which
 
 public class Encounter extends Destroyable{
 
@@ -26,6 +25,8 @@ public class Encounter extends Destroyable{
     public void draw(SpriteBatch batch) {
         batch.draw(encounterImage, hitbox.x, hitbox.y);
     }
+
+    public void setPosition(Vector2 position) {this.hitbox.setPosition(position);}
 
     //Flight patterns
 

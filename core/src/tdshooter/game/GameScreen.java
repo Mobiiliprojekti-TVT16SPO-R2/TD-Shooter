@@ -5,19 +5,14 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
 
-
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -40,12 +35,12 @@ public class GameScreen implements Screen {
 
     private Player player;
     private ScrollingBackground background;
+    private Music backgroundMusic;
     private OrthographicCamera camera;
     private ArrayList<Encounter> encounters;
     private ArrayList<Projectile> playerProjectiles;
     private Mission mission;
 
-    private AssetContainer assets;
     private ArrayList<Projectile> enemyProjectiles;
     private Random random;
 
@@ -62,32 +57,22 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
-        assets = new AssetContainer();
+        enemyProjectiles = new ArrayList<Projectile>();
         random = new Random();
 
         oldSoundIds = new ArrayList<Long>();
 
-        assets.textures.put("enemy01", new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png")));
-        assets.textures.put("enemy02", new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png");
-        assets.textures.put("playerBullet01", new Texture(Gdx.files.internal("Bullets/bullet1_small.png")));
-        assets.textures.put("background01", new Texture(Gdx.files.internal("testistausta.png")));
-        assets.sounds.put("hitSound01", Gdx.audio.newSound(Gdx.files.internal("hitSound.wav")));
-        assets.musics.put("music01", Gdx.audio.newMusic(Gdx.files.internal("rain.mp3")));
-
-        mission = new Mission("Missions/mission01.txt", assets, encounters);
+        mission = new Mission("Missions/mission01.txt", game.assets, encounters);
         player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
         background = new ScrollingBackground(mission.getBackground());
         background.setLooping(mission.isBackgroundLooping());
-
-        Enumeration<String> keys = assets.musics.keys();
-        while(keys.hasMoreElements())
-        {
-            assets.musics.get(keys.nextElement()).setLooping(true);
-        }
+        background.setScrollSpeed(mission.getScrollSpeed());
+        backgroundMusic = mission.getBackgroundMusic();
+        backgroundMusic.play();
 
         //Play sound Effects once, to initialize prev_sound_id
-        oldSoundIds.add(assets.sounds.get("hitSound01").play(0.0f));
-        oldSoundIds.add(assets.sounds.get("hitSound01").play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
 
         camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
     }
@@ -105,7 +90,7 @@ public class GameScreen implements Screen {
 
         if(mission.isMissionOver())
         {
-            background.setLooping(false);
+            endGame();
         }
 
         moveAllObjects(delta);
@@ -155,18 +140,18 @@ public class GameScreen implements Screen {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-                assets.sounds.get("hitSound01").stop(oldSoundIds.get(0)); //stop oldest
+                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(assets.sounds.get("hitSound01").play()); // play and add new
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
                 if (bullet.hitbox.y > VIEWPORTHEIGHT + 64) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
-                    assets.sounds.get("hitSound01").stop(oldSoundIds.get(0)); //stop oldest
+                    ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                     oldSoundIds.remove(0); // remove oldest
-                    oldSoundIds.add(assets.sounds.get("hitSound01").play()); // play and add new
+                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                 }
@@ -182,9 +167,9 @@ public class GameScreen implements Screen {
                 enemyProjectiles.remove(i);
             }
             else if (bullet.overlaps(player)){
-                assets.sounds.get("hitSound01").stop(oldSoundIds.get(0)); //stop oldest
+                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(assets.sounds.get("hitSound01").play());
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play());
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
@@ -195,7 +180,7 @@ public class GameScreen implements Screen {
     }
 
     private void endGame() {
-        game.setScreen(new MainMenuScreen(game));
+        game.setScreen(new StageClearedScreen(game, encountersDestroyed, player.getHitPoints()));
         dispose();
     }
 
@@ -243,7 +228,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        assets.musics.get("music01").play();
+        backgroundMusic.play();
     }
 
     @Override
@@ -260,21 +245,5 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        disposeAssetTable(assets.textures);
-        disposeAssetTable(assets.sounds);
-        disposeAssetTable(assets.musics);
-    }
-
-    private <T> void disposeAssetTable(Hashtable<String, T> table)
-    {
-        Enumeration<String> keys = table.keys();
-        while(keys.hasMoreElements())
-        {
-            Disposable asset = (Disposable)table.get(keys.nextElement());
-            if(asset != null)
-            {
-                asset.dispose();
-            }
-        }
     }
 }

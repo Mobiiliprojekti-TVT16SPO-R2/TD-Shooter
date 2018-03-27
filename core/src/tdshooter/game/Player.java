@@ -29,7 +29,6 @@ public class Player extends Destroyable{
 
     public void move(float delta)
     {
-
         if(this.moving) {
             speed = Math.min(speed + acceleration * delta, maxSpeed);
         }

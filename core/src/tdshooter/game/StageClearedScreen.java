@@ -1,36 +1,40 @@
 package tdshooter.game;
 
-/**
- * Created by leevi on 16.3.2018.
- */
-
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 /**
- * Created by leevi on 16.3.2018.
+ * Created by Samuli Lehto on 26.3.2018.
  */
 
-public class MainMenuScreen implements Screen {
+public class StageClearedScreen implements Screen {
+
     private final TDShooterGdxGame game;
     private OrthographicCamera camera;
 
+    private int healthLeft;
+    private int score;
     private float runningTime;
     private float waitTime;
 
-    public MainMenuScreen(final TDShooterGdxGame gam) {
-        game = gam;
+    public StageClearedScreen(final TDShooterGdxGame game, int score, int healthLeft)
+    {
+        this.game = game;
+        this.score = score;
+        this.healthLeft = healthLeft;
         runningTime = 0;
-        waitTime = 0.5f;
+        waitTime = 2.0f;
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
     }
 
     @Override
-    public void render(float delta) {
+    public void render(float delta)
+    {
         runningTime += delta;
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -39,14 +43,15 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to TDShooter!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+        game.font.draw(game.batch, "Stage Cleared!", 100, 600);
+        game.font.draw(game.batch, "Enemies Destroyed: " + score, 100, 580);
+        game.font.draw(game.batch, "Player Health Left: " + healthLeft, 100, 560);
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
             if(runningTime > waitTime)
             {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new MainMenuScreen(game));
                 dispose();
             }
         }
@@ -74,5 +79,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
+
     }
 }
+
