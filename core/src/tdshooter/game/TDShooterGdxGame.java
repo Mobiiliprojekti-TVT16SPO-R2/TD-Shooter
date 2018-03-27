@@ -13,6 +13,7 @@ public class TDShooterGdxGame extends Game {
 		batch = new SpriteBatch();
 		//Use LibGDX's default Arial font.
 		font = new BitmapFont();
+		font.getData().setScale(1.5f,1.5f);
 		this.setScreen(new MainMenuScreen(this));
 	}
 

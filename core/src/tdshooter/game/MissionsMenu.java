@@ -20,8 +20,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MissionsMenu implements Screen {
 
-    private final int VIEWPORTHEIGHT = 800;
-    private final int VIEWPORTWIDTH = 480;
+    private final int VIEWPORTHEIGHT = 1280;
+    private final int VIEWPORTWIDTH = 720;
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
     private Viewport viewport;
