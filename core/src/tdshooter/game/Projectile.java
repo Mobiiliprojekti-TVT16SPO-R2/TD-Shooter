@@ -47,6 +47,10 @@ class Projectile extends Collidable{
         this.hitbox.y = y;
     }
 
+    public void setVerticalSpeed(int speed){
+        this.verticalSpeed = speed;
+    }
+
     public void draw(SpriteBatch batch) {
         batch.draw(bulletImage, hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }

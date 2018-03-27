@@ -21,6 +21,7 @@ public class MainMenuScreen implements Screen {
         game = gam;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 480, 800);
+
     }
 
     @Override

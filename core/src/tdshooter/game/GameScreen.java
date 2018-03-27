@@ -5,6 +5,8 @@ import java.util.Random;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -13,23 +15,27 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Created by leevi on 16.3.2018.
  */
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, InputProcessor {
+
     final TDShooterGdxGame game;
-    private final int VIEWPORTHEIGHT = 800;
-    private final int VIEWPORTWIDTH = 480;
+    private Stage stage;
+    private final int VIEWPORTHEIGHT = 1280;
+    private final int VIEWPORTWIDTH = 720;
     private final int PLAYERSIZE_X = 90;
     private final int PLAYERSIZE_Y = 90;
-    private final int FLIGHTZONE_X_MIN = 32; //(PLAYERSIZE_X / 2);
-    private final int FLIGHTZONE_X_MAX = 448; //(VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
-    private final int FLIGHTZONE_Y_MIN = 32;
-    private final int FLIGHTZONE_Y_MAX = 300;  //((VIEWPORTHEIGHT / 4) + 100);
+    private final int FLIGHTZONE_X_MIN = (PLAYERSIZE_X / 2);
+    private final int FLIGHTZONE_X_MAX = (VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
+    private final int FLIGHTZONE_Y_MIN = (PLAYERSIZE_X / 2);
+    private final int FLIGHTZONE_Y_MAX = ((VIEWPORTHEIGHT / 4) + 100);
 
+    private boolean gamePaused = false;
     private float background_y = 0;
     private int scrollSpeed = 100;
     private int randomNumber = 0;
@@ -41,7 +47,7 @@ public class GameScreen implements Screen {
     private Texture basicEnemy;
     private Texture shootingEnemy;
     private Texture bulletImage;
-    private Texture healtpackTexture;
+    private Texture healthpackTexture;
     private Texture flightSpeedTexture;
     private Texture currencyTexture;
     private Texture background;
@@ -66,12 +72,11 @@ public class GameScreen implements Screen {
         this.game = game;
         player = new Player(VIEWPORTWIDTH / 2 - PLAYERSIZE_X / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
 
-        random = new Random();
         // load the images for the enemies, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
         shootingEnemy = new Texture(Gdx.files.internal("Encounters/AlienFighter_Test_1_small.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        healtpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));;
+        healthpackTexture = new Texture(Gdx.files.internal("items/healtpack_test.png"));;
         flightSpeedTexture = new Texture(Gdx.files.internal("items/flightspeed_test.png"));;
         currencyTexture = new Texture(Gdx.files.internal("items/currency_test.png"));;
         Gdx.app.log("LOADING", "bullet and encounters loaded");
@@ -91,6 +96,9 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
 
+//        stage = new Stage(camera.view, game.batch);
+
+
         // create the encounters arraylist
         encounters = new ArrayList<Encounter>();
      //   spawnEncounter();
@@ -103,6 +111,11 @@ public class GameScreen implements Screen {
         //Play sound Effects once, to initialize prev_sound_id
         oldHitsound = hitSound.play(0.0f);
         oldHitsound2 = hitSound.play(0.0f);
+
+        random = new Random();
+
+        Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
@@ -123,19 +136,29 @@ public class GameScreen implements Screen {
 
         fps = Gdx.graphics.getFramesPerSecond();
 
-        processUserInput();
+        if (gamePaused){
+            processUserInputWhenPaused();
+        } else {
+            processUserInput();
 
-        // check if we need to create a new enemy
-        if (TimeUtils.nanoTime() - lastEnemySpawn > 1000000000) {
-            long randomSeed = TimeUtils.nanoTime();
-            random = new Random(randomSeed);
-            randomNumber = random.nextInt(2);
-            spawnEncounter(randomNumber);
+            // check if we need to create a new enemy
+            if (TimeUtils.nanoTime() - lastEnemySpawn > 1000000000) {
+                long randomSeed = TimeUtils.nanoTime();
+                random = new Random(randomSeed);
+                randomNumber = random.nextInt(2);
+                spawnEncounter(randomNumber);
             }
 
-        moveAllObjects();
-        checkCollisions();
+            moveAllObjects();
+            checkCollisions();
+        }
         drawAllObjects();
+    }
+
+    private void processUserInputWhenPaused() {
+        if(Gdx.input.isTouched()) {
+            gamePaused = false;
+        }
     }
 
     private void processUserInput() {
@@ -187,7 +210,7 @@ public class GameScreen implements Screen {
         randomNumber2 = random.nextInt(3);
 
         if (randomNumber2 == 0) {
-            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 1, healtpackTexture);
+            item = new Item((int) encounter.hitbox.x, (int) encounter.hitbox.y, 32, 32, scrollSpeed, 1, healthpackTexture);
             items.add(item);
         }
         else if (randomNumber2 == 1){
@@ -276,7 +299,7 @@ public class GameScreen implements Screen {
         // DRAW ALL OBJECTS HERE
         game.batch.begin();
         game.batch.draw(background, 0 , background_y);
-        if (background_y < -2400) {
+        if (background_y < -(3200-VIEWPORTHEIGHT)) {
             game.batch.draw(background_2, 0, background_y + 3200);
         }
         player.draw(game.batch);
@@ -293,7 +316,9 @@ public class GameScreen implements Screen {
         for (Item item : items) {
             item.draw(game.batch);
         }
-
+        if (gamePaused){
+            game.font.draw(game.batch, "GAME PAUSED", 150, 400, 200, 200, true);
+        }
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
         game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, VIEWPORTHEIGHT);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
@@ -339,10 +364,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
+        gamePaused = true;
     }
 
     @Override
     public void pause() {
+        gamePaused = true;
     }
 
     @Override
@@ -359,4 +386,51 @@ public class GameScreen implements Screen {
         hitSound.dispose();
         rainMusic.dispose();
     }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if(keycode == Input.Keys.BACK) {
+            gamePaused = true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
+
 }
