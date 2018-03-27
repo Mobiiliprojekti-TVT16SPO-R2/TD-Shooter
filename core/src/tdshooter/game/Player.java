@@ -28,6 +28,8 @@ public class Player extends Destroyable{
     private Weapon weapon3;
     private Weapon weapon4;
     private Weapon weapon5;
+    private Weapon weapon6;
+    private Weapon weapon7;
     private int weaponChoice = 1;
     private long lastChangeTime;
 
@@ -54,11 +56,13 @@ public class Player extends Destroyable{
         firingImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         firingImage2 = firingImage1;
 
-        weapon1 = new Weapon(1, 1, (long) 70000000, false, firingSound1, firingImage1);
-        weapon2 = new Weapon(2, 1, (long) 70000000, false, firingSound1, firingImage1);
-        weapon3 = new Weapon(5, 1, (long) 70000000, false, firingSound1, firingImage1);
-        weapon4 = new Weapon(2, 2, (long) 200000000, false, firingSound2, firingImage2);
-        weapon5 = new Weapon(4, 2, (long) 200000000, false, firingSound2, firingImage2);
+        weapon1 = new Weapon(3, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+        weapon2 = new Weapon(5, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+        weapon3 = new Weapon(7, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+        weapon4 = new Weapon(2, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
+        weapon5 = new Weapon(4, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
+        weapon6 = new Weapon(4, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
+        weapon7 = new Weapon(6, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
 
         items = new float[4];
     }
@@ -122,6 +126,12 @@ public class Player extends Destroyable{
             case 5:
                 weapon5.fire(plane_mid_x, plane_mid_y, playerProjectiles);
                 break;
+            case 6:
+                weapon6.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
+            case 7:
+                weapon7.fire(plane_mid_x, plane_mid_y, playerProjectiles);
+                break;
             default:
                 break;
         }
@@ -129,10 +139,10 @@ public class Player extends Destroyable{
 
     public void swapWeapons() {
         if (TimeUtils.nanoTime() - lastChangeTime > 200000000) {
-            if (weaponChoice == 0) {
-                weaponChoice = 5;
+            if (weaponChoice == 7) {
+                weaponChoice = 0;
             } else {
-                weaponChoice--;
+                weaponChoice++;
             }
             lastChangeTime = TimeUtils.nanoTime();
         }

@@ -17,19 +17,21 @@ class Weapon {
     Long cooldownTime = (long) 500000000; // half a second
     Long lastBulletTime = (long )0;
     boolean autoTargetting = false;
+    int spread = 0;
     Sound firingSound;
     Texture firingImage;
-    Projectile bulletModel,bullet1,bullet2,bullet3,bullet4,bullet5;
+    Projectile bulletModel,bullet1,bullet2,bullet3,bullet4,bullet5,bullet6,bullet7;
     
     Texture bulletImage1;
     Texture bulletImage2;
     Texture bulletImage3;
 
-    public Weapon(int turretCount, int projectileType, Long cooldownTime, boolean autoTargetting, Sound firingSound, Texture firingImage) {
+    public Weapon(int turretCount, int projectileType, Long cooldownTime, boolean autoTargetting, int spread, Sound firingSound, Texture firingImage) {
         this.turretCount = turretCount;
         this.projectileType = projectileType;
         this.cooldownTime = cooldownTime;
         this.autoTargetting = autoTargetting;
+        this.spread = spread;
         this.firingSound = firingSound;
         this.firingImage = firingImage;
         
@@ -40,16 +42,16 @@ class Weapon {
         //first create bulletmodel by type
         switch (projectileType) {
             case 1:
-                bulletModel = new Projectile(0,0, 24, 32, 5, 1000, bulletImage1);
+                bulletModel = new Projectile(-500,0, 24, 32, 5, 1000, bulletImage1);
                 break;
             case 2:
-                bulletModel = new Projectile(0,0, 24, 64, 13, 1400, bulletImage2);
+                bulletModel = new Projectile(-500,0, 18, 64, 10, 1400, bulletImage1);
                 break;
             case 3:
-                bulletModel = new Projectile(0,0, 32, 48, 10, 900, bulletImage2);
+                bulletModel = new Projectile(-500,0, 32, 48, 13, 2000, bulletImage2);
                 break;
             default: //same as basic
-                bulletModel = new Projectile(0,0, 32, 32, 5, 700, bulletImage1);
+                bulletModel = new Projectile(-500,0, 32, 32, 5, 700, bulletImage1);
                 break;
         }
     }
@@ -61,6 +63,18 @@ class Weapon {
         bullet3 = new Projectile(bulletModel);
         bullet4 = new Projectile(bulletModel);
         bullet5 = new Projectile(bulletModel);
+        bullet6 = new Projectile(bulletModel);
+        bullet7 = new Projectile(bulletModel);
+
+        if (spread > 0) {
+            bullet2.setVerticalSpeed(-spread);
+            bullet3.setVerticalSpeed(spread);
+            bullet4.setVerticalSpeed(-(int)(spread*1.5));
+            bullet5.setVerticalSpeed((int)(spread*1.5));
+            bullet6.setVerticalSpeed(-(spread*2));
+            bullet7.setVerticalSpeed((spread*2));
+        }
+
         int fixed_x_pos = x - (int)(bulletModel.hitbox.width / 2);
 
         if (TimeUtils.nanoTime() - lastBulletTime > cooldownTime){
@@ -70,13 +84,13 @@ class Weapon {
                     playerProjectiles.add(bullet1);
                     break;
                 case 2:
-                    bullet1.setPosition(fixed_x_pos - 12,y);
-                    bullet2.setPosition(fixed_x_pos + 12,y);
-                    playerProjectiles.add(bullet1);
+                    bullet2.setPosition(fixed_x_pos - 12,y);
+                    bullet3.setPosition(fixed_x_pos + 12,y);
                     playerProjectiles.add(bullet2);
+                    playerProjectiles.add(bullet3);
                     break;
                 case 3:
-                    bullet1.setPosition(x,y);
+                    bullet1.setPosition(fixed_x_pos,y + 3);
                     bullet2.setPosition(fixed_x_pos - 12,y);
                     bullet3.setPosition(fixed_x_pos + 12,y);
                     playerProjectiles.add(bullet1);
@@ -84,19 +98,19 @@ class Weapon {
                     playerProjectiles.add(bullet3);
                     break;
                 case 4:
-                    bullet1.setPosition(fixed_x_pos - 8,y);
-                    bullet2.setPosition(fixed_x_pos + 8,y);
-                    bullet3.setPosition(fixed_x_pos - 16,y);
-                    bullet4.setPosition(fixed_x_pos + 16,y);
-                    playerProjectiles.add(bullet1);
+                    bullet2.setPosition(fixed_x_pos - 8,y + 3);
+                    bullet3.setPosition(fixed_x_pos + 8,y + 3);
+                    bullet4.setPosition(fixed_x_pos - 16,y);
+                    bullet5.setPosition(fixed_x_pos + 16,y);
                     playerProjectiles.add(bullet2);
                     playerProjectiles.add(bullet3);
                     playerProjectiles.add(bullet4);
+                    playerProjectiles.add(bullet5);
                     break;
                 case 5:
-                    bullet1.setPosition(fixed_x_pos,y);
-                    bullet2.setPosition(fixed_x_pos - 12,y);
-                    bullet3.setPosition(fixed_x_pos + 12,y);
+                    bullet1.setPosition(fixed_x_pos,y + 6);
+                    bullet2.setPosition(fixed_x_pos - 12,y + 3);
+                    bullet3.setPosition(fixed_x_pos + 12,y + 3);
                     bullet4.setPosition(fixed_x_pos - 24,y);
                     bullet5.setPosition(fixed_x_pos + 24,y);
                     playerProjectiles.add(bullet1);
@@ -104,6 +118,36 @@ class Weapon {
                     playerProjectiles.add(bullet3);
                     playerProjectiles.add(bullet4);
                     playerProjectiles.add(bullet5);
+                    break;
+                case 6:
+                    bullet2.setPosition(fixed_x_pos - 8,y + 6);
+                    bullet3.setPosition(fixed_x_pos + 8,y + 6);
+                    bullet4.setPosition(fixed_x_pos - 16,y + 3);
+                    bullet5.setPosition(fixed_x_pos + 16,y + 3);
+                    bullet6.setPosition(fixed_x_pos - 24,y);
+                    bullet7.setPosition(fixed_x_pos + 24,y);
+                    playerProjectiles.add(bullet2);
+                    playerProjectiles.add(bullet3);
+                    playerProjectiles.add(bullet4);
+                    playerProjectiles.add(bullet5);
+                    playerProjectiles.add(bullet6);
+                    playerProjectiles.add(bullet7);
+                    break;
+                case 7:
+                    bullet1.setPosition(fixed_x_pos,y + 9);
+                    bullet2.setPosition(fixed_x_pos - 12,y + 6);
+                    bullet3.setPosition(fixed_x_pos + 12,y + 6);
+                    bullet4.setPosition(fixed_x_pos - 24,y + 3);
+                    bullet5.setPosition(fixed_x_pos + 24,y + 3);
+                    bullet6.setPosition(fixed_x_pos - 36,y);
+                    bullet7.setPosition(fixed_x_pos + 36,y);
+                    playerProjectiles.add(bullet1);
+                    playerProjectiles.add(bullet2);
+                    playerProjectiles.add(bullet3);
+                    playerProjectiles.add(bullet4);
+                    playerProjectiles.add(bullet5);
+                    playerProjectiles.add(bullet6);
+                    playerProjectiles.add(bullet7);
                     break;
                 default:
                     break;
