@@ -20,15 +20,23 @@ public class TDShooterGdxGame extends Game {
         font.getData().setScale(1.5f,1.5f);
         assets = new AssetManager();
 
-        assets.load("planes/Player_FighterPlane.png", Texture.class);
-        assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
-        assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
-        assets.load("Encounters/AlienFighter_LVL_2.png", Texture.class);
-        assets.load("Bullets/bullet1_small.png", Texture.class);
-        assets.load("Bullets/bullet1.png", Texture.class);
+		assets.load("planes/Player_FighterPlane.png", Texture.class);
+		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
+		assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
+		assets.load("Encounters/AlienFighter_LVL_2.png", Texture.class);
+		assets.load("Bullets/bullet1_small.png", Texture.class);
+		assets.load("Bullets/bullet1.png", Texture.class);
         assets.load("Bullets/alien_bullet_test.png", Texture.class);
-        assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
-        assets.load("testistausta.png", Texture.class);
+        assets.load("Items/armor_test.png", Texture.class);
+        assets.load("Items/currency_test.png", Texture.class);
+        assets.load("Items/flightspeed_test.png", Texture.class);
+        assets.load("Items/healthpack_test.png", Texture.class);
+		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
+		assets.load("testistausta.png", Texture.class);
+
+		assets.load("hitSound.wav", Sound.class);
+
+		assets.load("rain.mp3", Music.class);
 
 		assets.finishLoading();
 		this.setScreen(new MainMenuScreen(this));

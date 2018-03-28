@@ -105,17 +105,20 @@ public class Mission {
             for (int i = numberOfHeaderLines; i < strArray.length; i++)
             {
                 String [] spawnInfoStr = strArray[i].split(",\\s+");
-                int id;
+                int encounterId, itemId;
                 float positionX, positionY, spawnTime;
                 SpawnInfo spawnInfo;
                 try
                 {
-                    id = Integer.parseInt(spawnInfoStr[0]);
+                    encounterId = Integer.parseInt(spawnInfoStr[0]);
                     positionX = Float.parseFloat(spawnInfoStr[1]);
                     positionY = Float.parseFloat(spawnInfoStr[2]);
                     spawnTime = Float.parseFloat(spawnInfoStr[3]);
+                    itemId = Integer.parseInt(spawnInfoStr[4]);
 
-                    Encounter encounter = EncounterBuilder.create(EncounterType.getByValue(id), assets);
+                    Encounter encounter = EncounterBuilder.create(EncounterType.getByValue(encounterId), assets);
+                    Item item = ItemBuilder.create(ItemType.getByValue(itemId), assets);
+                    encounter.setItemDrop(item);
                     encounter.setPosition(new Vector2(positionX, positionY));
                     spawnInfo = new SpawnInfo(encounter, spawnTime);
                     spawnInfoList.add(spawnInfo);

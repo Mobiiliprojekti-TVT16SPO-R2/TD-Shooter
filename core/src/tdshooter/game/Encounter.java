@@ -1,6 +1,7 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -15,27 +16,15 @@ public class Encounter extends Destroyable{
 
     Texture encounterImage;
     protected int points = 0;
-    protected int itemDrop = 0;
+    protected Item itemDrop = null;
 
-    public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, Texture image) {
-        super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
-        encounterImage = image;
-        this.speed = speed;
-        points = 25;
-    }
     public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
         encounterImage = image;
         this.speed = speed;
         this.points = points;
     }
-    public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, int itemDrop, Texture image) {
-        super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
-        encounterImage = image;
-        this.speed = speed;
-        this.points = points;
-        this.itemDrop = itemDrop;
-    }
+
     public void update(){
         this.hitbox.y -= this.speed * Gdx.graphics.getDeltaTime();
     }
@@ -49,11 +38,15 @@ public class Encounter extends Destroyable{
 
     public void setPosition(Vector2 position) {this.hitbox.setPosition(position);}
 
-    public void dropItem(ArrayList<Item> items, int scrollSpeed) {
-        if (itemDrop > 0){
-            Item item = new Item((int) this.hitbox.x, (int) this.hitbox.y, 48, 48, scrollSpeed, itemDrop);
-            items.add(item);
+    public void dropItem(ArrayList<Item> items) {
+        if (itemDrop != null){
+            itemDrop.setPosition(this.hitbox.x + (hitbox.width / 2), this.hitbox.y + hitbox.height / 2);
+            items.add(itemDrop);
         }
+    }
+
+    public void setItemDrop(Item item){
+        this.itemDrop = item;
     }
 
     //Flight patterns

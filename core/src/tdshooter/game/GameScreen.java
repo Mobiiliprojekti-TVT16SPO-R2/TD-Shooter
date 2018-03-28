@@ -171,7 +171,7 @@ public class GameScreen implements Screen, InputProcessor {
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
                         player.setPoints(encounter.getPoints());
-                        encounter.dropItem(items, (int)mission.getScrollSpeed());
+                        encounter.dropItem(items);
                     }
                 }
             }
