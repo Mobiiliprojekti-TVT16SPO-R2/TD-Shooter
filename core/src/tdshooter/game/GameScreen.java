@@ -13,6 +13,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -33,7 +36,7 @@ public class GameScreen implements Screen, InputProcessor {
     private final int FLIGHTZONE_X_MIN = (PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_X_MAX = (VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
     private final int FLIGHTZONE_Y_MIN = (PLAYERSIZE_X / 2);
-    private final int FLIGHTZONE_Y_MAX = ((VIEWPORTHEIGHT / 4) + 100);
+    private final int FLIGHTZONE_Y_MAX = (VIEWPORTHEIGHT - 200);
 
     private boolean gamePaused = false;
     private Player player;
@@ -111,7 +114,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void processUserInput() {
-        if(Gdx.input.isTouched()) {
+        if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
@@ -168,6 +171,7 @@ public class GameScreen implements Screen, InputProcessor {
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
                         player.setPoints(encounter.getPoints());
+                        encounter.dropItem(items, (int)mission.getScrollSpeed());
                     }
                 }
             }
@@ -215,6 +219,9 @@ public class GameScreen implements Screen, InputProcessor {
         game.batch.begin();
         background.draw(game.batch);
         player.draw(game.batch);
+        for (Item item : items) {
+            item.draw(game.batch);
+        }
         for (Encounter encounter : encounters) {
             encounter.draw(game.batch);
         }
@@ -223,10 +230,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
-        }
-
-        for (Item item : items) {
-            item.draw(game.batch);
         }
         if (gamePaused){
             game.font.draw(game.batch, "GAME PAUSED", 150, 400, 200, 200, true);

@@ -17,22 +17,25 @@ public class TDShooterGdxGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		assets = new AssetManager();
+        font.getData().setScale(1.5f,1.5f);
+        assets = new AssetManager();
 
-		assets.load("Encounters/AlienBeast_Test_1_small.png", Texture.class);
-		assets.load("Encounters/AlienFighter_Test_1_small.png", Texture.class);
-		assets.load("Bullets/bullet1_small.png", Texture.class);
-		assets.load("testistausta.png", Texture.class);
-		assets.load("hitSound.wav", Sound.class);
-		assets.load("rain.mp3", Music.class);
+        assets.load("planes/Player_FighterPlane.png", Texture.class);
+        assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
+        assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
+        assets.load("Encounters/AlienFighter_LVL_2.png", Texture.class);
+        assets.load("Bullets/bullet1_small.png", Texture.class);
+        assets.load("Bullets/bullet1.png", Texture.class);
+        assets.load("Bullets/alien_bullet_test.png", Texture.class);
+        assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
+        assets.load("testistausta.png", Texture.class);
 
 		assets.finishLoading();
 		this.setScreen(new MainMenuScreen(this));
 	}
 
-	public void render()
-	{
-		super.render();
+	public void render() {
+		super.render(); //important!
 	}
 
 	public void dispose() {
