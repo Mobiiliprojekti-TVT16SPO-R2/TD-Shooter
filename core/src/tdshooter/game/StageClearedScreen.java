@@ -6,10 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-/**
- * Created by Samuli Lehto on 26.3.2018.
- */
-
 public class StageClearedScreen implements Screen {
 
     private final TDShooterGdxGame game;

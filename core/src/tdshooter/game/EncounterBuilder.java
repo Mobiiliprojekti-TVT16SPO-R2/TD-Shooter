@@ -5,18 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.util.Hashtable;
 
-/**
- * Created by Samuli Lehto on 27.3.2018.
- */
-
-
 enum EncounterType
 {
     BASIC_ENEMY(0), SHOOTING_ENEMY(1);
 
     private int value;
 
-    private EncounterType(int value)
+    EncounterType(int value)
     {
         this.value = value;
     }
@@ -38,7 +33,6 @@ enum EncounterType
 
 public class EncounterBuilder
 {
-
     static public Encounter create(EncounterType enemyType, AssetManager assets)
     {
         Encounter encounter;
