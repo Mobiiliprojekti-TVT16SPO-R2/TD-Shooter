@@ -12,7 +12,7 @@ enum EncounterType
 
     private int value;
 
-    private EncounterType(int value)
+    EncounterType(int value)
     {
         this.value = value;
     }
@@ -34,7 +34,6 @@ enum EncounterType
 
 public class EncounterBuilder
 {
-
     static public Encounter create(EncounterType enemyType, AssetManager assets)
     {
         Encounter encounter;

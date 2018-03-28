@@ -10,9 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * Created by Samuli Lehto on 20.3.2018.
- */
 
 public class Mission {
 
