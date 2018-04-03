@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
     ArrayList<Encounter> encounters;
     ArrayList<Projectile> playerProjectiles;
 
-    long lastDropTime;
+    long prevEnemyTime;
     long lastBulletTime;
     long oldHitsound;
     long oldHitsound2;
@@ -44,12 +44,6 @@ public class GameScreen implements Screen {
     //adding FPS-counter
     // private BitmapFont fpscounter;
     private int fps;
-//    fpscounter = new BitmapFont();
-//		fpscounter.setColor(Color.RED);
-//		fpscounter.getData().setScale(4,4);
-//
-//    fps = Gdx.graphics.getFramesPerSecond();
-//		fpscounter.draw(batch, "" + fps, 20, 450);
 
 
     public GameScreen(final TDShooterGdxGame game) {
@@ -57,16 +51,12 @@ public class GameScreen implements Screen {
         player = new Player(viewPortWidth / 2 - 64 / 2,20, 64 , 64, 100,50);
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_Test_1_small.png"));
+        basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_LVL_1.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-
         background = new Texture(Gdx.files.internal("testistausta.png"));
         background_2 = background;
-
         // load the drop sound effect and the rain background "music"
         hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        rainMusic.setLooping(true);
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
@@ -74,7 +64,7 @@ public class GameScreen implements Screen {
 
         // create the encounters arraylist and spawn the first raindrop
         encounters = new ArrayList<Encounter>();
-        spawnRaindrop();
+        spawnEnemy();
 
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
@@ -86,39 +76,27 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // tell the camera to update its matrices.
         camera.update();
 
-
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
         fps = Gdx.graphics.getFramesPerSecond();
 
         processUserInput();
-
         limitPlayerMovement();
-
         // check if we need to create a new bullet
         if (shooting){
             if (TimeUtils.nanoTime() - lastBulletTime > 70000000)
                 spawnBullet();
         }
-
         // check if we need to create a new raindrop
-        if (TimeUtils.nanoTime() - lastDropTime > 200000000)
-            spawnRaindrop();
+        if (TimeUtils.nanoTime() - prevEnemyTime > 200000000)
+            spawnEnemy();
         
         moveAllObjects();
-
         checkCollisions();
         drawAllObjects();
     }
@@ -140,13 +118,12 @@ public class GameScreen implements Screen {
 
     }
 
-
-    private void spawnRaindrop() {
-        Encounter raindrop = new Encounter(MathUtils.random(128, viewPortWidth - 64), viewPortHeight,
+    private void spawnEnemy() {
+        Encounter encounter = new Encounter(MathUtils.random(128, viewPortWidth - 64), viewPortHeight,
                 64,64, 220, 1, basicEnemy);
 
-        encounters.add(raindrop);
-        lastDropTime = TimeUtils.nanoTime();
+        encounters.add(encounter);
+        prevEnemyTime = TimeUtils.nanoTime();
     }
 
     private void spawnBullet() {   //Bullet positions with these images and hitboxes,  x: 24= mid, 0 and 48 wing edges
@@ -228,14 +205,12 @@ public class GameScreen implements Screen {
         if (background_y < -2400) {
             game.batch.draw(background_2, 0, background_y + 3200);
         }
-        game.font.draw(game.batch, "FPS: " + fps, 0, viewPortHeight - 30);
-        game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, viewPortHeight);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , viewPortHeight - 90);
-        game.font.draw(game.batch, "Raindrops: " + encounters.size(), 0 , viewPortHeight - 120);
+        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , viewPortHeight - 120);
         game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
-        for (Encounter raindrop : encounters) {
-            game.batch.draw(raindrop.encounterImage, raindrop.hitbox.x, raindrop.hitbox.y);
+        for (Encounter encounter : encounters) {
+            game.batch.draw(encounter.encounterImage, encounter.hitbox.x, encounter.hitbox.y);
         }
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y);
@@ -263,9 +238,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // start the playback of the background music
-        // when the screen is shown
-        rainMusic.play();
     }
 
     @Override
@@ -284,6 +256,5 @@ public class GameScreen implements Screen {
     public void dispose() {
         basicEnemy.dispose();
         hitSound.dispose();
-        rainMusic.dispose();
     }
 }
