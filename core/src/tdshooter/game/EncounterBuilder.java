@@ -50,7 +50,7 @@ public class EncounterBuilder
             case SHOOTING_ENEMY_LVL2:
                 encounter = new ShootingEnemy(1000, 2000, 96, 128,
                         150, 40,120 , 3, 200, 2100000000, 300,
-                        200 , (Texture)assets.get("Encounters/AlienFighter_LVL_2.png"), assets);
+                        200 , (Texture)assets.get("Encounters/AlienFighter_LVL_2_VERSION2.png"), assets);
                 break;
             default:
                 encounter = new Encounter(1000, 2000, 64, 64,20, 20,100 , 25, (Texture)assets.get("Encounters/AlienBeast_LVL_1_Test.png"));

@@ -37,16 +37,16 @@ public class ItemBuilder
         switch(itemType)
         {
             case HEALTH:
-                item = new Item(-500, 0, 64, 64, 100, 1, (Texture)assets.get("Items/healthpack_test.png"));
+                item = new Item(-500, 0, 64, 64, 100, 1, (Texture)assets.get("powerups/PowerUp_HealthPack.png"));
                 break;
             case COOLDOWN_REDUCTION:
-                item = new Item(-500, 0, 64, 64, 100, 2, (Texture)assets.get("Items/flightspeed_test.png"));
+                item = new Item(-500, 0, 64, 64, 100, 2, (Texture)assets.get("powerups/PowerUp_BulletSpeed_VERSION2.png"));
                 break;
             case WEAPON_UPGRADE:
-                item = new Item(-500, 0, 64, 64, 100, 3, (Texture)assets.get("Items/armor_test.png"));
+                item = new Item(-500, 0, 64, 64, 100, 3, (Texture)assets.get("powerups/PowerUp_BulletAmountBoost_VERSION2.png"));
                 break;
             case CURRENCY:
-                item = new Item(-500, 0, 64, 64, 100, 4, (Texture)assets.get("Items/currency_test.png"));
+                item = new Item(-500, 0, 64, 64, 100, 4, (Texture)assets.get("powerups/PowerUp_Currency.png"));
                 break;
             case NONE:
                 item = null;
