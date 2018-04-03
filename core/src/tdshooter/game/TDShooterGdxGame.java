@@ -17,23 +17,48 @@ public class TDShooterGdxGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		font.getData().setScale(1.5f,1.5f);
-		assets = new AssetManager();
+        font.getData().setScale(1.5f,1.5f);
+        assets = new AssetManager();
 
-		assets.load("Encounters/AlienBeast_Test_1_small.png", Texture.class);
-		assets.load("Encounters/AlienFighter_Test_1_small.png", Texture.class);
+		assets.load("planes/Player_FighterPlane.png", Texture.class);
+		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
+		assets.load("Encounters/AlienBeast_LVL_2.png", Texture.class);
+		assets.load("Encounters/AlienBeast_LVL_3.png", Texture.class);
+		assets.load("Encounters/AlienBeast_BigMomma.png", Texture.class);
+		assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
+		assets.load("Encounters/AlienFighter_LVL_2_VERSION2.png", Texture.class);
+		assets.load("Encounters/AlienFighter_LVL_3_VERSION2.png", Texture.class);
+		assets.load("Encounters/AlienFighter_Bruiser.png", Texture.class);
+		assets.load("Encounters/Alien_Mine.png", Texture.class);
+		assets.load("Encounters/AlienMine_Machine.png", Texture.class);
+		assets.load("Encounters/AlienMine_Organic.png", Texture.class);
 		assets.load("Bullets/bullet1_small.png", Texture.class);
+		assets.load("Bullets/bullet1.png", Texture.class);
+		assets.load("Bullets/alien_bullet_test.png", Texture.class);
+		assets.load("Bullets/alien_bullet_test.png", Texture.class);
+        assets.load("Items/armor_test.png", Texture.class);
+        assets.load("Items/currency_test.png", Texture.class);
+        assets.load("Items/flightspeed_test.png", Texture.class);
+		assets.load("Items/healthpack_test.png", Texture.class);
+		assets.load("powerups/PowerUp_Armor.png", Texture.class);
+		assets.load("powerups/PowerUp_BulletAmountBoost_VERSION2.png", Texture.class);
+		assets.load("powerups/PowerUp_BulletSpeed_VERSION2.png", Texture.class);
+		assets.load("powerups/PowerUp_Currency.png", Texture.class);
+		assets.load("powerups/PowerUp_FlightSpeed.png", Texture.class);
+		assets.load("powerups/PowerUp_HealthPack.png", Texture.class);
+		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
 		assets.load("testistausta.png", Texture.class);
+
 		assets.load("hitSound.wav", Sound.class);
+
 		assets.load("rain.mp3", Music.class);
 
 		assets.finishLoading();
 		this.setScreen(new MainMenuScreen(this));
 	}
 
-	public void render()
-	{
-		super.render();
+	public void render() {
+		super.render(); //important!
 	}
 
 	public void dispose() {

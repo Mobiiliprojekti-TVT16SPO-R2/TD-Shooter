@@ -1,7 +1,6 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
-
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
@@ -115,7 +114,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void processUserInput() {
-        if(Gdx.input.isTouched()) {
+        if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
@@ -172,6 +171,7 @@ public class GameScreen implements Screen, InputProcessor {
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
                         player.setPoints(encounter.getPoints());
+                        encounter.dropItem(items);
                     }
                 }
             }
