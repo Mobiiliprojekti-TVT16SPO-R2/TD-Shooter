@@ -1,0 +1,8 @@
+taustakuvan avainsana
+musiikin avainsana
+tehtävän lopetusaika
+taustan skrollausnopeus
+looppaako taustakuva (0, 1)
+vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum), x koordinaatti, y koordinaatti, spawnaika
+toisen vihollisen tyyppi, x, y, aika
+3. vihollinen jne.

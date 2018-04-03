@@ -71,10 +71,10 @@ class Weapon {
         bullet7 = new Projectile(bulletModel);
 
         if (spread > 0) {
-            bullet2.setVerticalSpeed(-spread);
-            bullet3.setVerticalSpeed(spread);
-            bullet4.setVerticalSpeed(-(int)(spread*1.5));
-            bullet5.setVerticalSpeed((int)(spread*1.5));
+            bullet2.setVerticalSpeed(-(int)(spread*0.8));
+            bullet3.setVerticalSpeed((int)(spread*0.8));
+            bullet4.setVerticalSpeed(-(int)(spread*1.4));
+            bullet5.setVerticalSpeed((int)(spread*1.4));
             bullet6.setVerticalSpeed(-(spread*2));
             bullet7.setVerticalSpeed((spread*2));
         }
@@ -158,6 +158,10 @@ class Weapon {
             }
             lastBulletTime = TimeUtils.nanoTime();
         }
+    }
+
+    public void setTurretCount(int turretCount) {
+        this.turretCount = turretCount;
     }
 }
 
