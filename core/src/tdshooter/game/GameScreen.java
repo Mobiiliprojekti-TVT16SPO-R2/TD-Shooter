@@ -3,6 +3,7 @@ package tdshooter.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,7 +17,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * Created by leevi on 16.3.2018.
  */
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, InputProcessor {
     final TDShooterGdxGame game;
     private final int viewPortHeight = 800;
     private final int viewPortWidth = 480;
@@ -53,7 +54,7 @@ public class GameScreen implements Screen {
         background = new Texture(Gdx.files.internal("testistausta.png"));
         background_2 = background;
         // load the sound effects
-        shootSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
+        shootSound = Gdx.audio.newSound(Gdx.files.internal("shot.wav"));
         hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
 
         // create the camera and the SpriteBatch
@@ -134,7 +135,7 @@ public class GameScreen implements Screen {
                 16, 48, 5, 1100, bulletImage);
         playerProjectiles.add(bullet2);
 
-        shootSound.stop(oldShootsoundId);
+        //shootSound.stop(oldShootsoundId);
         oldShootsoundId = shootSound.play();
 
         lastBulletTime = TimeUtils.nanoTime();
@@ -231,6 +232,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -249,5 +251,45 @@ public class GameScreen implements Screen {
     public void dispose() {
         basicEnemy.dispose();
         hitSound.dispose();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }
