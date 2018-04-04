@@ -31,6 +31,7 @@ public class GameScreen implements Screen, InputProcessor {
     private long oldHitsoundId;
     private int enemiesDestroyed;
     private boolean ItIsMineSpawnTime = false;
+    private boolean gamePaused = false;
 
     Player player;
     Texture basicEnemy;
@@ -282,6 +283,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
         return false;
     }
 
