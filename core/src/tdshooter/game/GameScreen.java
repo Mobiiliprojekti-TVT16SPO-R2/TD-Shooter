@@ -30,6 +30,7 @@ public class GameScreen implements Screen, InputProcessor {
     private long oldShootsoundId;
     private long oldHitsoundId;
     private int enemiesDestroyed;
+    private boolean ItIsMineSpawnTime = false;
 
     Player player;
     Texture basicEnemy;
@@ -117,10 +118,18 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void spawnEnemy() {
-        int spawnLocation = MathUtils.random(0, viewPortWidth - 64);
-        Encounter encounter = new Encounter(spawnLocation, viewPortHeight,
-                64,64, 50, 10, basicEnemy);
-
+        Encounter encounter;
+        if (ItIsMineSpawnTime) {
+            int spawnLocation = MathUtils.random(0, viewPortWidth - 64);
+            encounter = new Encounter(spawnLocation, viewPortHeight,
+                    80, 80, 60, 20, basicMine);
+            ItIsMineSpawnTime = false;
+        } else {
+            int spawnLocation = MathUtils.random(0, viewPortWidth - 64);
+            encounter = new Encounter(spawnLocation, viewPortHeight,
+                    64, 64, 50, 10, basicEnemy);
+            ItIsMineSpawnTime = true;
+        }
         encounters.add(encounter);
         prevEnemyTime = TimeUtils.nanoTime();  // set timer again
     }
@@ -135,7 +144,19 @@ public class GameScreen implements Screen, InputProcessor {
                 16, 48, 5, 1100, bulletImage);
         playerProjectiles.add(bullet2);
 
-        //shootSound.stop(oldShootsoundId);
+        Projectile bullet3 = new Projectile((int)(player.hitbox.x - 8 + 48 ),(int)player.hitbox.y + 32,
+                16, 48, 5, 1100, bulletImage);
+        playerProjectiles.add(bullet3);
+
+        Projectile bullet4 = new Projectile((int)(player.hitbox.x - 8 + 48 - 32),(int)player.hitbox.y + 32,
+                16, 48, 5, 1100, bulletImage);
+        playerProjectiles.add(bullet4);
+
+        Projectile bullet5 = new Projectile((int)(player.hitbox.x - 8 + 48 + 32),(int)player.hitbox.y + 32,
+                16, 48, 5, 1100, bulletImage);
+        playerProjectiles.add(bullet5);
+
+        shootSound.stop(oldShootsoundId);
         oldShootsoundId = shootSound.play();
 
         lastBulletTime = TimeUtils.nanoTime();
@@ -190,6 +211,10 @@ public class GameScreen implements Screen, InputProcessor {
             player.hitbox.x= 0;
         if (player.hitbox.x > viewPortWidth - 64)
             player.hitbox.x = viewPortWidth - 64;
+        if (player.hitbox.y < 0)
+            player.hitbox.y = 0;
+        if (player.hitbox.y > viewPortHeight / 2)
+            player.hitbox.y = viewPortHeight / 2;
     }
 
     private void drawAllObjects() {
