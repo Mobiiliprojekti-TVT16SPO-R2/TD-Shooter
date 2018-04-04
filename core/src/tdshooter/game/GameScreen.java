@@ -72,6 +72,9 @@ public class GameScreen implements Screen, InputProcessor {
         //Play sound Effects once in 0 volume, to initialize old sound ids
         oldShootsoundId = shootSound.play(0.0f);
         oldHitsoundId = hitSound.play(0.0f);
+
+        Gdx.input.setInputProcessor(this);
+        Gdx.input.setCatchBackKey(true);
     }
 
     @Override
@@ -257,7 +260,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(this);
     }
 
     @Override
