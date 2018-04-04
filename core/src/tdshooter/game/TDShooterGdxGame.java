@@ -1,12 +1,16 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class TDShooterGdxGame extends Game {
 
@@ -48,6 +52,9 @@ public class TDShooterGdxGame extends Game {
 		assets.load("powerups/PowerUp_HealthPack.png", Texture.class);
 		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
 		assets.load("testistausta.png", Texture.class);
+
+		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
+		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
 
 		assets.load("hitSound.wav", Sound.class);
 

@@ -8,6 +8,7 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
@@ -210,7 +211,8 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void endGame() {
-        game.setScreen(new StageClearedScreen(game, encountersDestroyed, player.getHitPoints()));
+        saveCurrency();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
         dispose();
     }
 
@@ -263,6 +265,33 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
+    }
+
+    private void saveCurrency()
+    {
+        Preferences prefs = Gdx.app.getPreferences("savedata");
+        String currencyKey = "currency";
+        int savedCurrency;
+        int earnedCurrency = player.getCurrency();
+        int totalCurrency;
+        final int maxCurrency = 99999;
+
+        if(prefs.contains(currencyKey))
+        {
+            savedCurrency = prefs.getInteger(currencyKey);
+            totalCurrency = earnedCurrency + savedCurrency;
+            if(totalCurrency > maxCurrency)
+            {
+                totalCurrency = 99999;
+            }
+        }
+        else
+        {
+            totalCurrency = earnedCurrency;
+        }
+
+        prefs.putInteger(currencyKey, totalCurrency);
+        prefs.flush();
     }
 
     @Override

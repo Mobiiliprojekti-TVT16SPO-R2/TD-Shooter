@@ -39,8 +39,8 @@ public class MissionsMenu implements Screen {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
-        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
-        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+        atlas = game.assets.get("Skin/glassy-ui.atlas");
+        skin = game.assets.get("Skin/glassy-ui.json");
 
         stage = new Stage(viewport, game.batch);
 
@@ -57,6 +57,7 @@ public class MissionsMenu implements Screen {
         TextButton shopButton = new TextButton("Shop", skin);
         launchButton.setPosition(VIEWPORTWIDTH / 2 - (launchButton.getWidth() / 2), VIEWPORTHEIGHT / 2 - (launchButton.getWidth() / 2));
         bridgeButton.setPosition(0, VIEWPORTHEIGHT - bridgeButton.getHeight());
+        shopButton.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT - shopButton.getHeight());
 
         launchButton.addListener(new ClickListener(){
             @Override
@@ -65,8 +66,16 @@ public class MissionsMenu implements Screen {
             }
         });
 
+        shopButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new ShopScreen(game));
+            }
+        });
+
         stage.addActor(launchButton);
         stage.addActor(bridgeButton);
+        stage.addActor(shopButton);
     }
 
     @Override
@@ -105,9 +114,6 @@ public class MissionsMenu implements Screen {
 
     @Override
     public void dispose() {
-        skin.dispose();
-        atlas.dispose();
         stage.dispose();
-
     }
 }
