@@ -57,11 +57,11 @@ public class GameScreen implements Screen, InputProcessor {
         shootSound = Gdx.audio.newSound(Gdx.files.internal("shot.wav"));
         hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
 
-        // create the camera and the SpriteBatch
+        // create the camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, viewPortWidth, viewPortHeight);
 
-        // create the encounters arraylist and spawn the first raindrop
+        // create the encounters arraylist and spawn the first enemy
         encounters = new ArrayList<Encounter>();
         spawnEnemy();
 
