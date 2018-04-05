@@ -1,4 +1,4 @@
-testistausta.png
+Backgrounds/Map_Test_720_2297_2.png
 rain.mp3
 25
 100

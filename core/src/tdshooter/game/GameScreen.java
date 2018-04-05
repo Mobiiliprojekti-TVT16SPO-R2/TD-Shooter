@@ -1,9 +1,6 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,12 +11,20 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -28,7 +33,6 @@ import com.badlogic.gdx.utils.Disposable;
 public class GameScreen implements Screen, InputProcessor {
 
     final TDShooterGdxGame game;
-    private Stage stage;
     private final int VIEWPORTHEIGHT = 1280;
     private final int VIEWPORTWIDTH = 720;
     private final int PLAYERSIZE_X = 128;
@@ -53,8 +57,17 @@ public class GameScreen implements Screen, InputProcessor {
     private ArrayList<Long> oldSoundIds;
 
     private int fps;
+    private Window pauseMenuWindow;
+    private Dialog pauseMenu;
+    private Skin skin;
+    private TextureAtlas atlas;
+    Viewport viewport;
+    Stage stage;
+    private boolean inputBoolean = true;
+    private Texture menuTexture;
+    private Image menuImage;
 
-    public GameScreen(final TDShooterGdxGame game) {
+    public GameScreen(final TDShooterGdxGame game, String missionName) {
         this.game = game;
         camera = new OrthographicCamera();
         encounters = new ArrayList<Encounter>();
@@ -63,7 +76,17 @@ public class GameScreen implements Screen, InputProcessor {
 
         oldSoundIds = new ArrayList<Long>();
 
-        mission = new Mission("Missions/mission01.txt", game.assets, encounters);
+
+        viewport = new FitViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
+        viewport.apply();
+        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
+        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+        pauseMenuWindow = new Window("Menu", skin);
+        stage = new Stage(viewport, game.batch);
+        menuTexture = new Texture("menu_test.png");
+        menuImage = new Image(menuTexture);
+
+        mission = new Mission(missionName, game.assets, encounters);
         player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
         background = new ScrollingBackground(mission.getBackground());
         background.setLooping(mission.isBackgroundLooping());
@@ -76,9 +99,11 @@ public class GameScreen implements Screen, InputProcessor {
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
 
-        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
+//        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
         Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
+
+        setPauseMenu();
     }
 
     @Override
@@ -92,8 +117,13 @@ public class GameScreen implements Screen, InputProcessor {
         fps = Gdx.graphics.getFramesPerSecond();
 
         if (gamePaused){
-            processUserInputWhenPaused();
+            inputBoolean = true;
+            Gdx.input.setInputProcessor(stage);
         } else {
+            if (inputBoolean){
+                inputBoolean = false;
+                Gdx.input.setInputProcessor(this);
+            }
             processUserInput();
 
             if (mission.isMissionOver()) {
@@ -107,11 +137,7 @@ public class GameScreen implements Screen, InputProcessor {
         drawAllObjects();
     }
 
-    private void processUserInputWhenPaused() {
-        if(Gdx.input.isTouched()) {
-            gamePaused = false;
-        }
-    }
+
 
     private void processUserInput() {
         if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
@@ -231,9 +257,6 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
         }
-        if (gamePaused){
-            game.font.draw(game.batch, "GAME PAUSED", 150, 400, 200, 200, true);
-        }
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
         game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, VIEWPORTHEIGHT);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
@@ -241,7 +264,13 @@ public class GameScreen implements Screen, InputProcessor {
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
         game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , VIEWPORTHEIGHT - 150);
         game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
+
         game.batch.end();
+
+        if (gamePaused) {
+            stage.act();
+            stage.draw();
+        }
     }
 
     private void moveAllObjects(float delta)
@@ -263,6 +292,38 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
+    }
+
+    private void setPauseMenu(){
+
+        TextButton resumeButton = new TextButton("Resume", skin);
+        TextButton exitButton = new TextButton("Exit", skin);
+
+        resumeButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gamePaused = false;
+            }
+        });
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                game.setScreen(new MissionsMenu(game));
+            }
+        });
+
+        Table menuTable = new Table();
+
+        menuTable.add(resumeButton);
+        menuTable.row();
+        menuTable.add(exitButton);
+        menuTable.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT / 2);
+
+        menuImage.setPosition(VIEWPORTWIDTH / 2 - (menuImage.getWidth() / 2), VIEWPORTHEIGHT / 2 - (menuImage.getHeight() / 2));
+
+        stage.addActor(menuImage);
+        stage.addActor(menuTable);
+
     }
 
     @Override

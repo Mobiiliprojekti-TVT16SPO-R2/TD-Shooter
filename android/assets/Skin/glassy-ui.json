@@ -180,6 +180,13 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		up: button-small
 		down: button-small-down
 	}
+	toggle: {
+		up: radio-button
+		down: radio-button-off
+		checked: radio-button-off
+		font: font-big
+		fontColor: white
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
