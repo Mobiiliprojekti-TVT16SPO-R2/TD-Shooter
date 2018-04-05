@@ -3,6 +3,7 @@ package tdshooter.game;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -86,11 +87,17 @@ public class GameScreen implements Screen, InputProcessor {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-        processUserInput();
-        limitPlayerMovement();
-        spawnObjects();
-        moveAllObjects();
-        checkCollisions();
+        if (gamePaused) {
+            if (Gdx.input.isTouched()){
+                gamePaused = false;
+            }
+        } else {
+            processUserInput();
+            limitPlayerMovement();
+            spawnObjects();
+            moveAllObjects();
+            checkCollisions();
+        }
         drawAllObjects();
     }
 
@@ -230,6 +237,7 @@ public class GameScreen implements Screen, InputProcessor {
         }
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , viewPortHeight - 60);
         game.font.draw(game.batch, "EnemiesDestroyed: " + enemiesDestroyed, 0 , viewPortHeight - 90);
+
         game.batch.draw(player.playerImage, player.hitbox.getX(), player.hitbox.getY(), player.hitbox.getWidth(), player.hitbox.getHeight());
 
         for (Encounter encounter : encounters) {
@@ -237,6 +245,9 @@ public class GameScreen implements Screen, InputProcessor {
         }
         for (Projectile bullet : playerProjectiles) {
             game.batch.draw(bullet.bulletImage, bullet.hitbox.x, bullet.hitbox.y, bullet.hitbox.width, bullet.hitbox.height);
+        }
+        if (gamePaused) {
+            game.font.draw(game.batch, "GAME PAUSED!", 50 , viewPortHeight - 300);
         }
         game.batch.end();
     }
@@ -265,10 +276,12 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void hide() {
+        gamePaused = true;
     }
 
     @Override
     public void pause() {
+        gamePaused = true;
     }
 
     @Override
@@ -283,7 +296,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-
+        if(keycode == Input.Keys.BACK) {
+            gamePaused = true;
+        }
         return false;
     }
 
