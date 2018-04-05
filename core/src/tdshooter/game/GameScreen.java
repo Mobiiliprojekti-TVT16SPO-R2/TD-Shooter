@@ -24,22 +24,21 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean shooting = false;
     private float background_y = 0;
     private int scrollSpeed = 100;
-
     private long prevEnemyTime;
     private long lastBulletTime;
     private int enemiesDestroyed;
 
-    Player player;
-    Texture basicEnemy;
-    Texture basicMine;
-    Texture bulletImage;
-    Texture background;
-    Texture background_2;
-    Sound shootSound;
-    Sound hitSound;
-    OrthographicCamera camera;
-    ArrayList<Encounter> encounters;
-    ArrayList<Projectile> playerProjectiles;
+    private Player player;
+    private Texture basicEnemy;
+    private Texture basicMine;
+    private Texture bulletImage;
+    private Texture background;
+    private Texture background_2;
+    private Sound shootSound;
+    private Sound hitSound;
+    private OrthographicCamera camera;
+    private ArrayList<Encounter> encounters;
+    private ArrayList<Projectile> playerProjectiles;
 
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
@@ -103,9 +102,7 @@ public class GameScreen implements Screen, InputProcessor {
             player.setDestination(touchPos);
             player.setMoving(true);
             shooting = true;
-        }
-        else
-        {
+        } else {
             player.setMoving(false);
             shooting = false;
         }
