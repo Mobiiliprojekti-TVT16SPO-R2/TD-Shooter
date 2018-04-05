@@ -17,6 +17,9 @@ public class TDShooterGdxGame extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
 	public AssetManager assets;
+	public Player player;
+	public final int VIEWPORTWIDTH = 720;
+	public final int VIEWPORTHEIGHT = 1280;
 
 	public void create() {
 		batch = new SpriteBatch();
@@ -61,6 +64,9 @@ public class TDShooterGdxGame extends Game {
 		assets.load("rain.mp3", Music.class);
 
 		assets.finishLoading();
+
+		player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, 128, 128, 100,50, assets);
+
 		this.setScreen(new MainMenuScreen(this));
 	}
 
