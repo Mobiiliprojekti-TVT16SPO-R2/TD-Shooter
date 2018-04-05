@@ -233,6 +233,7 @@ public class GameScreen implements Screen, InputProcessor {
         game.batch.end();
     }
 
+
     private void moveAllObjects() {
         player.move(Gdx.graphics.getDeltaTime());
         for (Projectile bullet : playerProjectiles){
