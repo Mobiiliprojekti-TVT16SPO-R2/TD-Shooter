@@ -27,8 +27,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     private long prevEnemyTime;
     private long lastBulletTime;
-    private long oldShootsoundId;
-    private long oldHitsoundId;
     private int enemiesDestroyed;
 
     Player player;
@@ -46,13 +44,12 @@ public class GameScreen implements Screen, InputProcessor {
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
         player = new Player(viewPortWidth / 2 - 64 / 2,20, 96 , 96, 100,50);
-
-        // load the images for the droplet and the bucket, 64x64 pixels each
         basicEnemy = new Texture(Gdx.files.internal("Encounters/AlienBeast_LVL_1.png"));
         basicMine = new Texture(Gdx.files.internal("Encounters/Alien_Mine.png"));
         bulletImage = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
         background = new Texture(Gdx.files.internal("testistausta.png"));
         background_2 = background;
+
         // load the sound effects
         shootSound = Gdx.audio.newSound(Gdx.files.internal("shot.wav"));
         hitSound = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
@@ -61,17 +58,13 @@ public class GameScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, viewPortWidth, viewPortHeight);
 
-        // create the encounters arraylist and spawn the first enemy
+        // create the encounters arraylist
         encounters = new ArrayList<Encounter>();
-        spawnEnemy();
 
         //create playerprojectilearraylist
         playerProjectiles = new ArrayList<Projectile>();
 
-        //Play sound Effects once in 0 volume, to initialize old sound ids
-        oldShootsoundId = shootSound.play(0.0f);
-        oldHitsoundId = hitSound.play(0.0f);
-
+        // set inputProcessor for this screen
         Gdx.input.setInputProcessor(this);
     }
 
@@ -122,30 +115,22 @@ public class GameScreen implements Screen, InputProcessor {
         int spawnLocation = MathUtils.random(0, viewPortWidth - 64);
         Encounter encounter = new Encounter(spawnLocation, viewPortHeight,
                 64,64, 50, 10, basicEnemy);
-
         encounters.add(encounter);
         prevEnemyTime = TimeUtils.nanoTime();  // set timer again
     }
 
     private void spawnBullets() {   //Bullet positions with these images and hitboxes,  x: 48= mid, 0 and 96 wing edges
-
         Projectile bullet = new Projectile((int)(player.hitbox.x - 8 + 48 - 16) ,(int)player.hitbox.y + 32,
                 16, 48, 5, 1100, bulletImage);
         playerProjectiles.add(bullet);
-
         Projectile bullet2 = new Projectile((int)(player.hitbox.x - 8 + 48 + 16),(int)player.hitbox.y + 32,
                 16, 48, 5, 1100, bulletImage);
         playerProjectiles.add(bullet2);
-
-        //shootSound.stop(oldShootsoundId);
-        oldShootsoundId = shootSound.play();
-
+        shootSound.play();
         lastBulletTime = TimeUtils.nanoTime();
     }
 
     private void checkCollisions() {
-        // move the encounters, remove any that are beneath the bottom edge of
-        // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
             Encounter encounter = encounters.get(i);
             boolean score_given = false;
@@ -154,16 +139,14 @@ public class GameScreen implements Screen, InputProcessor {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-                hitSound.stop(oldHitsoundId);
-                oldHitsoundId = hitSound.play();
+                hitSound.play();
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
                 if (bullet.hitbox.y > viewPortHeight + 64) {
                     playerProjectiles.remove(j);
                 } else if (bullet.overlaps(encounter)){
-                    hitSound.stop(oldHitsoundId);
-                    oldHitsoundId = hitSound.play();
+                    hitSound.play();
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if ((encounter.isDestroyed()) && (score_given == false) ){
@@ -195,7 +178,6 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void drawAllObjects() {
-        // DRAW ALL OBJECTS HERE
         game.batch.begin();
         game.batch.draw(background, 0 , background_y);
         if (background_y < -2400) {
@@ -251,6 +233,11 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         basicEnemy.dispose();
+        basicMine.dispose();
+        bulletImage.dispose();
+        background_2.dispose();
+        background.dispose();
+        shootSound.dispose();
         hitSound.dispose();
     }
 
