@@ -20,6 +20,7 @@ public class Player extends Destroyable{
     private boolean moving;
     private boolean shooting;
     private int maxHitpoints = 0;
+    private int baseMaxHitpoints = 0;
     private int currency = 0;
     private int points = 0;
     private float[] items;
@@ -45,10 +46,12 @@ public class Player extends Destroyable{
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
         playerImage = new Texture(Gdx.files.internal("planes/Player_FighterPlane.png"));
 
-        maxHitpoints = hitP;
+        baseMaxHitpoints = hitP;
+        maxHitpoints = baseMaxHitpoints;
         speed = 0;
         maxSpeed = 720;
         acceleration = maxSpeed * 5;
+        lastChangeTime = 0;
 
         destination = new Vector3();
 
@@ -196,6 +199,22 @@ public class Player extends Destroyable{
 //        }
     }
 
+    public void reset()
+    {
+        moving = false;
+        shooting = false;
+        currency = 0;
+        points = 0;
+        turretCount = 1;
+        cooldownReduction = 0;
+        maxHitpoints = baseMaxHitpoints;
+        speed = 0;
+        maxSpeed = 720;
+        acceleration = maxSpeed * 5;
+        lastChangeTime = 0;
+        weaponChoice = 1;
+    }
+
     public int getPoints() {
         return points;
     }
@@ -207,4 +226,6 @@ public class Player extends Destroyable{
     public int getCurrency() {
         return currency;
     }
+
+    public void setPosition(float x, float y) {this.hitbox.x = x; this.hitbox.y = y;}
 }
