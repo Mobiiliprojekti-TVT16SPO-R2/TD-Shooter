@@ -33,7 +33,6 @@ public class MainMenuScreen implements Screen {
     private Skin skin;
     private Stage stage;
 
-
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
         camera = new OrthographicCamera();

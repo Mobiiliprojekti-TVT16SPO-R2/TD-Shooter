@@ -65,7 +65,7 @@ public class GameScreen implements Screen, InputProcessor {
         oldSoundIds = new ArrayList<Long>();
 
         mission = new Mission("Missions/mission01.txt", game.assets, encounters);
-        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, 128, 128, 100,50, game.assets);
+        player = new Player(VIEWPORTWIDTH / 2 - PLAYERSIZE_X / 2,20, PLAYERSIZE_X, PLAYERSIZE_Y, 100,50, game.assets);
         background = new ScrollingBackground(mission.getBackground());
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
@@ -149,6 +149,7 @@ public class GameScreen implements Screen, InputProcessor {
         // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
             Encounter encounter = encounters.get(i);
+            boolean loot_not_given = true;
             if (encounter.hitbox.y + 64 < 0) {
                 encounter.getsDamage(1000);
             } else if (encounter.overlaps(player)){
@@ -160,24 +161,29 @@ public class GameScreen implements Screen, InputProcessor {
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if ( (bullet.hitbox.y > VIEWPORTHEIGHT + 64)
-                        || (bullet.hitbox.x < -32)
-                        || (bullet.hitbox.x > VIEWPORTWIDTH + 32) ) {
-                    playerProjectiles.remove(j);
-                } else if (bullet.overlaps(encounter)){
+                if (bullet.overlaps(encounter)){
                     ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                     oldSoundIds.remove(0); // remove oldest
                     oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
-                    if (encounter.isDestroyed()){
+                    if (encounter.isDestroyed() && loot_not_given){
                         player.setPoints(encounter.getPoints());
                         encounter.dropItem(items);
+                        loot_not_given = false;  // give loot only once
                     }
                 }
             }
             if (encounter.isDestroyed()){
                 encounters.remove(i);
+            }
+        }
+        for (int j = 0; j < playerProjectiles.size(); j++) {
+            Projectile bullet = playerProjectiles.get(j);
+            if ((bullet.hitbox.y > VIEWPORTHEIGHT + 64)
+                    || (bullet.hitbox.x < -32)
+                    || (bullet.hitbox.x > VIEWPORTWIDTH + 32)) {
+                playerProjectiles.remove(j);
             }
         }
         for (int i = 0; i < enemyProjectiles.size() ; i++) {

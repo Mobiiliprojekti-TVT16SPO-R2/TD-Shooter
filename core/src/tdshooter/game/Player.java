@@ -45,8 +45,7 @@ public class Player extends Destroyable{
         weapons = new ArrayList<Weapon>();
 
         Preferences prefs = Gdx.app.getPreferences("savedata");
-        if(prefs.contains("weapon01"))
-        {
+        if(prefs.contains("weapon01")) {
             int level = prefs.getInteger("weapon01");
             weapons.add(WeaponBuilder.create(WeaponType.WEAPON01, assets));
         }

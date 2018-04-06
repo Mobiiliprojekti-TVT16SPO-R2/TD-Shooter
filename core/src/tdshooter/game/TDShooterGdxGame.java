@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
@@ -43,8 +44,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
         assets.load("Items/armor_test.png", Texture.class);
-        assets.load("Items/currency_test.png", Texture.class);
-        assets.load("Items/flightspeed_test.png", Texture.class);
+		assets.load("Items/currency_test.png", Texture.class);
+		assets.load("Items/flightspeed_test.png", Texture.class);
 		assets.load("Items/healthpack_test.png", Texture.class);
 		assets.load("powerups/PowerUp_Armor.png", Texture.class);
 		assets.load("powerups/PowerUp_BulletAmountBoost_VERSION2.png", Texture.class);
@@ -63,6 +64,13 @@ public class TDShooterGdxGame extends Game {
 		assets.load("rain.mp3", Music.class);
 
 		assets.finishLoading();
+
+		// Luodaan pelin eka ase, jos sitä ei vielä ole
+		Preferences prefs = Gdx.app.getPreferences("savedata");
+		if(prefs.contains("weapon01") == false) {
+			prefs.putInteger("weapon01", 1);
+			prefs.flush();
+		}
 
 		this.setScreen(new MainMenuScreen(this));
 	}
