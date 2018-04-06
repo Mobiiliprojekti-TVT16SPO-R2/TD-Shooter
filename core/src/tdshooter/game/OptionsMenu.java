@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -42,8 +43,9 @@ public class OptionsMenu implements Screen, InputProcessor {
     private Label soundLabel;
     private Slider musicSlider;
     private Slider soundSlider;
+    private Preferences prefs;
 
-    public OptionsMenu(final  TDShooterGdxGame gam){
+    public OptionsMenu(final TDShooterGdxGame gam){
         game = gam;
 
         camera = new OrthographicCamera();
@@ -52,14 +54,55 @@ public class OptionsMenu implements Screen, InputProcessor {
         atlas = new TextureAtlas("Skin/glassy-ui.atlas");
         skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
 
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-//        camera.update();
+        prefs = Gdx.app.getPreferences("options");
+        if(prefs.contains("soundvolume")) {
+            soundVolume = prefs.getFloat("soundvolume");
+        }
+        if(prefs.contains("musicvolume")) {
+            musicVolume = prefs.getFloat("musicvolume");
+        }
 
-        musicLabel = new Label("Music", skin);
-        musicLabel.setScale(4,4);
+        musicLabel = new Label("Music volume", skin);
+        //musicLabel.setScale(1,1);
+        musicLabel.setPosition(150, 550);
 
+        soundLabel = new Label("Soundeffects volume", skin);
+        //soundLabel.setScale(1,1);
+        soundLabel.setPosition(150, 650);
 
         stage = new Stage(viewport, game.batch);
+
+        soundSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
+        soundSlider.setValue(soundVolume);
+        soundSlider.setWidth(400);
+        soundSlider.setPosition(150, 600);
+
+        musicSlider = new Slider(0.0f, 1.0f,0.01f, false, skin);
+        musicSlider.setValue(musicVolume);
+        musicSlider.setWidth(400);
+        musicSlider.setPosition(150, 500);
+
+        soundSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundVolume = soundSlider.getValue();
+                prefs.putFloat("soundvolume", soundVolume);
+                prefs.flush();
+            }
+        });
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                musicVolume = musicSlider.getValue();
+                prefs.putFloat("musicvolume", musicVolume);
+                prefs.flush();
+            }
+        });
+
+        stage.addActor(soundLabel);
+        stage.addActor(musicLabel);
+        stage.addActor(soundSlider);
+        stage.addActor(musicSlider);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(stage);
@@ -70,57 +113,15 @@ public class OptionsMenu implements Screen, InputProcessor {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
-
-
-        musicSlider = new Slider(0.0f, 1.0f, 0.05f, false, skin);
-        soundSlider = new Slider(0.0f, 1.0f, 0.05f, false, skin);
-
-        musicSlider.setValue(0.5F);
-        musicSlider.setWidth(400);
-        musicSlider.setPosition(150, 700);
-
-        soundSlider.setWidth(400);
-        soundSlider.setPosition(150, 600);
-
-        musicSlider.addListener( new ChangeListener(){
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                musicVolume = musicSlider.getValue();
-                musicLabel.setText("Music    " + musicVolume);
-            }
-        });
-        soundSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                soundVolume = soundSlider.getValue();
-            }
-        });
-
-        musicLabel.setPosition(150, 800);
-
-
-        stage.addActor(musicSlider);
-        stage.addActor(soundSlider);
-        stage.addActor(musicLabel);
     }
 
     @Override
     public void render(float delta) {
-
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
-
         stage.act();
         stage.draw();
-
-        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
-
-        }
     }
 
     @Override
