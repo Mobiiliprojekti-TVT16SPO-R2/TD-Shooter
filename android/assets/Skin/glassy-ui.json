@@ -187,6 +187,11 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		font: font-big
 		fontColor: white
 	}
+	slider-knob: {
+		up: slider-knob
+		down: slider
+		font: font
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {

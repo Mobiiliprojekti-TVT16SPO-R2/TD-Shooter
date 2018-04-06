@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,12 +11,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+
 
 import java.util.ArrayList;
 
@@ -23,16 +24,20 @@ import java.util.ArrayList;
  * Created by johan on 26.3.2018.
  */
 
-public class MissionsMenu implements Screen {
+public class MissionsMenu implements Screen, InputProcessor {
 
     private final int VIEWPORTHEIGHT = 1280;
     private final int VIEWPORTWIDTH = 720;
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
-    private Viewport viewport;
+    private StretchViewport viewport;
     private Skin skin;
     private Stage stage;
     private TextureAtlas atlas;
+    private Texture menuBackground;
+    private Texture commanderTexture;
+    private Image commanderImage;
+    private Image menuImage;
     private ArrayList<String> missionNameList;
     private ButtonGroup missionsButtonGroup;
 
@@ -40,13 +45,20 @@ public class MissionsMenu implements Screen {
         game = gam;
 
         camera = new OrthographicCamera();
-        viewport = new FitViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
+        viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
-        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
-        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
 
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
+        atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
+        skin = game.assets.get("Skin/glassy-ui.json");
+        menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
+        commanderTexture = game.assets.get("Menu/Character_Commander.png");
+
+        menuImage = new Image(menuBackground);
+        commanderImage = new Image(commanderTexture);
+
+//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+//        camera.update();
+
 
         missionsButtonGroup = new ButtonGroup();
         missionNameList = new ArrayList<String>();
@@ -54,7 +66,9 @@ public class MissionsMenu implements Screen {
 
         stage = new Stage(viewport, game.batch);
 
+        Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
+
     }
     @Override
     public void show() {
@@ -116,6 +130,7 @@ public class MissionsMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 int index = missionsButtonGroup.getCheckedIndex();
                 game.setScreen(new GameScreen(game, missionNameList.get(index)));
+                dispose();
 
             }
         });
@@ -134,6 +149,11 @@ public class MissionsMenu implements Screen {
             }
         });
 
+        commanderImage.setScale(0.6f);
+        commanderImage.setPosition(-30, 150);
+
+        stage.addActor(menuImage);
+        stage.addActor(commanderImage);
         stage.addActor(launchButton);
         stage.addActor(bridgeButton);
         stage.addActor(shopButton);
@@ -148,13 +168,13 @@ public class MissionsMenu implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
+
         stage.act();
         stage.draw();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
-        }
+
     }
 
     public void setMissionNameList(){
@@ -163,7 +183,7 @@ public class MissionsMenu implements Screen {
     }
     @Override
     public void resize(int width, int height) {
-
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
     }
 
     @Override
@@ -183,9 +203,52 @@ public class MissionsMenu implements Screen {
 
     @Override
     public void dispose() {
-        skin.dispose();
-        atlas.dispose();
         stage.dispose();
 
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.BACK) {
+            game.setScreen(new MainMenuScreen(game));
+            dispose();
+
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

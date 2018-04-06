@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -61,15 +62,16 @@ public class GameScreen implements Screen, InputProcessor {
     private ArrayList<Long> oldSoundIds;
 
     private int fps;
-    private Window pauseMenuWindow;
-    private Dialog pauseMenu;
     private Skin skin;
     private TextureAtlas atlas;
-    Viewport viewport;
-    Stage stage;
+    private StretchViewport viewport;
+    private Stage stage;
     private boolean inputBoolean = true;
     private Texture menuTexture;
     private Image menuImage;
+    private Table menuTable;
+    private float soundVolume = 1.0f;
+    private boolean soundBoolean = true;
 
     public GameScreen(final TDShooterGdxGame game, String missionName) {
         this.game = game;
@@ -81,17 +83,16 @@ public class GameScreen implements Screen, InputProcessor {
         oldSoundIds = new ArrayList<Long>();
 
 
-        viewport = new FitViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
+        viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
         atlas = new TextureAtlas("Skin/glassy-ui.atlas");
         skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
-        pauseMenuWindow = new Window("Menu", skin);
         stage = new Stage(viewport, game.batch);
         menuTexture = new Texture("menu_test.png");
         menuImage = new Image(menuTexture);
 
         mission = new Mission(missionName, game.assets, encounters);
-        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50);
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50, game.assets);
         background = new ScrollingBackground(mission.getBackground());
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
@@ -185,7 +186,7 @@ public class GameScreen implements Screen, InputProcessor {
                 player.collidesWith(encounter);
                 ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
@@ -196,7 +197,7 @@ public class GameScreen implements Screen, InputProcessor {
                 } else if (bullet.overlaps(encounter)){
                     ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                     oldSoundIds.remove(0); // remove oldest
-                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
+                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed()){
@@ -217,7 +218,7 @@ public class GameScreen implements Screen, InputProcessor {
             else if (bullet.overlaps(player)){
                 ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play());
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume));
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
@@ -329,6 +330,9 @@ public class GameScreen implements Screen, InputProcessor {
 
         TextButton resumeButton = new TextButton("Resume", skin);
         TextButton exitButton = new TextButton("Exit", skin);
+        TextButton musicButton = new TextButton("", skin);
+        TextButton soundButton = new TextButton("", skin);
+
 
         resumeButton.addListener(new ClickListener(){
             @Override
@@ -340,14 +344,43 @@ public class GameScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 game.setScreen(new MissionsMenu(game));
+                dispose();
+            }
+        });
+        musicButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                if (backgroundMusic.isPlaying()) {
+                    backgroundMusic.pause();
+
+                }
+                else {
+                    backgroundMusic.play();
+                }
+            }
+        });
+        soundButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                if (soundBoolean) {
+                    soundVolume = 0.0f;
+                    soundBoolean = false;
+                }
+                else {
+                    soundVolume = 1.0f;
+                    soundBoolean = true;
+                }
             }
         });
 
-        Table menuTable = new Table();
+        menuTable = new Table();
 
-        menuTable.add(resumeButton);
+        menuTable.add(resumeButton).colspan(3).center();
         menuTable.row();
-        menuTable.add(exitButton);
+        menuTable.add(musicButton).width(100);
+        menuTable.add(soundButton).width(100);
+        menuTable.row();
+        menuTable.add(exitButton).colspan(3).center();
         menuTable.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT / 2);
 
         menuImage.setPosition(VIEWPORTWIDTH / 2 - (menuImage.getWidth() / 2), VIEWPORTHEIGHT / 2 - (menuImage.getHeight() / 2));
@@ -382,6 +415,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
+        skin.dispose();
+        atlas.dispose();
+        stage.dispose();
     }
 
     @Override
