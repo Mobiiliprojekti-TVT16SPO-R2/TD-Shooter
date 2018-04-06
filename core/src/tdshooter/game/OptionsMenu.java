@@ -146,6 +146,6 @@ public class OptionsMenu implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

@@ -56,7 +56,11 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
 		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
+		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
+		assets.load("Menu/Character_Scientist.png", Texture.class);
 		assets.load("testistausta.png", Texture.class);
+		assets.load("menu_test.png", Texture.class);
+
 
 		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
 		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
