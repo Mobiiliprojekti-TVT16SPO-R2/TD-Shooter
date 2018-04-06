@@ -80,7 +80,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Slider soundSlider;
     private Slider musicSlider;
 
-    private boolean soundBoolean = true;
+    private boolean soundMuted = false;
 
     public GameScreen(final TDShooterGdxGame game, String missionName) {
         this.game = game;
@@ -88,6 +88,14 @@ public class GameScreen implements Screen, InputProcessor {
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
+
+        options = Gdx.app.getPreferences("options");
+        if(options.contains("soundvolume")) {
+            soundVolume = options.getFloat("soundvolume");
+        }
+        if(options.contains("musicvolume")) {
+            musicVolume = options.getFloat("musicvolume");
+        }
 
         oldSoundIds = new ArrayList<Long>();
 
@@ -105,16 +113,10 @@ public class GameScreen implements Screen, InputProcessor {
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
         backgroundMusic = mission.getBackgroundMusic();
+        backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
         items = new ArrayList<Item>();
 
-        options = Gdx.app.getPreferences("options");
-        if(options.contains("soundvolume")) {
-            soundVolume = options.getFloat("soundvolume");
-        }
-        if(options.contains("musicvolume")) {
-            musicVolume = options.getFloat("musicvolume");
-        }
 
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
@@ -391,6 +393,7 @@ public class GameScreen implements Screen, InputProcessor {
                     backgroundMusic.pause();
                 }
                 else {
+                    backgroundMusic.setVolume(musicVolume);
                     backgroundMusic.play();
                 }
             }
@@ -398,13 +401,13 @@ public class GameScreen implements Screen, InputProcessor {
         soundButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                if (soundBoolean) {
-                    soundVolume = 0.0f;
-                    soundBoolean = false;
+                if (soundMuted) {
+                    soundVolume = 1.0f;
+                    soundMuted = false;
                 }
                 else {
-                    soundVolume = 1.0f;
-                    soundBoolean = true;
+                    soundVolume = 0.0f;
+                    soundMuted = true;
                 }
             }
         });
@@ -421,6 +424,7 @@ public class GameScreen implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 musicVolume = musicSlider.getValue();
+                backgroundMusic.setVolume(musicVolume);
                 options.putFloat("musicvolume", musicVolume);
                 options.flush();
             }
