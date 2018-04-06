@@ -10,18 +10,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.util.ArrayList;
 
 /**
  * Created by johan on 5.4.2018.
@@ -43,7 +38,7 @@ public class OptionsMenu implements Screen, InputProcessor {
     private Label soundLabel;
     private Slider musicSlider;
     private Slider soundSlider;
-    private Preferences prefs;
+    private Preferences options;
 
     public OptionsMenu(final TDShooterGdxGame gam){
         game = gam;
@@ -54,12 +49,12 @@ public class OptionsMenu implements Screen, InputProcessor {
         atlas = new TextureAtlas("Skin/glassy-ui.atlas");
         skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
 
-        prefs = Gdx.app.getPreferences("options");
-        if(prefs.contains("soundvolume")) {
-            soundVolume = prefs.getFloat("soundvolume");
+        options = Gdx.app.getPreferences("options");
+        if(options.contains("soundvolume")) {
+            soundVolume = options.getFloat("soundvolume");
         }
-        if(prefs.contains("musicvolume")) {
-            musicVolume = prefs.getFloat("musicvolume");
+        if(options.contains("musicvolume")) {
+            musicVolume = options.getFloat("musicvolume");
         }
 
         musicLabel = new Label("Music volume", skin);
@@ -86,16 +81,16 @@ public class OptionsMenu implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 soundVolume = soundSlider.getValue();
-                prefs.putFloat("soundvolume", soundVolume);
-                prefs.flush();
+                options.putFloat("soundvolume", soundVolume);
+                options.flush();
             }
         });
         musicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 musicVolume = musicSlider.getValue();
-                prefs.putFloat("musicvolume", musicVolume);
-                prefs.flush();
+                options.putFloat("musicvolume", musicVolume);
+                options.flush();
             }
         });
 

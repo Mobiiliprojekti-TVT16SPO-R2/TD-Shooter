@@ -18,15 +18,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -46,6 +50,7 @@ public class GameScreen implements Screen, InputProcessor {
     private final int FLIGHTZONE_X_MAX = (VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
     private final int FLIGHTZONE_Y_MIN = (PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_Y_MAX = (VIEWPORTHEIGHT - 200);
+    private Preferences options;
 
     private boolean gamePaused = false;
     private Player player;
@@ -70,7 +75,11 @@ public class GameScreen implements Screen, InputProcessor {
     private Texture menuTexture;
     private Image menuImage;
     private Table menuTable;
-    private float soundVolume = 1.0f;
+    private float soundVolume = 0.5f;
+    private float musicVolume = 0.5f;
+    private Slider soundSlider;
+    private Slider musicSlider;
+
     private boolean soundBoolean = true;
 
     public GameScreen(final TDShooterGdxGame game, String missionName) {
@@ -81,7 +90,6 @@ public class GameScreen implements Screen, InputProcessor {
         enemyProjectiles = new ArrayList<Projectile>();
 
         oldSoundIds = new ArrayList<Long>();
-
 
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
@@ -99,6 +107,14 @@ public class GameScreen implements Screen, InputProcessor {
         backgroundMusic = mission.getBackgroundMusic();
         backgroundMusic.play();
         items = new ArrayList<Item>();
+
+        options = Gdx.app.getPreferences("options");
+        if(options.contains("soundvolume")) {
+            soundVolume = options.getFloat("soundvolume");
+        }
+        if(options.contains("musicvolume")) {
+            musicVolume = options.getFloat("musicvolume");
+        }
 
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
@@ -334,11 +350,26 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void setPauseMenu(){
 
+        int pauseMenuWidth = 300;
+        int pauseMenuHeight = 600;
+
         TextButton resumeButton = new TextButton("Resume", skin);
         TextButton exitButton = new TextButton("Exit", skin);
         TextButton musicButton = new TextButton("", skin);
         TextButton soundButton = new TextButton("", skin);
 
+        soundSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
+        soundSlider.setValue(soundVolume);
+
+        musicSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
+        musicSlider.setValue(musicVolume);
+
+        resumeButton.setWidth(pauseMenuWidth);
+        exitButton.setWidth(pauseMenuWidth);
+        musicButton.setWidth(pauseMenuWidth / 3);
+        soundButton.setWidth(pauseMenuWidth / 3);
+        soundSlider.setWidth(pauseMenuWidth / 3 * 2);
+        musicSlider.setWidth(pauseMenuWidth / 3 * 2);
 
         resumeButton.addListener(new ClickListener(){
             @Override
@@ -358,7 +389,6 @@ public class GameScreen implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y){
                 if (backgroundMusic.isPlaying()) {
                     backgroundMusic.pause();
-
                 }
                 else {
                     backgroundMusic.play();
@@ -379,21 +409,45 @@ public class GameScreen implements Screen, InputProcessor {
             }
         });
 
-        menuTable = new Table();
+        soundSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundVolume = soundSlider.getValue();
+                options.putFloat("soundvolume", soundVolume);
+                options.flush();
+            }
+        });
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                musicVolume = musicSlider.getValue();
+                options.putFloat("musicvolume", musicVolume);
+                options.flush();
+            }
+        });
 
-        menuTable.add(resumeButton).colspan(3).center();
-        menuTable.row();
-        menuTable.add(musicButton).width(100);
-        menuTable.add(soundButton).width(100);
-        menuTable.row();
-        menuTable.add(exitButton).colspan(3).center();
-        menuTable.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT / 2);
+        float corner_x = VIEWPORTWIDTH / 2 - pauseMenuWidth / 2;
+        float corner_y = VIEWPORTHEIGHT / 2 + pauseMenuHeight / 2 - 50;
+        float padding = 10;
+        float big_spacing = 100;
+        float spacing = 50;
+
+        resumeButton.setPosition(corner_x - padding, corner_y - padding - big_spacing);
+        soundSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing - spacing);
+        soundButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 2);
+        musicSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 2 - spacing);
+        musicButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 3);
+        exitButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 4);
 
         menuImage.setPosition(VIEWPORTWIDTH / 2 - (menuImage.getWidth() / 2), VIEWPORTHEIGHT / 2 - (menuImage.getHeight() / 2));
 
         stage.addActor(menuImage);
-        stage.addActor(menuTable);
-
+        stage.addActor(resumeButton);
+        stage.addActor(soundSlider);
+        stage.addActor(soundButton);
+        stage.addActor(musicSlider);
+        stage.addActor(musicButton);
+        stage.addActor(exitButton);
     }
 
     @Override
