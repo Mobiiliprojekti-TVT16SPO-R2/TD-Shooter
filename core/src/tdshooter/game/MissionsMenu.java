@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -66,14 +67,15 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         stage = new Stage(viewport, game.batch);
 
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
         Gdx.input.setCatchBackKey(true);
 
     }
     @Override
     public void show() {
-
-        Gdx.input.setInputProcessor(stage);
 
         // Luodaan painikkeet
         TextButton launchButton = new TextButton("Launch", skin);

@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -64,15 +65,16 @@ public class ShopScreen implements Screen, InputProcessor
             weapon01Level = 0;
         }
 
-        Gdx.input.setInputProcessor(this);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
         Gdx.input.setCatchBackKey(true);
 
     }
 
     @Override
     public void show() {
-
-        Gdx.input.setInputProcessor(stage);
 
         final TextButton buyButton = new TextButton("Level: " + weapon01Level, skin);
         final Label currencyLabel = new Label("Currency: " + currentCurrency, new Label.LabelStyle(game.font, Color.WHITE));
