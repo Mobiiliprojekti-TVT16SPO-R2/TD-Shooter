@@ -102,11 +102,6 @@ public class ShopScreen implements Screen
         stage.addActor(currencyLabel);
     }
 
-    /*public void registerItem(Weapon weapon, int cost)
-    {
-        weapons.add(new ShopItem(weapon, cost));
-    }*/
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);

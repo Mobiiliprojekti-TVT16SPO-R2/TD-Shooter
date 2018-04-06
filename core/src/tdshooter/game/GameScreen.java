@@ -65,7 +65,7 @@ public class GameScreen implements Screen, InputProcessor {
         oldSoundIds = new ArrayList<Long>();
 
         mission = new Mission("Missions/mission01.txt", game.assets, encounters);
-        player = game.player;
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, 128, 128, 100,50, game.assets);
         background = new ScrollingBackground(mission.getBackground());
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
