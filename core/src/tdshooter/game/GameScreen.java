@@ -85,10 +85,10 @@ public class GameScreen implements Screen, InputProcessor {
 
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
-        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
-        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+        atlas = game.assets.get("Skin/glassy-ui.atlas");
+        skin = game.assets.get("Skin/glassy-ui.json");
         stage = new Stage(viewport, game.batch);
-        menuTexture = new Texture("menu_test.png");
+        menuTexture = game.assets.get("menu_test.png");
         menuImage = new Image(menuTexture);
 
         mission = new Mission(missionName, game.assets, encounters);
@@ -415,8 +415,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        skin.dispose();
-        atlas.dispose();
+//        skin.dispose();
+//        atlas.dispose();
         stage.dispose();
     }
 
