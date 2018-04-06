@@ -59,6 +59,7 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         Table mainTable = new Table();
+
         //Set table to fill stage
         mainTable.setFillParent(true);
         //Set alignment of contents in the table.
