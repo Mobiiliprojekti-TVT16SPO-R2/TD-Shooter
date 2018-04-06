@@ -106,7 +106,7 @@ public class GameScreen implements Screen, InputProcessor {
 
 //        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
         Gdx.input.setInputProcessor(this);
-        Gdx.input.setCatchBackKey(true);
+//        Gdx.input.setCatchBackKey(true);
 
         setPauseMenu();
     }

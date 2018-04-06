@@ -58,7 +58,7 @@ public class StageClearedScreen implements Screen {
         if (Gdx.input.isTouched()) {
             if(runningTime > waitTime)
             {
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(new MissionsMenu(game));
                 dispose();
             }
         }
