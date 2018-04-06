@@ -1,6 +1,7 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
@@ -142,6 +143,10 @@ public class HangarScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.BACK) {
+            dispose();
+            game.setScreen(new MainMenuScreen(game));
+        }
         return false;
     }
 
