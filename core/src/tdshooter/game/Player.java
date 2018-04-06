@@ -1,6 +1,8 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,58 +17,39 @@ import java.util.ArrayList;
 
 public class Player extends Destroyable{
 
-    Texture playerImage;
+    private Texture playerImage;
     private Vector3 destination;
     private boolean moving;
-    private boolean shooting;
     private int maxHitpoints = 0;
+    private int baseMaxHitpoints = 0;
     private int currency = 0;
     private int points = 0;
-    private float[] items;
-    private Weapon weapon1;
-    private Weapon weapon2;
-    private Weapon weapon3;
-    private Weapon weapon4;
-    private Weapon weapon5;
-    private Weapon weapon6;
-    private Weapon weapon7;
-    private int weaponChoice = 1;
+    private int weaponChoice = 0;
     private int turretCount = 1;
     private int cooldownReduction = 0;
     private long lastChangeTime;
+    private ArrayList<Weapon> weapons;
 
-    private Sound firingSound1;
-    private Sound firingSound2;
-    private Sound firingSound3;
-    private Texture firingImage1;
-    private Texture firingImage2;
-
-    public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD) {
+    public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, AssetManager assets) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
-        playerImage = new Texture(Gdx.files.internal("planes/Player_FighterPlane.png"));
+        playerImage = assets.get("planes/Player_FighterPlane.png");
 
-        maxHitpoints = hitP;
+        baseMaxHitpoints = hitP;
+        maxHitpoints = baseMaxHitpoints;
         speed = 0;
         maxSpeed = 720;
         acceleration = maxSpeed * 5;
+        lastChangeTime = 0;
 
         destination = new Vector3();
+        weapons = new ArrayList<Weapon>();
 
-        // LOAD ALL WEAPON SOUNDS AND FIRINGIMAGES/animations
-        firingSound1 = Gdx.audio.newSound(Gdx.files.internal("hitSound.wav"));
-        firingSound2 = firingSound1;
-        firingImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        firingImage2 = firingImage1;
-
-        weapon1 = new Weapon(1, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
-        weapon2 = new Weapon(1, 2, (long) 90000000, false, 0, firingSound1, firingImage1);
-        weapon3 = new Weapon(1, 3, (long) 300000000, false, 80, firingSound1, firingImage1);
-//        weapon4 = new Weapon(2, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
-//        weapon5 = new Weapon(4, 2, (long) 90000000, false, 0, firingSound2, firingImage2);
-//        weapon6 = new Weapon(4, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
-//        weapon7 = new Weapon(6, 3, (long) 300000000, false, 80, firingSound2, firingImage2);
-
-        items = new float[4];
+        Preferences prefs = Gdx.app.getPreferences("savedata");
+        if(prefs.contains("weapon01"))
+        {
+            int level = prefs.getInteger("weapon01");
+            weapons.add(WeaponBuilder.create(WeaponType.WEAPON01, assets));
+        }
     }
 
     public void move(float delta)
@@ -106,44 +89,22 @@ public class Player extends Destroyable{
         batch.draw(playerImage, hitbox.x-3, hitbox.y-3, hitbox.width+6, hitbox.height+6);
     }
 
-    public void shoot(ArrayList<Projectile> playerProjectiles) {
+    public void shoot(ArrayList<Projectile> playerProjectiles)
+    {
         int plane_mid_x = (int) (hitbox.x + (hitbox.width /2)); //middle of the plane
         int plane_mid_y = (int) (hitbox.y + hitbox.height);  // top of the plane
-        switch (weaponChoice) {
-            case 0:
-                break;
-            case 1:
-                weapon1.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
-            case 2:
-                weapon2.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
-            case 3:
-                weapon3.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-                break;
-//            case 4:
-//                weapon4.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-//                break;
-//            case 5:
-//                weapon5.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-//                break;
-//            case 6:
-//                weapon6.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-//                break;
-//            case 7:
-//                weapon7.fire(plane_mid_x, plane_mid_y, playerProjectiles);
-//                break;
-            default:
-                break;
+        if(weapons.isEmpty() == false)
+        {
+            weapons.get(weaponChoice).fire(plane_mid_x, plane_mid_y, playerProjectiles);
         }
     }
 
     public void swapWeapons() {
         if (TimeUtils.nanoTime() - lastChangeTime > 200000000) {
-            if (weaponChoice == 3) {
+            weaponChoice++;
+            if(weaponChoice > weapons.size() - 1)
+            {
                 weaponChoice = 0;
-            } else {
-                weaponChoice++;
             }
             lastChangeTime = TimeUtils.nanoTime();
         }
@@ -155,7 +116,7 @@ public class Player extends Destroyable{
 
     public void pickUp(Item item){
 
-        items = item.getStats();
+        float [] items = item.getStats();
 
         this.hitPoints += items[0];
         if (this.cooldownReduction < 60) {
@@ -166,14 +127,10 @@ public class Player extends Destroyable{
         }
         this.currency += items[3];
 
-        weapon1.setTurretCount(this.turretCount);
-        weapon2.setTurretCount(this.turretCount);
-        weapon3.setTurretCount(this.turretCount);
-        weapon1.setCooldownReduction(this.cooldownReduction);
-        weapon2.setCooldownReduction(this.cooldownReduction);
-        weapon3.setCooldownReduction(this.cooldownReduction);
-
-        Gdx.app.log("DEBUG", "weapon CDR from player: " + cooldownReduction);
+        for(Weapon weapon : weapons) {
+            weapon.setTurretCount(this.turretCount);
+            weapon.setCooldownReduction(this.cooldownReduction);
+        }
 
         if (this.maxSpeed > 2000) {
             this.maxSpeed = 2000;
@@ -181,19 +138,21 @@ public class Player extends Destroyable{
         if (this.hitPoints > maxHitpoints) {
             this.hitPoints = maxHitpoints;
         }
+    }
 
-//        if (item.getName() == "healtpack") {
-//            if (this.hitPoints < maxHitpoints) {
-//                this.hitPoints += item.getStats();
-//                if (this.hitPoints > maxHitpoints) {
-//                    this.hitPoints = maxHitpoints;
-//                }
-//            }
-//        }
-//        if (item.getName() == "flightspeed") {
-//            this.maxSpeed = this.maxSpeed * item.getStats();
-//
-//        }
+    public void reset()
+    {
+        moving = false;
+        currency = 0;
+        points = 0;
+        turretCount = 1;
+        cooldownReduction = 0;
+        maxHitpoints = baseMaxHitpoints;
+        speed = 0;
+        maxSpeed = 720;
+        acceleration = maxSpeed * 5;
+        lastChangeTime = 0;
+        weaponChoice = 1;
     }
 
     public int getPoints() {
@@ -206,5 +165,12 @@ public class Player extends Destroyable{
 
     public int getCurrency() {
         return currency;
+    }
+
+    public void setPosition(float x, float y) {this.hitbox.x = x; this.hitbox.y = y;}
+
+    public void addWeapon(Weapon weapon)
+    {
+        weapons.add(weapon);
     }
 }

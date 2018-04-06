@@ -89,6 +89,7 @@ public class MissionsMenu implements Screen {
         // Asetetaan luotujen painikkeiden paikat
         launchButton.setPosition(VIEWPORTWIDTH / 2 - (launchButton.getWidth() / 2), VIEWPORTHEIGHT / 2 - (launchButton.getWidth() / 2));
         bridgeButton.setPosition(0, VIEWPORTHEIGHT - bridgeButton.getHeight());
+        shopButton.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT - shopButton.getHeight());
         hangarButton.setPosition(bridgeButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
         shopButton.setPosition(bridgeButton.getWidth() + hangarButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
 
@@ -126,10 +127,17 @@ public class MissionsMenu implements Screen {
         });
 
 
+        shopButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new ShopScreen(game));
+            }
+        });
+
         stage.addActor(launchButton);
         stage.addActor(bridgeButton);
-        stage.addActor(hangarButton);
         stage.addActor(shopButton);
+        stage.addActor(hangarButton);
         stage.addActor(mission01);
         stage.addActor(mission02);
         stage.addActor(mission03);

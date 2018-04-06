@@ -43,8 +43,8 @@ public class MainMenuScreen implements Screen {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 //        camera.setToOrtho(false, 480, 800);
-        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
-        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+        atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
+        skin = game.assets.get("Skin/glassy-ui.json");
 
         stage = new Stage(viewport, game.batch);
         Gdx.input.setCatchBackKey(false);
@@ -114,8 +114,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        skin.dispose();
-        atlas.dispose();
         stage.dispose();
     }
 }

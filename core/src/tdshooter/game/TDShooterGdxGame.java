@@ -1,18 +1,24 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class TDShooterGdxGame extends Game {
 
 	public SpriteBatch batch;
 	public BitmapFont font;
 	public AssetManager assets;
+	public final int VIEWPORTWIDTH = 720;
+	public final int VIEWPORTHEIGHT = 1280;
 
 	public void create() {
 		batch = new SpriteBatch();
@@ -49,11 +55,15 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
 		assets.load("testistausta.png", Texture.class);
 
+		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
+		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
+
 		assets.load("hitSound.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);
 
 		assets.finishLoading();
+
 		this.setScreen(new MainMenuScreen(this));
 	}
 

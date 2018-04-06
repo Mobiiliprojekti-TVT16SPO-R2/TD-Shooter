@@ -1,10 +1,14 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
@@ -236,7 +240,8 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void endGame() {
-        game.setScreen(new StageClearedScreen(game, encountersDestroyed, player.getHitPoints()));
+        saveCurrency();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
         dispose();
     }
 
@@ -264,7 +269,6 @@ public class GameScreen implements Screen, InputProcessor {
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
         game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , VIEWPORTHEIGHT - 150);
         game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
-
         game.batch.end();
 
         if (gamePaused) {
@@ -292,6 +296,33 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
+    }
+
+    private void saveCurrency()
+    {
+        Preferences prefs = Gdx.app.getPreferences("savedata");
+        String currencyKey = "currency";
+        int savedCurrency;
+        int earnedCurrency = player.getCurrency();
+        int totalCurrency;
+        final int maxCurrency = 99999;
+
+        if(prefs.contains(currencyKey))
+        {
+            savedCurrency = prefs.getInteger(currencyKey);
+            totalCurrency = earnedCurrency + savedCurrency;
+            if(totalCurrency > maxCurrency)
+            {
+                totalCurrency = 99999;
+            }
+        }
+        else
+        {
+            totalCurrency = earnedCurrency;
+        }
+
+        prefs.putInteger(currencyKey, totalCurrency);
+        prefs.flush();
     }
 
     private void setPauseMenu(){
