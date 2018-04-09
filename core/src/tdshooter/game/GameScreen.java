@@ -19,8 +19,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -55,6 +58,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     private int fps;
 
+    private Viewport viewport;
+    private GameHUD hud;
+
     public GameScreen(final TDShooterGdxGame game) {
         this.game = game;
         camera = new OrthographicCamera();
@@ -62,6 +68,8 @@ public class GameScreen implements Screen, InputProcessor {
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
 
+        viewport = new FitViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
+        viewport.apply();
         oldSoundIds = new ArrayList<Long>();
 
         mission = new Mission("Missions/mission01.txt", game.assets, encounters);
@@ -72,6 +80,7 @@ public class GameScreen implements Screen, InputProcessor {
         backgroundMusic = mission.getBackgroundMusic();
         backgroundMusic.play();
         items = new ArrayList<Item>();
+        hud = new GameHUD(viewport, game.batch, (Skin) game.assets.get("Skin/glassy-ui.json"), player);
 
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
@@ -243,7 +252,10 @@ public class GameScreen implements Screen, InputProcessor {
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
         game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , VIEWPORTHEIGHT - 150);
         game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
+
         game.batch.end();
+        hud.draw();
+
     }
 
     private void moveAllObjects(float delta)
@@ -265,6 +277,7 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
+        hud.update(delta);
     }
 
     private void saveCurrency()
@@ -319,6 +332,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
+        hud.dispose();
     }
 
     @Override

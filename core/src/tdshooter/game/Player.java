@@ -167,6 +167,10 @@ public class Player extends Destroyable{
         return currency;
     }
 
+    public int getMaxHitpoints() {
+        return maxHitpoints;
+    }
+
     public void setPosition(float x, float y) {this.hitbox.x = x; this.hitbox.y = y;}
 
     public void addWeapon(Weapon weapon)
