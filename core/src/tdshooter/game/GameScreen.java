@@ -34,6 +34,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -82,6 +87,8 @@ public class GameScreen implements Screen, InputProcessor {
     private Slider soundSlider;
     private Slider musicSlider;
 
+    private GameHUD hud;
+
     public GameScreen(final TDShooterGdxGame game, String missionName) {
         this.game = game;
         camera = new OrthographicCamera();
@@ -129,6 +136,7 @@ public class GameScreen implements Screen, InputProcessor {
         backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
         items = new ArrayList<Item>();
+        hud = new GameHUD(viewport, game.batch, (Skin) game.assets.get("Skin/glassy-ui.json"), player);
 
 
         //Play sound Effects once, to initialize prev_sound_id
@@ -309,6 +317,8 @@ public class GameScreen implements Screen, InputProcessor {
         game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
         game.batch.end();
 
+        hud.draw();
+
         if (gamePaused) {
             stage.act();
             stage.draw();
@@ -334,6 +344,7 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
+        hud.update(delta);
     }
 
     private void saveCurrency()
@@ -526,6 +537,7 @@ public class GameScreen implements Screen, InputProcessor {
 //        atlas.dispose();
         stage.dispose();
         backgroundMusic.stop();
+        hud.dispose();
     }
 
     @Override
