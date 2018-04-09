@@ -10,11 +10,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -34,10 +38,14 @@ public class OptionsMenu implements Screen, InputProcessor {
     private Stage stage;
     private float soundVolume = 0.5f;
     private float musicVolume = 0.5f;
+    private boolean soundMuted = false;
+    private boolean musicMuted = false;
     private Label musicLabel;
     private Label soundLabel;
     private Slider musicSlider;
     private Slider soundSlider;
+    private TextButton soundButton;
+    private TextButton musicButton;
     private Preferences options;
 
     public OptionsMenu(final TDShooterGdxGame gam){
@@ -56,26 +64,79 @@ public class OptionsMenu implements Screen, InputProcessor {
         if(options.contains("musicvolume")) {
             musicVolume = options.getFloat("musicvolume");
         }
-
-        musicLabel = new Label("Music volume", skin);
-        //musicLabel.setScale(1,1);
-        musicLabel.setPosition(150, 550);
+        if(options.contains("soundmuted")) {
+            soundMuted = options.getBoolean("soundmuted");
+        }
+        if(options.contains("musicmuted")) {
+            musicMuted = options.getBoolean("musicmuted");
+        }
 
         soundLabel = new Label("Soundeffects volume", skin);
         //soundLabel.setScale(1,1);
         soundLabel.setPosition(150, 650);
 
+        musicLabel = new Label("Music volume", skin);
+        //musicLabel.setScale(1,1);
+        musicLabel.setPosition(150, 450);
+
         stage = new Stage(viewport, game.batch);
+
+        soundButton = new TextButton("", skin, "small");
+        soundButton.setWidth(50);
+        soundButton.setPosition(150,580);
+
+        musicButton = new TextButton("", skin, "small");
+        musicButton.setWidth(50);
+        musicButton.setPosition(150,380);
 
         soundSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
         soundSlider.setValue(soundVolume);
         soundSlider.setWidth(400);
-        soundSlider.setPosition(150, 600);
+        soundSlider.setPosition(220, 600);
 
         musicSlider = new Slider(0.0f, 1.0f,0.01f, false, skin);
         musicSlider.setValue(musicVolume);
         musicSlider.setWidth(400);
-        musicSlider.setPosition(150, 500);
+        musicSlider.setPosition(220, 400);
+
+        musicButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                if (musicMuted) {
+                    if(options.contains("musicvolume")) {
+                        musicVolume = options.getFloat("musicvolume");
+                    }
+                    musicMuted = false;
+                    options.putBoolean("musicmuted", musicMuted);
+                    options.flush();
+                }
+                else {
+                    musicVolume = 0;
+                    musicMuted = true;
+                    options.putBoolean("musicmuted", musicMuted);
+                    options.flush();
+                }
+            }
+        });
+        soundButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                if (soundMuted) {
+                    if(options.contains("soundvolume")) {
+                        soundVolume = options.getFloat("soundvolume");
+                    }
+                    soundMuted = false;
+                    options.putBoolean("soundmuted", soundMuted);
+                    options.flush();
+                }
+                else {
+                    soundVolume = 0.0f;
+                    soundMuted = true;
+                    options.putBoolean("soundmuted", soundMuted);
+                    options.flush();
+                }
+            }
+        });
 
         soundSlider.addListener(new ChangeListener() {
             @Override
@@ -96,6 +157,8 @@ public class OptionsMenu implements Screen, InputProcessor {
 
         stage.addActor(soundLabel);
         stage.addActor(musicLabel);
+        stage.addActor(soundButton);
+        stage.addActor(musicButton);
         stage.addActor(soundSlider);
         stage.addActor(musicSlider);
 
