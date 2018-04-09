@@ -17,6 +17,7 @@ public class Encounter extends Destroyable{
     Texture encounterImage;
     protected int points = 0;
     protected Item itemDrop = null;
+    private FlightPattern flightPattern;
 
     public Encounter(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, Texture image) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
@@ -25,8 +26,11 @@ public class Encounter extends Destroyable{
         this.points = points;
     }
 
-    public void update(){
-        this.hitbox.y -= this.speed * Gdx.graphics.getDeltaTime();
+    public void update(float delta)
+    {
+        if(flightPattern != null) {
+            flightPattern.update(delta);
+        }
     }
 
     public void draw(SpriteBatch batch) {
@@ -44,6 +48,8 @@ public class Encounter extends Destroyable{
             items.add(itemDrop);
         }
     }
+
+    public void setFlightPattern(FlightPattern flightPattern) {this.flightPattern = flightPattern;}
 
     public void setItemDrop(Item item){
         this.itemDrop = item;
