@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -19,30 +18,29 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 
-import java.util.ArrayList;
 
 /**
- * Created by johan on 26.3.2018.
+ * Created by johan on 6.4.2018.
  */
 
-public class MissionsMenu implements Screen, InputProcessor {
-
+public class HangarScreen implements Screen, InputProcessor {
     private final int VIEWPORTHEIGHT = 1280;
     private final int VIEWPORTWIDTH = 720;
+
     final TDShooterGdxGame game;
+
     private OrthographicCamera camera;
+    private TextureAtlas atlas;
     private StretchViewport viewport;
     private Skin skin;
     private Stage stage;
-    private TextureAtlas atlas;
-    private Texture menuBackground;
-    private Texture commanderTexture;
-    private Image commanderImage;
     private Image menuImage;
-    private ArrayList<String> missionNameList;
-    private ButtonGroup missionsButtonGroup;
+    private Image scientistImage;
+    private Texture menuBackground;
+    private Texture scientistTexture;
 
-    public MissionsMenu(final  TDShooterGdxGame gam){
+
+    public HangarScreen(final  TDShooterGdxGame gam){
         game = gam;
 
         camera = new OrthographicCamera();
@@ -52,18 +50,11 @@ public class MissionsMenu implements Screen, InputProcessor {
         atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
         skin = game.assets.get("Skin/glassy-ui.json");
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
-        commanderTexture = game.assets.get("Menu/Character_Commander.png");
+        scientistTexture = game.assets.get("Menu/Character_Scientist.png");
 
         menuImage = new Image(menuBackground);
-        commanderImage = new Image(commanderTexture);
+        scientistImage = new Image(scientistTexture);
 
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-//        camera.update();
-
-
-        missionsButtonGroup = new ButtonGroup();
-        missionNameList = new ArrayList<String>();
-        setMissionNameList();
 
         stage = new Stage(viewport, game.batch);
 
@@ -74,82 +65,23 @@ public class MissionsMenu implements Screen, InputProcessor {
         Gdx.input.setCatchBackKey(true);
 
     }
+
     @Override
     public void show() {
 
         // Luodaan painikkeet
-        TextButton launchButton = new TextButton("Launch", skin);
         TextButton bridgeButton = new TextButton("Bridge", skin);
         TextButton hangarButton = new TextButton("Hangar", skin);
         TextButton shopButton = new TextButton("Shop", skin);
-
-        TextButton mission01 = new TextButton("", skin, "toggle");
-        TextButton mission02 = new TextButton("", skin, "toggle");
-        TextButton mission03 = new TextButton("", skin, "toggle");
-
 
         bridgeButton.setWidth(240);
         hangarButton.setWidth(240);
         shopButton.setWidth(240);
 
-        // Asetetaan mission-painikkeiden kooot
-        mission01.setWidth(60);
-        mission01.setHeight(60);
-
-        mission02.setWidth(60);
-        mission02.setHeight(60);
-
-        mission03.setWidth(60);
-        mission03.setHeight(60);
-
-        // Asetetaan luotujen painikkeiden paikat
-//        launchButton.setPosition(VIEWPORTWIDTH / 2 - (launchButton.getWidth() / 2), VIEWPORTHEIGHT / 2 - (launchButton.getWidth() / 2));
-        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth(), 160);
         bridgeButton.setPosition(0, VIEWPORTHEIGHT - bridgeButton.getHeight());
         shopButton.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT - shopButton.getHeight());
         hangarButton.setPosition(bridgeButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
         shopButton.setPosition(bridgeButton.getWidth() + hangarButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
-
-        mission01.setPosition((VIEWPORTWIDTH / 2) / 2 - (mission01.getWidth() / 2),750);
-        mission02.setPosition(VIEWPORTWIDTH / 2 - (mission01.getWidth() / 2),750);
-        mission03.setPosition(VIEWPORTWIDTH - ((VIEWPORTWIDTH / 2) / 2) - (mission01.getWidth() / 2),750);
-
-
-        // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
-        missionsButtonGroup.add(mission01);
-        missionsButtonGroup.add(mission02);
-        missionsButtonGroup.add(mission03);
-
-        // Asetetaan yhtäaikaa valittujen painikkeiden enimmäis- ja minimimäärät
-        // Ja jos enimmäismäärä ylittyy poistetaan edellinen valinta
-        missionsButtonGroup.setMaxCheckCount(1);
-        missionsButtonGroup.setMinCheckCount(1);
-        missionsButtonGroup.setUncheckLast(true);
-
-        // Painikketta painettaessa haetaan valitun mission painikkeen indexi
-        // ja vaihdetaan näkymää
-        launchButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                int index = missionsButtonGroup.getCheckedIndex();
-                game.setScreen(new GameScreen(game, missionNameList.get(index)));
-                dispose();
-
-            }
-        });
-        bridgeButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-            }
-        });
-        hangarButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new HangarScreen(game));
-            }
-        });
-
 
         shopButton.addListener(new ClickListener(){
             @Override
@@ -157,19 +89,21 @@ public class MissionsMenu implements Screen, InputProcessor {
                 game.setScreen(new ShopScreen(game));
             }
         });
+        bridgeButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new MissionsMenu(game));
+            }
+        });
 
-        commanderImage.setScale(0.6f);
-        commanderImage.setPosition(-100, 100);
+        scientistImage.setScale(0.7f);
+        scientistImage.setPosition(-50, 100);
 
         stage.addActor(menuImage);
-        stage.addActor(commanderImage);
-        stage.addActor(launchButton);
+        stage.addActor(scientistImage);
         stage.addActor(bridgeButton);
         stage.addActor(shopButton);
         stage.addActor(hangarButton);
-        stage.addActor(mission01);
-        stage.addActor(mission02);
-        stage.addActor(mission03);
     }
 
     @Override
@@ -180,16 +114,11 @@ public class MissionsMenu implements Screen, InputProcessor {
         stage.act();
         stage.draw();
 
-
     }
 
-    public void setMissionNameList(){
-        missionNameList.add("Missions/mission01.txt");
-        missionNameList.add("Missions/mission02.txt");
-    }
     @Override
     public void resize(int width, int height) {
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+
     }
 
     @Override
@@ -209,16 +138,14 @@ public class MissionsMenu implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-        stage.dispose();
 
     }
 
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.BACK) {
-            game.setScreen(new MainMenuScreen(game));
             dispose();
-
+            game.setScreen(new MainMenuScreen(game));
         }
         return false;
     }

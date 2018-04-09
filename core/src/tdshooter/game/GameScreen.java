@@ -15,10 +15,25 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.RandomXS128;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Disposable;
@@ -32,7 +47,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameScreen implements Screen, InputProcessor {
 
     final TDShooterGdxGame game;
-    private Stage stage;
     private final int VIEWPORTHEIGHT = 1280;
     private final int VIEWPORTWIDTH = 720;
     private final int PLAYERSIZE_X = 128;
@@ -41,6 +55,7 @@ public class GameScreen implements Screen, InputProcessor {
     private final int FLIGHTZONE_X_MAX = (VIEWPORTWIDTH - (PLAYERSIZE_X / 2));
     private final int FLIGHTZONE_Y_MIN = (PLAYERSIZE_X / 2);
     private final int FLIGHTZONE_Y_MAX = (VIEWPORTHEIGHT - 200);
+    private Preferences options;
 
     private boolean gamePaused = false;
     private Player player;
@@ -57,38 +72,68 @@ public class GameScreen implements Screen, InputProcessor {
     private ArrayList<Long> oldSoundIds;
 
     private int fps;
+    private Skin skin;
+    private TextureAtlas atlas;
+    private StretchViewport viewport;
+    private Stage stage;
+    private boolean inputBoolean = true;
+    private Texture menuTexture;
+    private Image menuImage;
+    private Table menuTable;
+    private float soundVolume = 0.5f;
+    private float musicVolume = 0.5f;
+    private Slider soundSlider;
+    private Slider musicSlider;
 
-    private Viewport viewport;
     private GameHUD hud;
+    private boolean soundMuted = false;
 
-    public GameScreen(final TDShooterGdxGame game) {
+    public GameScreen(final TDShooterGdxGame game, String missionName) {
         this.game = game;
         camera = new OrthographicCamera();
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
 
-        viewport = new FitViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
-        viewport.apply();
+        options = Gdx.app.getPreferences("options");
+        if(options.contains("soundvolume")) {
+            soundVolume = options.getFloat("soundvolume");
+        }
+        if(options.contains("musicvolume")) {
+            musicVolume = options.getFloat("musicvolume");
+        }
+
         oldSoundIds = new ArrayList<Long>();
 
-        mission = new Mission("Missions/mission01.txt", game.assets, encounters);
-        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, 128, 128, 100,50, game.assets);
+        viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
+        viewport.apply();
+        atlas = game.assets.get("Skin/glassy-ui.atlas");
+        skin = game.assets.get("Skin/glassy-ui.json");
+        stage = new Stage(viewport, game.batch);
+        menuTexture = game.assets.get("menu_test.png");
+        menuImage = new Image(menuTexture);
+
+        mission = new Mission(missionName, game.assets, encounters);
+        player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50, game.assets);
         background = new ScrollingBackground(mission.getBackground());
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
         backgroundMusic = mission.getBackgroundMusic();
+        backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
         items = new ArrayList<Item>();
         hud = new GameHUD(viewport, game.batch, (Skin) game.assets.get("Skin/glassy-ui.json"), player);
+
 
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
 
-        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
+//        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
         Gdx.input.setInputProcessor(this);
-        Gdx.input.setCatchBackKey(true);
+//        Gdx.input.setCatchBackKey(true);
+
+        setPauseMenu();
     }
 
     @Override
@@ -102,8 +147,13 @@ public class GameScreen implements Screen, InputProcessor {
         fps = Gdx.graphics.getFramesPerSecond();
 
         if (gamePaused){
-            processUserInputWhenPaused();
+            inputBoolean = true;
+            Gdx.input.setInputProcessor(stage);
         } else {
+            if (inputBoolean){
+                inputBoolean = false;
+                Gdx.input.setInputProcessor(this);
+            }
             processUserInput();
 
             if (mission.isMissionOver()) {
@@ -117,11 +167,7 @@ public class GameScreen implements Screen, InputProcessor {
         drawAllObjects();
     }
 
-    private void processUserInputWhenPaused() {
-        if(Gdx.input.isTouched()) {
-            gamePaused = false;
-        }
-    }
+
 
     private void processUserInput() {
         if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
@@ -158,6 +204,7 @@ public class GameScreen implements Screen, InputProcessor {
         // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
             Encounter encounter = encounters.get(i);
+            boolean loot_not_given = true;
             if (encounter.hitbox.y + 64 < 0) {
                 encounter.getsDamage(1000);
             } else if (encounter.overlaps(player)){
@@ -165,28 +212,33 @@ public class GameScreen implements Screen, InputProcessor {
                 player.collidesWith(encounter);
                 ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
-                if ( (bullet.hitbox.y > VIEWPORTHEIGHT + 64)
-                        || (bullet.hitbox.x < -32)
-                        || (bullet.hitbox.x > VIEWPORTWIDTH + 32) ) {
-                    playerProjectiles.remove(j);
-                } else if (bullet.overlaps(encounter)){
+                if (bullet.overlaps(encounter)){
                     ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                     oldSoundIds.remove(0); // remove oldest
-                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play()); // play and add new
+                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
-                    if (encounter.isDestroyed()){
+                    if (encounter.isDestroyed() && loot_not_given){
                         player.setPoints(encounter.getPoints());
                         encounter.dropItem(items);
+                        loot_not_given = false;  // give loot only once
                     }
                 }
             }
             if (encounter.isDestroyed()){
                 encounters.remove(i);
+            }
+        }
+        for (int j = 0; j < playerProjectiles.size(); j++) {
+            Projectile bullet = playerProjectiles.get(j);
+            if ((bullet.hitbox.y > VIEWPORTHEIGHT + 64)
+                    || (bullet.hitbox.x < -32)
+                    || (bullet.hitbox.x > VIEWPORTWIDTH + 32)) {
+                playerProjectiles.remove(j);
             }
         }
         for (int i = 0; i < enemyProjectiles.size() ; i++) {
@@ -197,7 +249,7 @@ public class GameScreen implements Screen, InputProcessor {
             else if (bullet.overlaps(player)){
                 ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play());
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume));
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
@@ -242,9 +294,6 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
         }
-        if (gamePaused){
-            game.font.draw(game.batch, "GAME PAUSED", 150, 400, 200, 200, true);
-        }
         game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
         game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, VIEWPORTHEIGHT);
         game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
@@ -252,10 +301,14 @@ public class GameScreen implements Screen, InputProcessor {
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
         game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , VIEWPORTHEIGHT - 150);
         game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
-
         game.batch.end();
+
         hud.draw();
 
+        if (gamePaused) {
+            stage.act();
+            stage.draw();
+        }
     }
 
     private void moveAllObjects(float delta)
@@ -307,6 +360,110 @@ public class GameScreen implements Screen, InputProcessor {
         prefs.flush();
     }
 
+    private void setPauseMenu(){
+
+        int pauseMenuWidth = 300;
+        int pauseMenuHeight = 600;
+
+        TextButton resumeButton = new TextButton("Resume", skin);
+        TextButton exitButton = new TextButton("Exit", skin);
+        TextButton musicButton = new TextButton("", skin);
+        TextButton soundButton = new TextButton("", skin);
+
+        soundSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
+        soundSlider.setValue(soundVolume);
+
+        musicSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
+        musicSlider.setValue(musicVolume);
+
+        resumeButton.setWidth(pauseMenuWidth);
+        exitButton.setWidth(pauseMenuWidth);
+        musicButton.setWidth(pauseMenuWidth / 3);
+        soundButton.setWidth(pauseMenuWidth / 3);
+        soundSlider.setWidth(pauseMenuWidth / 3 * 2);
+        musicSlider.setWidth(pauseMenuWidth / 3 * 2);
+
+        resumeButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gamePaused = false;
+            }
+        });
+        exitButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                game.setScreen(new MissionsMenu(game));
+                dispose();
+            }
+        });
+        musicButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                if (backgroundMusic.isPlaying()) {
+                    backgroundMusic.pause();
+                }
+                else {
+                    backgroundMusic.setVolume(musicVolume);
+                    backgroundMusic.play();
+                }
+            }
+        });
+        soundButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y){
+                if (soundMuted) {
+                    soundVolume = 1.0f;
+                    soundMuted = false;
+                }
+                else {
+                    soundVolume = 0.0f;
+                    soundMuted = true;
+                }
+            }
+        });
+
+        soundSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                soundVolume = soundSlider.getValue();
+                options.putFloat("soundvolume", soundVolume);
+                options.flush();
+            }
+        });
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                musicVolume = musicSlider.getValue();
+                backgroundMusic.setVolume(musicVolume);
+                options.putFloat("musicvolume", musicVolume);
+                options.flush();
+            }
+        });
+
+        float corner_x = VIEWPORTWIDTH / 2 - pauseMenuWidth / 2;
+        float corner_y = VIEWPORTHEIGHT / 2 + pauseMenuHeight / 2 - 50;
+        float padding = 10;
+        float big_spacing = 100;
+        float spacing = 50;
+
+        resumeButton.setPosition(corner_x - padding, corner_y - padding - big_spacing);
+        soundSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing - spacing);
+        soundButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 2);
+        musicSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 2 - spacing);
+        musicButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 3);
+        exitButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 4);
+
+        menuImage.setPosition(VIEWPORTWIDTH / 2 - (menuImage.getWidth() / 2), VIEWPORTHEIGHT / 2 - (menuImage.getHeight() / 2));
+
+        stage.addActor(menuImage);
+        stage.addActor(resumeButton);
+        stage.addActor(soundSlider);
+        stage.addActor(soundButton);
+        stage.addActor(musicSlider);
+        stage.addActor(musicButton);
+        stage.addActor(exitButton);
+    }
+
     @Override
     public void resize(int width, int height) {
     }
@@ -332,6 +489,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
+//        skin.dispose();
+//        atlas.dispose();
+        stage.dispose();
         hud.dispose();
     }
 
