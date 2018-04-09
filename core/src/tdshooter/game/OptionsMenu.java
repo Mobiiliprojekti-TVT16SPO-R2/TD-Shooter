@@ -66,9 +66,15 @@ public class OptionsMenu implements Screen, InputProcessor {
         }
         if(options.contains("soundmuted")) {
             soundMuted = options.getBoolean("soundmuted");
+            if (soundMuted) {
+                soundVolume = 0.0f;
+            }
         }
         if(options.contains("musicmuted")) {
             musicMuted = options.getBoolean("musicmuted");
+            if (musicMuted) {
+                musicVolume = 0.0f;
+            }
         }
 
         soundLabel = new Label("Soundeffects volume", skin);
@@ -111,7 +117,7 @@ public class OptionsMenu implements Screen, InputProcessor {
                     options.flush();
                 }
                 else {
-                    musicVolume = 0;
+                    musicVolume = 0.0f;
                     musicMuted = true;
                     options.putBoolean("musicmuted", musicMuted);
                     options.flush();
@@ -144,6 +150,13 @@ public class OptionsMenu implements Screen, InputProcessor {
                 soundVolume = soundSlider.getValue();
                 options.putFloat("soundvolume", soundVolume);
                 options.flush();
+                if (soundVolume == 0.0f) {
+                    soundMuted = true;
+                } else {
+                    soundMuted = false;
+                }
+                options.putBoolean("soundmuted", soundMuted);
+                options.flush();
             }
         });
         musicSlider.addListener(new ChangeListener() {
@@ -151,6 +164,13 @@ public class OptionsMenu implements Screen, InputProcessor {
             public void changed(ChangeEvent event, Actor actor) {
                 musicVolume = musicSlider.getValue();
                 options.putFloat("musicvolume", musicVolume);
+                options.flush();
+                if (musicVolume == 0.0f) {
+                    musicMuted = true;
+                } else {
+                    musicMuted = false;
+                }
+                options.putBoolean("musicmuted", musicMuted);
                 options.flush();
             }
         });
