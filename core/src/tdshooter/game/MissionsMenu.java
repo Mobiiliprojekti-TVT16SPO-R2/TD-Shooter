@@ -186,6 +186,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     public void setMissionNameList(){
         missionNameList.add("Missions/mission01.txt");
         missionNameList.add("Missions/mission02.txt");
+        missionNameList.add("Missions/mission03.txt");
     }
     @Override
     public void resize(int width, int height) {
