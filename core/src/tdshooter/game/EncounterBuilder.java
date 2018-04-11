@@ -42,14 +42,14 @@ public class EncounterBuilder
         {
             case BASIC_ENEMY_LVL1:
                 encounter = new Encounter(1000, 2000, 64, 96,20, 20,400 , 25, (Texture)assets.get("Encounters/AlienBeast_LVL_1_Test.png"));
-                encounter.setFlightPattern(new SinCurveFlight(encounter, 2, MathUtils.PI * 0.66f));
+                encounter.setFlightPattern(new SinCurveFlight(encounter, 20, MathUtils.PI2));
                 break;
 
             case SHOOTING_ENEMY_LVL1:
                 encounter = new ShootingEnemy(1000, 2000, 64, 112,
                         20, 20,300 , 1, 0, 500000000, 40,
                         50 , (Texture)assets.get("Encounters/AlienFighter_LVL_1_Test.png"), assets);
-                encounter.setFlightPattern(new SinCurveFlight(encounter, 2, MathUtils.PI * 1.33f));
+                encounter.setFlightPattern(new SinCurveFlight(encounter, 20, MathUtils.PI2));
                 break;
 
             case SHOOTING_ENEMY_LVL2:

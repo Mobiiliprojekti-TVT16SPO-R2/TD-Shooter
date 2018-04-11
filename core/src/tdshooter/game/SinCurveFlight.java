@@ -5,14 +5,14 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class SinCurveFlight extends FlightPattern
 {
-    private float angle;
+    private float time;
     private float angularFrequency;
     private float amplitude;
 
     public SinCurveFlight(Collidable parent, float amplitude, float angularFrequency)
     {
         super(parent);
-        angle = 0;
+        time = 0;
         this.amplitude = amplitude;
         this.angularFrequency = angularFrequency;
     }
@@ -22,10 +22,12 @@ public class SinCurveFlight extends FlightPattern
     {
         parent.hitbox.y -= parent.speed * delta;
 
-        angle += angularFrequency * delta;
-        if(angle > MathUtils.PI2) {
-            angle = 0;
+        time += delta;
+        if(time > MathUtils.PI2) {
+            time = 0;
         }
-        parent.hitbox.x += amplitude * MathUtils.cos(angle); // sinin derivaatta
+
+        // sinin aallon derivaatta (muutosnopeus) kerrottuna delta-ajalla
+        parent.hitbox.x += amplitude * MathUtils.cos(angularFrequency * time) * angularFrequency * delta;
     }
 }
