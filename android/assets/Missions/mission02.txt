@@ -1,4 +1,4 @@
-Backgrounds/Map_1_Forest_VER3_720.png
+Backgrounds/Map_Test_1_original.png
 rain.mp3
 25
 100

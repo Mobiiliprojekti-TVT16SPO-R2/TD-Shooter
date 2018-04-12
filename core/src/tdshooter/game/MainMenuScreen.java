@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 public class MainMenuScreen implements Screen {
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
-    private TextureAtlas atlas;
     private StretchViewport viewport;
     private Skin skin;
     private Stage stage;
@@ -40,14 +39,12 @@ public class MainMenuScreen implements Screen {
         viewport = new StretchViewport(720, 1280, camera);
         viewport.apply();
 
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-//        camera.update();
-//        camera.setToOrtho(false, 480, 800);
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
-        atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
-        skin = game.assets.get("Skin/glassy-ui.json");
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
-
         menuImage = new Image(menuBackground);
 
         stage = new Stage(viewport, game.batch);
@@ -65,6 +62,7 @@ public class MainMenuScreen implements Screen {
         //Set alignment of contents in the table.
         mainTable.center();
 //        mainTable.top();
+
 
         TextButton playButton = new TextButton("Play", skin);
         TextButton optionsButton = new TextButton("Options", skin);

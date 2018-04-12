@@ -11,20 +11,33 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class TDShooterGdxGame extends Game {
 
 	public SpriteBatch batch;
 	public BitmapFont font;
+	public BitmapFont fontSkin;
 	public AssetManager assets;
+//	private Texture texture;
 	public final int VIEWPORTWIDTH = 720;
 	public final int VIEWPORTHEIGHT = 1280;
 
 	public void create() {
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Teko-Medium.ttf"));
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 24;
+		font = generator.generateFont(parameter);// font size 12 pixels
+		parameter.size = 50;
+		fontSkin = generator.generateFont(parameter);
+		generator.dispose();
+//		texture = new Texture("Backgrounds/Loading_test.png");
+
+
 		batch = new SpriteBatch();
-		font = new BitmapFont();
-        font.getData().setScale(1.5f,1.5f);
         assets = new AssetManager();
 
 		assets.load("planes/Player_FighterPlane.png", Texture.class);
@@ -43,10 +56,6 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Bullets/bullet1.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
-        assets.load("Items/armor_test.png", Texture.class);
-		assets.load("Items/currency_test.png", Texture.class);
-		assets.load("Items/flightspeed_test.png", Texture.class);
-		assets.load("Items/healthpack_test.png", Texture.class);
 		assets.load("powerups/PowerUp_Armor.png", Texture.class);
 		assets.load("powerups/PowerUp_BulletAmountBoost_VERSION2.png", Texture.class);
 		assets.load("powerups/PowerUp_BulletSpeed_VERSION2.png", Texture.class);
@@ -54,6 +63,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("powerups/PowerUp_FlightSpeed.png", Texture.class);
 		assets.load("powerups/PowerUp_HealthPack.png", Texture.class);
 		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
+		assets.load("Backgrounds/Map_Test_1_original.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3.png", Texture.class);
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
@@ -62,12 +72,12 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
 		assets.load("Menu/Character_Scientist.png", Texture.class);
-		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
+		assets.load("effects/flash_test.png", Texture.class);
 
 
 		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
-		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
+//		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
 
 		assets.load("hitSound.wav", Sound.class);
 
@@ -86,12 +96,16 @@ public class TDShooterGdxGame extends Game {
 	}
 
 	public void render() {
-		super.render(); //important!
+
+			super.render(); //important!
+
 	}
 
 	public void dispose() {
 		batch.dispose();
 		font.dispose();
+		fontSkin.dispose();
 		assets.dispose();
+
 	}
 }

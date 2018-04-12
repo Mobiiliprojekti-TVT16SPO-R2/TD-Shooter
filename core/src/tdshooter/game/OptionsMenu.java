@@ -54,8 +54,13 @@ public class OptionsMenu implements Screen, InputProcessor {
         camera = new OrthographicCamera();
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
-        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
-        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+//        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
+//        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
         options = Gdx.app.getPreferences("options");
         if(options.contains("soundvolume")) {

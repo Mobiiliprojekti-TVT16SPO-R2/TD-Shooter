@@ -49,17 +49,15 @@ public class MissionsMenu implements Screen, InputProcessor {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-        atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
-        skin = game.assets.get("Skin/glassy-ui.json");
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         commanderTexture = game.assets.get("Menu/Character_Commander.png");
-
         menuImage = new Image(menuBackground);
         commanderImage = new Image(commanderTexture);
-
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-//        camera.update();
-
 
         missionsButtonGroup = new ButtonGroup();
         missionNameList = new ArrayList<String>();
@@ -103,10 +101,8 @@ public class MissionsMenu implements Screen, InputProcessor {
         mission03.setHeight(60);
 
         // Asetetaan luotujen painikkeiden paikat
-//        launchButton.setPosition(VIEWPORTWIDTH / 2 - (launchButton.getWidth() / 2), VIEWPORTHEIGHT / 2 - (launchButton.getWidth() / 2));
         launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth(), 160);
         bridgeButton.setPosition(0, VIEWPORTHEIGHT - bridgeButton.getHeight());
-        shopButton.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT - shopButton.getHeight());
         hangarButton.setPosition(bridgeButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
         shopButton.setPosition(bridgeButton.getWidth() + hangarButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
 
@@ -186,6 +182,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     public void setMissionNameList(){
         missionNameList.add("Missions/mission01.txt");
         missionNameList.add("Missions/mission02.txt");
+        missionNameList.add("Missions/mission03.txt");
     }
     @Override
     public void resize(int width, int height) {
@@ -209,6 +206,7 @@ public class MissionsMenu implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
+//        skin.dispose();
         stage.dispose();
 
     }
