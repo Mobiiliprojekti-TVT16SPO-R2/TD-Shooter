@@ -59,13 +59,6 @@ font-big-export
   orig: 341, 350
   offset: 0, 0
   index: -1
-font-export
-  rotate: false
-  xy: 1, 341
-  size: 116, 117
-  orig: 116, 117
-  offset: 0, 0
-  index: -1
 horizontal-scroll-bar
   rotate: false
   xy: 643, 945

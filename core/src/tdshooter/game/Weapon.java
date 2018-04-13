@@ -170,10 +170,10 @@ class Weapon {
 
     public void setCooldownReduction(int percent) {
 
-        Gdx.app.log("DEBUG", "setting weapon CDR inside weapon-class: " + percent);
+//        Gdx.app.log("DEBUG", "setting weapon CDR inside weapon-class: " + percent);
         this.cooldownReduction = percent;
 
-        Gdx.app.log("DEBUG", "new CDR is: " + this.cooldownReduction);
+//        Gdx.app.log("DEBUG", "new CDR is: " + this.cooldownReduction);
     }
 }
 

@@ -30,13 +30,11 @@ public class MainMenuScreen implements Screen {
     private final int VIEWPORTWIDTH = 720;
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
-    private TextureAtlas atlas;
     private StretchViewport viewport;
     private Skin skin;
     private Stage stage;
     private Texture menuBackground;
     private Image menuImage;
-
 
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
@@ -44,14 +42,12 @@ public class MainMenuScreen implements Screen {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-//        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-//        camera.update();
-//        camera.setToOrtho(false, 480, 800);
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
-        atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
-        skin = game.assets.get("Skin/glassy-ui.json");
-        menuBackground = game.assets.get("Menu/Background_StartMenu.png");
-
+        menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         menuImage = new Image(menuBackground);
         menuImage.setHeight(VIEWPORTHEIGHT);
         menuImage.setWidth(VIEWPORTWIDTH);

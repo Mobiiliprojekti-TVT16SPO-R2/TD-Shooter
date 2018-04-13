@@ -14,7 +14,7 @@ public class Collidable {
     protected float acceleration;
     protected float maxSpeed;
 
-    public Rectangle hitbox;
+    Rectangle hitbox;
 
     public Collidable (float hitbox_x, float hitbox_y, float hitbox_width, float hitbox_height ){
         hitbox = new Rectangle();

@@ -32,7 +32,6 @@ public class OptionsMenu implements Screen, InputProcessor {
     private final int VIEWPORTWIDTH = 720;
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
-    private TextureAtlas atlas;
     private Viewport viewport;
     private Skin skin;
     private Stage stage;
@@ -54,10 +53,14 @@ public class OptionsMenu implements Screen, InputProcessor {
         camera = new OrthographicCamera();
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
-        atlas = new TextureAtlas("Skin/glassy-ui.atlas");
-        skin = new Skin(Gdx.files.internal("Skin/glassy-ui.json"), atlas);
+
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
         options = Gdx.app.getPreferences("options");
+
         if(options.contains("soundvolume")) {
             soundVolume = options.getFloat("soundvolume");
         }
@@ -76,14 +79,13 @@ public class OptionsMenu implements Screen, InputProcessor {
                 musicVolume = 0.0f;
             }
         }
+        musicLabel = new Label("Music volume", skin);
+        //musicLabel.setScale(1,1);
+        musicLabel.setPosition(150, 550);
 
         soundLabel = new Label("Soundeffects volume", skin);
         //soundLabel.setScale(1,1);
         soundLabel.setPosition(150, 650);
-
-        musicLabel = new Label("Music volume", skin);
-        //musicLabel.setScale(1,1);
-        musicLabel.setPosition(150, 450);
 
         stage = new Stage(viewport, game.batch);
 
@@ -200,6 +202,11 @@ public class OptionsMenu implements Screen, InputProcessor {
 
         stage.act();
         stage.draw();
+
+//        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
+//            game.setScreen(new MainMenuScreen(game));
+//            dispose();
+//        }
     }
 
     @Override

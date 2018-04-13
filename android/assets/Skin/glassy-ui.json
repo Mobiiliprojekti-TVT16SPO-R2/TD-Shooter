@@ -1,8 +1,5 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-	font: {
-		file: font-export.fnt
-	}
 	font-big: {
 		file: font-big-export.fnt
 	}
@@ -171,7 +168,7 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
-		font: font-big
+		font: font
 		up: button
 		down: button-down
 	}

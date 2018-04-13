@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -53,6 +55,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Mission mission;
     private ArrayList<Projectile> enemyProjectiles;
     private ArrayList<Item> items;
+    private ArrayList<Effect> effects;
 
     private int encountersDestroyed;
     private ArrayList<Long> oldSoundIds;
@@ -64,6 +67,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage stage;
     private boolean inputBoolean = true;
     private Texture menuTexture;
+    private Texture flashTexture;
     private Image menuImage;
     private Table menuTable;
     private float soundVolume = 0.5f;
@@ -72,10 +76,16 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean musicMuted = false;
     private Slider soundSlider;
     private Slider musicSlider;
+    private boolean superWeapon = false;
+    private boolean loot_not_given;
+    private String missionName;
 
     private int missionNumber;
 
     private GameHUD hud;
+    private Effect deathAnimation;
+    private int effectCounter = 0;
+    InputMultiplexer multiplexer;
 
     public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
         this.game = game;
@@ -83,6 +93,10 @@ public class GameScreen implements Screen, InputProcessor {
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
+        items = new ArrayList<Item>();
+        effects = new ArrayList<Effect>();
+
+//        deathAnimation = new Effect(800, 1300, 0);
 
         this.missionNumber = missionNumber;
 
@@ -111,31 +125,40 @@ public class GameScreen implements Screen, InputProcessor {
 
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
-        atlas = game.assets.get("Skin/glassy-ui.atlas");
-        skin = game.assets.get("Skin/glassy-ui.json");
-        stage = new Stage(viewport, game.batch);
+
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+
         menuTexture = game.assets.get("menu_test.png");
         menuImage = new Image(menuTexture);
+        flashTexture = game.assets.get("effects/flash_test.png");
 
+        this.missionName = missionName;
         mission = new Mission(missionName, game.assets, encounters);
         player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50, game.assets);
         background = new ScrollingBackground(mission.getBackground());
+
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
         backgroundMusic = mission.getBackgroundMusic();
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
-        items = new ArrayList<Item>();
-        hud = new GameHUD(viewport, game.batch, (Skin) game.assets.get("Skin/glassy-ui.json"), player);
+
+        hud = new GameHUD(viewport, game.batch, skin, player);
 
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
 
-//        camera.setToOrtho(false, VIEWPORTWIDTH, VIEWPORTHEIGHT);
-        Gdx.input.setInputProcessor(this);
-//        Gdx.input.setCatchBackKey(true);
+        stage = new Stage(viewport, game.batch);
+
+        multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(hud);
+        multiplexer.addProcessor(this);
+        Gdx.input.setInputProcessor(multiplexer);
 
         setPauseMenu();
     }
@@ -152,11 +175,13 @@ public class GameScreen implements Screen, InputProcessor {
 
         if (gamePaused){
             inputBoolean = true;
-            Gdx.input.setInputProcessor(stage);
+            multiplexer.addProcessor(stage);
+            Gdx.input.setInputProcessor(multiplexer);
         } else {
             if (inputBoolean){
                 inputBoolean = false;
-                Gdx.input.setInputProcessor(this);
+                multiplexer.removeProcessor(stage);
+                Gdx.input.setInputProcessor(multiplexer);
             }
             processUserInput();
 
@@ -168,7 +193,7 @@ public class GameScreen implements Screen, InputProcessor {
             checkCollisions();
             mission.update(delta);
         }
-        drawAllObjects();
+        drawAllObjects(delta);
     }
 
     private void processUserInput() {
@@ -206,7 +231,7 @@ public class GameScreen implements Screen, InputProcessor {
         // the screen or that hit the player.
         for (int i = 0; i < encounters.size(); i++) {
             Encounter encounter = encounters.get(i);
-            boolean loot_not_given = true;
+            loot_not_given = true;
             if (encounter.hitbox.y + 64 < 0) {
                 encounter.getsDamage(1000);
             } else if (encounter.overlaps(player)){
@@ -232,6 +257,11 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
             if (encounter.isDestroyed()){
+//                Effect effect = deathAnimation;
+//                effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                effects.add(effect);
+                effectCounter ++;
                 encounters.remove(i);
             }
         }
@@ -266,6 +296,7 @@ public class GameScreen implements Screen, InputProcessor {
                 items.remove(i);
             }
             else if (item.overlaps(player)) {
+//                Gdx.app.log("DEBUG", "item overlaps player");
                 player.pickUp(item);
                 items.remove(i);
             }
@@ -295,7 +326,7 @@ public class GameScreen implements Screen, InputProcessor {
         dispose();
     }
 
-    private void drawAllObjects()
+    private void drawAllObjects(float delta)
     {
         game.batch.begin();
         background.draw(game.batch);
@@ -312,16 +343,40 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
         }
-        game.font.draw(game.batch, "FPS: " + fps, 0, VIEWPORTHEIGHT - 30);
-        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, VIEWPORTHEIGHT);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , VIEWPORTHEIGHT - 60);
-        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , VIEWPORTHEIGHT - 90);
-        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , VIEWPORTHEIGHT - 120);
-        game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , VIEWPORTHEIGHT - 150);
-        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , VIEWPORTHEIGHT - 180);
+//        if (animation) {
+            if (!gamePaused) {
+                for (int i = 0; i < effects.size(); i++) {
+                    Effect effect = effects.get(i);
+                    TextureRegion currentFrame = effect.getCurrentFrame(delta);
+                    game.batch.draw(currentFrame, effect.getX(), effect.getY());
+                    if (effect.isFinished()) {
+                        effects.remove(i);
+                    }
+                }
+            }
+//        }
+        if (superWeapon) {
+            game.batch.draw(flashTexture, 0, 0);
+            superWeapon = false;
+        }
+
+
+        game.font.draw(game.batch, "FPS: " + fps, 0,310);
+        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, 130);
+        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , 160);
+        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , 190);
+        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , 220);
+        game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , 250);
+        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , 280);
+        game.font.draw(game.batch, "Effects: " + effects.size() + " " + effectCounter, 0 , 340);
         game.batch.end();
 
         hud.draw();
+
+        if (hud.isSuperWeaponClicked()) {
+            superWeaponUse();
+            hud.setSuperWeaponClicked();
+        }
 
         if (gamePaused) {
             stage.act();
@@ -347,6 +402,9 @@ public class GameScreen implements Screen, InputProcessor {
         }
         for (Item item : items){
             item.update();
+        }
+        for (Effect effect : effects){
+            effect.update();
         }
         hud.update(delta);
     }
@@ -378,12 +436,33 @@ public class GameScreen implements Screen, InputProcessor {
         prefs.flush();
     }
 
+    private void superWeaponUse() {
+        for (int i = 0; i < encounters.size() ; i++) {
+            Encounter encounter = encounters.get(i);
+//            Effect effect = deathAnimation;
+//            effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+            Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+            effects.add(effect);
+            effectCounter ++;
+            player.setPoints(encounter.getPoints());
+
+            if (loot_not_given) {
+                encounter.dropItem(items);
+                loot_not_given = false;
+            }
+            loot_not_given = true;
+        }
+        encounters.clear();
+        superWeapon = true;
+    }
+
     private void setPauseMenu(){
 
         int pauseMenuWidth = 300;
         int pauseMenuHeight = 600;
 
         TextButton resumeButton = new TextButton("Resume", skin);
+        TextButton restartButton = new TextButton("Restart", skin);
         TextButton exitButton = new TextButton("Exit", skin);
         TextButton musicButton = new TextButton("", skin);
         TextButton soundButton = new TextButton("", skin);
@@ -395,6 +474,7 @@ public class GameScreen implements Screen, InputProcessor {
         musicSlider.setValue(musicVolume);
 
         resumeButton.setWidth(pauseMenuWidth);
+        restartButton.setWidth(pauseMenuWidth);
         exitButton.setWidth(pauseMenuWidth);
         musicButton.setWidth(pauseMenuWidth / 3);
         soundButton.setWidth(pauseMenuWidth / 3);
@@ -405,6 +485,12 @@ public class GameScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 gamePaused = false;
+            }
+        });
+        restartButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new GameScreen(game, missionName, missionNumber));
             }
         });
         exitButton.addListener(new ClickListener(){
@@ -495,16 +581,18 @@ public class GameScreen implements Screen, InputProcessor {
         float spacing = 50;
 
         resumeButton.setPosition(corner_x - padding, corner_y - padding - big_spacing);
-        soundSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing - spacing);
-        soundButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 2);
-        musicSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 2 - spacing);
-        musicButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 3);
-        exitButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 4);
+        restartButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 2);
+        soundSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 2 - spacing);
+        soundButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 3);
+        musicSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 3 - spacing);
+        musicButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 4);
+        exitButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 5);
 
         menuImage.setPosition(VIEWPORTWIDTH / 2 - (menuImage.getWidth() / 2), VIEWPORTHEIGHT / 2 - (menuImage.getHeight() / 2));
 
         stage.addActor(menuImage);
         stage.addActor(resumeButton);
+        stage.addActor(restartButton);
         stage.addActor(soundSlider);
         stage.addActor(soundButton);
         stage.addActor(musicSlider);
@@ -538,7 +626,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
 //        skin.dispose();
-//        atlas.dispose();
         stage.dispose();
         backgroundMusic.stop();
         hud.dispose();
