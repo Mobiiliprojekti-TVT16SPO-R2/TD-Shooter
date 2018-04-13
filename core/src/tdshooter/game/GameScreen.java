@@ -340,7 +340,7 @@ public class GameScreen implements Screen, InputProcessor {
             bullet.update();
         }
         for (Encounter encounter : encounters){
-            encounter.update();
+            encounter.update(delta);
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
             }

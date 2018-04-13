@@ -102,7 +102,7 @@ public class Mission {
             for (int i = numberOfHeaderLines; i < strArray.length; i++)
             {
                 String [] spawnInfoStr = strArray[i].split(",\\s+");
-                int encounterId, itemId;
+                int encounterId, itemId, flightId;
                 float positionX, positionY, spawnTime;
                 SpawnInfo spawnInfo;
                 try
@@ -112,10 +112,13 @@ public class Mission {
                     positionY = Float.parseFloat(spawnInfoStr[2]);
                     spawnTime = Float.parseFloat(spawnInfoStr[3]);
                     itemId = Integer.parseInt(spawnInfoStr[4]);
+                    flightId = Integer.parseInt(spawnInfoStr[5]);
 
                     Encounter encounter = EncounterBuilder.create(EncounterType.getByValue(encounterId), assets);
                     Item item = ItemBuilder.create(ItemType.getByValue(itemId), assets);
+                    FlightPattern flight = FlightPatternBuilder.create(FlightType.getByValue(flightId), encounter);
                     encounter.setItemDrop(item);
+                    encounter.setFlightPattern(flight);
                     encounter.setPosition(new Vector2(positionX, positionY));
                     spawnInfo = new SpawnInfo(encounter, spawnTime);
                     spawnInfoList.add(spawnInfo);
