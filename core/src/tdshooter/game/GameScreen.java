@@ -321,8 +321,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void gameLost() {
-        saveCurrency();
-        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
+        game.setScreen(new StageFailedScreen(game));
         dispose();
     }
 
