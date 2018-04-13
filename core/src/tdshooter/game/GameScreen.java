@@ -147,7 +147,7 @@ public class GameScreen implements Screen, InputProcessor {
         backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
 
-        hud = new GameHUD(viewport, game.batch, (Skin) game.assets.get("Skin/glassy-ui.json"), player);
+        hud = new GameHUD(viewport, game.batch, skin, player);
 
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
