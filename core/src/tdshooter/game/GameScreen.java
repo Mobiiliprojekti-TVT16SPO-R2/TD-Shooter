@@ -1,9 +1,6 @@
 package tdshooter.game;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -15,30 +12,19 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by leevi on 16.3.2018.
@@ -87,16 +73,21 @@ public class GameScreen implements Screen, InputProcessor {
     private Slider soundSlider;
     private Slider musicSlider;
 
+    private int missionNumber;
+
     private GameHUD hud;
 
-    public GameScreen(final TDShooterGdxGame game, String missionName) {
+    public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
         this.game = game;
         camera = new OrthographicCamera();
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
 
+        this.missionNumber = missionNumber;
+
         options = Gdx.app.getPreferences("options");
+
         if(options.contains("soundvolume")) {
             soundVolume = options.getFloat("soundvolume");
         }
@@ -138,7 +129,6 @@ public class GameScreen implements Screen, InputProcessor {
         items = new ArrayList<Item>();
         hud = new GameHUD(viewport, game.batch, (Skin) game.assets.get("Skin/glassy-ui.json"), player);
 
-
         //Play sound Effects once, to initialize prev_sound_id
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
         oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
@@ -171,7 +161,7 @@ public class GameScreen implements Screen, InputProcessor {
             processUserInput();
 
             if (mission.isMissionOver()) {
-                endGame();
+                gameWon();
             }
 
             moveAllObjects(delta);
@@ -180,8 +170,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         drawAllObjects();
     }
-
-
 
     private void processUserInput() {
         if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
@@ -269,7 +257,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
         if (player.isDestroyed()){
-            endGame();
+            gameLost();
         }
 
         for (int i = 0; i < items.size(); i++) {
@@ -278,14 +266,30 @@ public class GameScreen implements Screen, InputProcessor {
                 items.remove(i);
             }
             else if (item.overlaps(player)) {
-                Gdx.app.log("DEBUG", "item overlaps player");
                 player.pickUp(item);
                 items.remove(i);
             }
         }
     }
 
-    private void endGame() {
+    private void gameWon() {
+        saveCurrency();
+        updateLevelProgess();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
+        dispose();
+    }
+
+    private void updateLevelProgess() {
+        Preferences prefs = Gdx.app.getPreferences("savedata");
+        int levelProgress = prefs.getInteger("levelprogress", 1);
+        if (levelProgress == missionNumber) {
+            levelProgress++;
+        }
+        prefs.putInteger("levelprogress", levelProgress);
+        prefs.flush();
+    }
+
+    private void gameLost() {
         saveCurrency();
         game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
         dispose();

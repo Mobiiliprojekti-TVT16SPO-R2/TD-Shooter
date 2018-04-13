@@ -25,6 +25,9 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
  */
 
 public class MainMenuScreen implements Screen {
+
+    private final int VIEWPORTHEIGHT = 1280;
+    private final int VIEWPORTWIDTH = 720;
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
     private TextureAtlas atlas;
@@ -34,10 +37,11 @@ public class MainMenuScreen implements Screen {
     private Texture menuBackground;
     private Image menuImage;
 
+
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
         camera = new OrthographicCamera();
-        viewport = new StretchViewport(720, 1280, camera);
+        viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
 //        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
@@ -46,9 +50,11 @@ public class MainMenuScreen implements Screen {
 
         atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
         skin = game.assets.get("Skin/glassy-ui.json");
-        menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
+        menuBackground = game.assets.get("Menu/Background_StartMenu.png");
 
         menuImage = new Image(menuBackground);
+        menuImage.setHeight(VIEWPORTHEIGHT);
+        menuImage.setWidth(VIEWPORTWIDTH);
 
         stage = new Stage(viewport, game.batch);
         Gdx.input.setCatchBackKey(false);
@@ -63,7 +69,8 @@ public class MainMenuScreen implements Screen {
         //Set table to fill stage
         mainTable.setFillParent(true);
         //Set alignment of contents in the table.
-        mainTable.center();
+//        mainTable.center();
+        mainTable.setPosition(20, 200);
 //        mainTable.top();
 
         TextButton playButton = new TextButton("Play", skin);

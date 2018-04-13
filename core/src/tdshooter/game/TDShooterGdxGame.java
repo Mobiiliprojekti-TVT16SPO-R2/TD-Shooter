@@ -43,10 +43,10 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Bullets/bullet1.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
-        assets.load("Items/armor_test.png", Texture.class);
-		assets.load("Items/currency_test.png", Texture.class);
-		assets.load("Items/flightspeed_test.png", Texture.class);
-		assets.load("Items/healthpack_test.png", Texture.class);
+//        assets.load("Items/armor_test.png", Texture.class);
+//		assets.load("Items/currency_test.png", Texture.class);
+//		assets.load("Items/flightspeed_test.png", Texture.class);
+//		assets.load("Items/healthpack_test.png", Texture.class);
 		assets.load("powerups/PowerUp_Armor.png", Texture.class);
 		assets.load("powerups/PowerUp_BulletAmountBoost_VERSION2.png", Texture.class);
 		assets.load("powerups/PowerUp_BulletSpeed_VERSION2.png", Texture.class);
@@ -59,9 +59,12 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
 		assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
 		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
+		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
 		assets.load("Menu/Character_Scientist.png", Texture.class);
+		assets.load("Menu/valikko-ylapalkki.png", Texture.class);
+		assets.load("Menu/valikko-puhekupla_Vaalennettu.png", Texture.class);
 		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
 
@@ -79,6 +82,16 @@ public class TDShooterGdxGame extends Game {
 		Preferences prefs = Gdx.app.getPreferences("savedata");
 		if(prefs.contains("weapon01") == false) {
 			prefs.putInteger("weapon01", 1);
+			prefs.flush();
+		}
+		// luodaan kassapohja pelaajalle
+		if(prefs.contains("currency") == false) {
+			prefs.putInteger("currency", 0);
+			prefs.flush();
+		}
+		// luodaan tallennustilanne ( alkaen kentästä 1)
+		if(prefs.contains("levelprogress") == false) {
+			prefs.putInteger("levelprogress", 1);
 			prefs.flush();
 		}
 

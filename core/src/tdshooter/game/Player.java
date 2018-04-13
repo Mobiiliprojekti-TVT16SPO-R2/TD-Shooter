@@ -176,4 +176,8 @@ public class Player extends Destroyable{
     {
         weapons.add(weapon);
     }
+
+    public void setCurrency(int currency) {
+        this.currency = currency;
+    }
 }
