@@ -1,4 +1,4 @@
-Backgrounds/Map_1_Forest_VER3_720.png
+Backgrounds/Map_3_Islands.png
 rain.mp3
 60
 100

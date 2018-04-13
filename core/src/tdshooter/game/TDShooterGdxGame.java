@@ -69,9 +69,13 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
 		assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
 		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
+		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
 		assets.load("Menu/Character_Scientist.png", Texture.class);
+		assets.load("Menu/valikko-ylapalkki.png", Texture.class);
+		assets.load("Menu/valikko-puhekupla_Vaalennettu.png", Texture.class);
+		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
 		assets.load("effects/flash_test.png", Texture.class);
 
@@ -91,14 +95,22 @@ public class TDShooterGdxGame extends Game {
 			prefs.putInteger("weapon01", 1);
 			prefs.flush();
 		}
+		// luodaan kassapohja pelaajalle
+		if(prefs.contains("currency") == false) {
+			prefs.putInteger("currency", 0);
+			prefs.flush();
+		}
+		// luodaan tallennustilanne ( alkaen kentästä 1)
+		if(prefs.contains("levelprogress") == false) {
+			prefs.putInteger("levelprogress", 1);
+			prefs.flush();
+		}
 
 		this.setScreen(new MainMenuScreen(this));
 	}
 
 	public void render() {
-
-			super.render(); //important!
-
+		super.render(); //important!
 	}
 
 	public void dispose() {
@@ -106,6 +118,5 @@ public class TDShooterGdxGame extends Game {
 		font.dispose();
 		fontSkin.dispose();
 		assets.dispose();
-
 	}
 }

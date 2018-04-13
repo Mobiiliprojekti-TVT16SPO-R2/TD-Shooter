@@ -25,6 +25,9 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
  */
 
 public class MainMenuScreen implements Screen {
+
+    private final int VIEWPORTHEIGHT = 1280;
+    private final int VIEWPORTWIDTH = 720;
     final TDShooterGdxGame game;
     private OrthographicCamera camera;
     private StretchViewport viewport;
@@ -36,7 +39,7 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
         camera = new OrthographicCamera();
-        viewport = new StretchViewport(720, 1280, camera);
+        viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
         skin = new Skin();
@@ -46,6 +49,8 @@ public class MainMenuScreen implements Screen {
 
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         menuImage = new Image(menuBackground);
+        menuImage.setHeight(VIEWPORTHEIGHT);
+        menuImage.setWidth(VIEWPORTWIDTH);
 
         stage = new Stage(viewport, game.batch);
         Gdx.input.setCatchBackKey(false);
@@ -60,9 +65,9 @@ public class MainMenuScreen implements Screen {
         //Set table to fill stage
         mainTable.setFillParent(true);
         //Set alignment of contents in the table.
-        mainTable.center();
+//        mainTable.center();
+        mainTable.setPosition(20, 200);
 //        mainTable.top();
-
 
         TextButton playButton = new TextButton("Play", skin);
         TextButton optionsButton = new TextButton("Options", skin);

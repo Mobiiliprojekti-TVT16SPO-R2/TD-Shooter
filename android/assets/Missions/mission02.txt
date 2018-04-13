@@ -1,4 +1,4 @@
-Backgrounds/Map_Test_1_original.png
+Backgrounds/Map_2_FarmLand.png
 rain.mp3
 25
 100
