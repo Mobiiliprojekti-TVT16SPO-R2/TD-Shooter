@@ -82,6 +82,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private GameHUD hud;
     private Effect deathAnimation;
+    private int effectCounter = 0;
     InputMultiplexer multiplexer;
 
     public GameScreen(final TDShooterGdxGame game, String missionName) {
@@ -93,7 +94,7 @@ public class GameScreen implements Screen, InputProcessor {
         items = new ArrayList<Item>();
         effects = new ArrayList<Effect>();
 
-        deathAnimation = new Effect(800, 1300, 0);
+//        deathAnimation = new Effect(800, 1300, 0);
 
         options = Gdx.app.getPreferences("options");
         if(options.contains("soundvolume")) {
@@ -255,10 +256,11 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
             if (encounter.isDestroyed()){
-                Effect effect = deathAnimation;
-                effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-//                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+//                Effect effect = deathAnimation;
+//                effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
                 effects.add(effect);
+                effectCounter ++;
                 encounters.remove(i);
             }
         }
@@ -293,7 +295,7 @@ public class GameScreen implements Screen, InputProcessor {
                 items.remove(i);
             }
             else if (item.overlaps(player)) {
-                Gdx.app.log("DEBUG", "item overlaps player");
+//                Gdx.app.log("DEBUG", "item overlaps player");
                 player.pickUp(item);
                 items.remove(i);
             }
@@ -348,7 +350,7 @@ public class GameScreen implements Screen, InputProcessor {
         game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , 220);
         game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , 250);
         game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , 280);
-        game.font.draw(game.batch, "Effects: " + effects.size(), 0 , 340);
+        game.font.draw(game.batch, "Effects: " + effects.size() + " " + effectCounter, 0 , 340);
         game.batch.end();
 
         hud.draw();
@@ -419,10 +421,11 @@ public class GameScreen implements Screen, InputProcessor {
     private void superWeaponUse() {
         for (int i = 0; i < encounters.size() ; i++) {
             Encounter encounter = encounters.get(i);
-            Effect effect = deathAnimation;
-            effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-//            Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+//            Effect effect = deathAnimation;
+//            effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+            Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
             effects.add(effect);
+            effectCounter ++;
             player.setPoints(encounter.getPoints());
 
             if (loot_not_given) {

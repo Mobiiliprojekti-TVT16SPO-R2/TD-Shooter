@@ -23,13 +23,13 @@ public class Effect {
         this.speed = speed;
         stateTime = 0f;
         animationAtlas = new TextureAtlas("effects/Explosion/explosion_alienplane_center.txt");
-        deathAnimation = new Animation<TextureRegion>(0.015f, animationAtlas.findRegions("AlienFighter_Death_Explosion"));
+        deathAnimation = new Animation<TextureRegion>(0.015f, animationAtlas.findRegions("AlienFighter_Death_Explosion")); // 0.015f
     }
 
     public TextureRegion getCurrentFrame(float delta){
 
-        stateTime += delta;
-        TextureRegion currentFrame = deathAnimation.getKeyFrame(stateTime, true);
+        stateTime += Gdx.graphics.getDeltaTime();
+        TextureRegion currentFrame = deathAnimation.getKeyFrame(stateTime, false);
 //        Gdx.app.log("DEBUG", "state time: " + stateTime + " Key Frame index: " + deathAnimation.getKeyFrameIndex(stateTime));
 
         return currentFrame;
@@ -42,6 +42,8 @@ public class Effect {
     }
     public boolean isFinished() {
         if (deathAnimation.isAnimationFinished(stateTime)){
+                    Gdx.app.log("DEBUG", "state time: " + stateTime + " Key Frame index: " + deathAnimation.getKeyFrameIndex(stateTime));
+
             return true;
         }
         else {
