@@ -53,8 +53,15 @@ public class ShopScreen implements Screen, InputProcessor
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
-        atlas = (TextureAtlas)game.assets.get("Skin/glassy-ui.atlas");
-        skin = (Skin)game.assets.get("Skin/glassy-ui.json");
+//        atlas = (TextureAtlas)game.assets.get("Skin/glassy-ui.atlas");
+//        skin = (Skin)game.assets.get("Skin/glassy-ui.json");
+
+        skin = new Skin();
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+
+
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         quarterTexture = game.assets.get("Menu/Character_QuarterMaster.png");
         menuImage = new Image(menuBackground);

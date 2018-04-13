@@ -3,7 +3,6 @@ package tdshooter.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -27,6 +26,7 @@ public class Player extends Destroyable{
     private int weaponChoice = 0;
     private int turretCount = 1;
     private int cooldownReduction = 0;
+    private int superWeaponInt = 2;
     private long lastChangeTime;
     private ArrayList<Weapon> weapons;
 
@@ -171,6 +171,13 @@ public class Player extends Destroyable{
     }
 
     public void setPosition(float x, float y) {this.hitbox.x = x; this.hitbox.y = y;}
+
+    public int getSuperWeaponInt() {
+        return superWeaponInt;
+    }
+    public void setSuperWeaponInt(){
+        superWeaponInt --;
+    }
 
     public void addWeapon(Weapon weapon)
     {

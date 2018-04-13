@@ -37,10 +37,11 @@ public class ScrollingBackground extends Sprite
 
     private void checkForReset(Sprite sprite)
     {
-        if (sprite.getY() + sprite.getHeight() < 0)
+        if (sprite.getY() + sprite.getHeight() < 0 )
         {
-            sprite.translateY(sprite.getHeight());
+            sprite.translateY(sprite.getHeight() * 2);
         }
+
     }
 
     public void setScrollSpeed(float scrollSpeed) {this.scrollSpeed = scrollSpeed;}
