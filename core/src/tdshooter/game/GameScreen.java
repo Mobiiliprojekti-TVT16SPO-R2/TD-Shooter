@@ -82,11 +82,12 @@ public class GameScreen implements Screen, InputProcessor {
     private Table menuTable;
     private float soundVolume = 0.5f;
     private float musicVolume = 0.5f;
+    private boolean soundMuted = false;
+    private boolean musicMuted = false;
     private Slider soundSlider;
     private Slider musicSlider;
 
     private GameHUD hud;
-    private boolean soundMuted = false;
 
     public GameScreen(final TDShooterGdxGame game, String missionName) {
         this.game = game;
@@ -101,6 +102,18 @@ public class GameScreen implements Screen, InputProcessor {
         }
         if(options.contains("musicvolume")) {
             musicVolume = options.getFloat("musicvolume");
+        }
+        if(options.contains("soundmuted")) {
+            soundMuted = options.getBoolean("soundmuted");
+            if (soundMuted) {
+                soundVolume = 0.0f;
+            }
+        }
+        if(options.contains("musicmuted")) {
+            musicMuted = options.getBoolean("musicmuted");
+            if (musicMuted) {
+                musicVolume = 0.0f;
+            }
         }
 
         oldSoundIds = new ArrayList<Long>();
@@ -119,6 +132,7 @@ public class GameScreen implements Screen, InputProcessor {
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
         backgroundMusic = mission.getBackgroundMusic();
+        backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
         items = new ArrayList<Item>();
@@ -399,12 +413,21 @@ public class GameScreen implements Screen, InputProcessor {
         musicButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                if (backgroundMusic.isPlaying()) {
-                    backgroundMusic.pause();
+                if (musicMuted) {
+                    if(options.contains("musicvolume")) {
+                        musicVolume = options.getFloat("musicvolume");
+                    }
+                    musicMuted = false;
+                    backgroundMusic.setVolume(musicVolume);
+                    options.putBoolean("musicmuted", musicMuted);
+                    options.flush();
                 }
                 else {
+                    musicVolume = 0.0f;
+                    musicMuted = true;
                     backgroundMusic.setVolume(musicVolume);
-                    backgroundMusic.play();
+                    options.putBoolean("musicmuted", musicMuted);
+                    options.flush();
                 }
             }
         });
@@ -412,12 +435,18 @@ public class GameScreen implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y){
                 if (soundMuted) {
-                    soundVolume = 1.0f;
+                    if(options.contains("soundvolume")) {
+                        soundVolume = options.getFloat("soundvolume");
+                    }
                     soundMuted = false;
+                    options.putBoolean("soundmuted", soundMuted);
+                    options.flush();
                 }
                 else {
                     soundVolume = 0.0f;
                     soundMuted = true;
+                    options.putBoolean("soundmuted", soundMuted);
+                    options.flush();
                 }
             }
         });
@@ -428,14 +457,29 @@ public class GameScreen implements Screen, InputProcessor {
                 soundVolume = soundSlider.getValue();
                 options.putFloat("soundvolume", soundVolume);
                 options.flush();
+                if (soundVolume == 0.0f) {
+                    soundMuted = true;
+                } else {
+                    soundMuted = false;
+                }
+                options.putBoolean("soundmuted", soundMuted);
+                options.flush();
             }
         });
+
         musicSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 musicVolume = musicSlider.getValue();
                 backgroundMusic.setVolume(musicVolume);
                 options.putFloat("musicvolume", musicVolume);
+                options.flush();
+                if (musicVolume == 0.0f) {
+                    musicMuted = true;
+                } else {
+                    musicMuted = false;
+                }
+                options.putBoolean("musicmuted", musicMuted);
                 options.flush();
             }
         });
@@ -492,6 +536,7 @@ public class GameScreen implements Screen, InputProcessor {
 //        skin.dispose();
 //        atlas.dispose();
         stage.dispose();
+        backgroundMusic.stop();
         hud.dispose();
     }
 

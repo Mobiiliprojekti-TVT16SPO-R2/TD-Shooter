@@ -55,6 +55,9 @@ public class TDShooterGdxGame extends Game {
 		assets.load("powerups/PowerUp_HealthPack.png", Texture.class);
 		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
+		assets.load("Backgrounds/Map_1_Forest_VER3.png", Texture.class);
+		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
+		assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
 		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
