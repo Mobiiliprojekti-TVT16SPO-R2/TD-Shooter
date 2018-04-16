@@ -34,11 +34,11 @@ public class FlightPatternBuilder
         switch(flightType)
         {
             case LOW_F_SIN:
-                pattern = new SinCurveFlight(parent, 20, 1.0f);
+                pattern = new SinCurveFlight(parent, 30, 1.0f);
                 break;
 
             case HIGH_F_SIN:
-                pattern = new SinCurveFlight(parent, 20, 0.5f);
+                pattern = new SinCurveFlight(parent, 30, 0.5f);
                 break;
 
             case STRAIGHT_DOWN:
