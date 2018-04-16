@@ -36,7 +36,6 @@ public class TDShooterGdxGame extends Game {
 		generator.dispose();
 //		texture = new Texture("Backgrounds/Loading_test.png");
 
-
 		batch = new SpriteBatch();
         assets = new AssetManager();
 
@@ -75,10 +74,20 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/Character_Scientist.png", Texture.class);
 		assets.load("Menu/valikko-ylapalkki.png", Texture.class);
 		assets.load("Menu/valikko-puhekupla_Vaalennettu.png", Texture.class);
+		assets.load("Menu/Bridge_Screen_Map.png", Texture.class);
+		assets.load("Menu/Bridge_Screen_Map_with_lines.png", Texture.class);
+		assets.load("Menu/hangarvalikkoboksi.png", Texture.class);
+		assets.load("Menu/keskimmainen-normaali.png", Texture.class);
+		assets.load("Menu/keskimmainen-valittu.png", Texture.class);
+		assets.load("Menu/oikea-normaali.png", Texture.class);
+		assets.load("Menu/oikea-valittu.png", Texture.class);
+		assets.load("Menu/vasen-normaali.png", Texture.class);
+		assets.load("Menu/vasen-valittu.png", Texture.class);
+		assets.load("Menu/ylapalkki2.png", Texture.class);
+		assets.load("Menu/puhekupla.png", Texture.class);
 		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
 		assets.load("effects/flash_test.png", Texture.class);
-
 
 		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
 //		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
