@@ -306,7 +306,7 @@ public class GameScreen implements Screen, InputProcessor {
     private void gameWon() {
         saveCurrency();
         updateLevelProgess();
-        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), missionName, true));
         dispose();
     }
 
@@ -635,7 +635,7 @@ public class GameScreen implements Screen, InputProcessor {
         if(keycode == Input.Keys.BACK) {
             gamePaused = true;
         }
-        return false;
+        return true;
     }
 
     @Override

@@ -65,7 +65,11 @@ public class StageFailedScreen implements Screen {
     }
 
     @Override
-    public void show() {
+    public void show()
+    {
+        Table table = new Table();
+        table.setFillParent(true);
+
         TextButton retryButton = new TextButton("Retry", skin);
         TextButton missionMenuButton = new TextButton("Missions", skin);
         retryButton.addListener(new EventListener() {
@@ -87,9 +91,6 @@ public class StageFailedScreen implements Screen {
 
         Label missionFailedLabel = new Label("Dead!", skin);
         missionFailedLabel.setFontScale(2);
-
-        Table table = new Table();
-        table.setFillParent(true);
 
         table.add(missionFailedLabel).center().colspan(2);
         table.row();
