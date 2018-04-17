@@ -400,6 +400,9 @@ public class GameScreen implements Screen, InputProcessor {
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
             }
+            if (encounter instanceof Boss) {
+                ((Boss) encounter).spawnWeaklings(encounters);
+            }
         }
         for (Item item : items){
             item.update();
