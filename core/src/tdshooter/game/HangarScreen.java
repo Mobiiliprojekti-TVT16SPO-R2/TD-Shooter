@@ -38,6 +38,7 @@ public class HangarScreen implements Screen, InputProcessor {
     private Image scientistImage;
     private Texture menuBackground;
     private Texture scientistTexture;
+    private MenuTopBar menuTopBar;
 
 
     public HangarScreen(final  TDShooterGdxGame gam){
@@ -62,10 +63,12 @@ public class HangarScreen implements Screen, InputProcessor {
         menuImage = new Image(menuBackground);
         scientistImage = new Image(scientistTexture);
 
-
         stage = new Stage(viewport, game.batch);
 
+        menuTopBar = new MenuTopBar(viewport, skin, game, 2);
+
         InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(menuTopBar);
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
@@ -76,41 +79,11 @@ public class HangarScreen implements Screen, InputProcessor {
     @Override
     public void show() {
 
-        // Luodaan painikkeet
-        TextButton bridgeButton = new TextButton("Bridge", skin);
-        TextButton hangarButton = new TextButton("Hangar", skin);
-        TextButton shopButton = new TextButton("Shop", skin);
-
-        bridgeButton.setWidth(240);
-        hangarButton.setWidth(240);
-        shopButton.setWidth(240);
-
-        bridgeButton.setPosition(0, VIEWPORTHEIGHT - bridgeButton.getHeight());
-        shopButton.setPosition(VIEWPORTWIDTH / 2, VIEWPORTHEIGHT - shopButton.getHeight());
-        hangarButton.setPosition(bridgeButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
-        shopButton.setPosition(bridgeButton.getWidth() + hangarButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight());
-
-        shopButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new ShopScreen(game));
-            }
-        });
-        bridgeButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MissionsMenu(game));
-            }
-        });
-
         scientistImage.setScale(0.7f);
         scientistImage.setPosition(-50, 100);
 
         stage.addActor(menuImage);
         stage.addActor(scientistImage);
-        stage.addActor(bridgeButton);
-        stage.addActor(shopButton);
-        stage.addActor(hangarButton);
     }
 
     @Override
@@ -121,6 +94,8 @@ public class HangarScreen implements Screen, InputProcessor {
         stage.act();
         stage.draw();
 
+        menuTopBar.update(delta);
+        menuTopBar.draw();
     }
 
     @Override
@@ -145,7 +120,8 @@ public class HangarScreen implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
+        menuTopBar.dispose();
     }
 
     @Override

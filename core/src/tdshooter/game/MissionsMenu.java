@@ -40,11 +40,9 @@ public class MissionsMenu implements Screen, InputProcessor {
     private TextureAtlas atlas;
     private Texture menuBackground;
     private Texture commanderTexture;
-    private Texture topbarTexture;
     private Texture missionMapTexture;
     private Image commanderImage;
     private Image menuImage;
-    private Image topbarImage;
     private Image missionMapImage;
     private ArrayList<String> missionNameList;
     private ButtonGroup missionsButtonGroup;
@@ -71,12 +69,10 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         commanderTexture = game.assets.get("Menu/Character_Commander.png");
-        topbarTexture = game.assets.get("Menu/valikko-ylapalkki.png");
         missionMapTexture = game.assets.get("Menu/Bridge_Screen_Map_with_lines.png");
 
         menuImage = new Image(menuBackground);
         commanderImage = new Image(commanderTexture);
-        topbarImage = new Image(topbarTexture);
         missionMapImage = new Image(missionMapTexture);
 
         missionsButtonGroup = new ButtonGroup();
@@ -85,10 +81,11 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         stage = new Stage(viewport, game.batch);
 
-        menuTopBar = new MenuTopBar(viewport, skin, game);
+        menuTopBar = new MenuTopBar(viewport, skin, game, 1);
         dialog = new PopupDialog(viewport, game.batch, skin, game.assets);
         InputMultiplexer multiplexer = new InputMultiplexer();
-        //multiplexer.addProcessor(dialog);
+        //multiplexer.addProcessor(dialog);  // for enabling popup message tap-checkouts
+        multiplexer.addProcessor(menuTopBar);  // enabling menuTopBar buttons
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
@@ -103,9 +100,6 @@ public class MissionsMenu implements Screen, InputProcessor {
         dialog.setSize(VIEWPORTWIDTH, 360);
         // Luodaan painikkeet
         TextButton launchButton = new TextButton("Launch", skin);
-        TextButton bridgeButton = new TextButton("Bridge", skin);
-        TextButton hangarButton = new TextButton("Hangar", skin);
-        TextButton shopButton = new TextButton("Shop", skin);
 
         TextButton mission01 = new TextButton("    1", skin, "toggle");
         TextButton mission02 = new TextButton("    2", skin, "toggle");
@@ -113,16 +107,6 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         Label currencyLabel = new Label("Currency: 0", skin);
         currencyLabel.setPosition(VIEWPORTWIDTH - 200, VIEWPORTHEIGHT - TOPBARHEIGHT);
-
-        topbarImage.setWidth(VIEWPORTWIDTH);
-        topbarImage.setPosition(0, VIEWPORTHEIGHT - topbarImage.getHeight());  //VIEWPORTHEIGHT - topbarImage.getImageY()
-
-        bridgeButton.setWidth(190);
-        bridgeButton.setHeight(110);
-        hangarButton.setWidth(195);
-        hangarButton.setHeight(110);
-        shopButton.setWidth(190);
-        shopButton.setHeight(110);
 
         // Asetetaan mission-painikkeiden kooot
         mission01.setWidth(60);
@@ -136,10 +120,6 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         // Asetetaan luotujen painikkeiden paikat
         launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth(), 600);
-
-        bridgeButton.setPosition(70, VIEWPORTHEIGHT - bridgeButton.getHeight() - TOPBARHEIGHT);
-        hangarButton.setPosition(70 + bridgeButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight() - TOPBARHEIGHT);
-        shopButton.setPosition(70 + bridgeButton.getWidth() + hangarButton.getWidth(), VIEWPORTHEIGHT - hangarButton.getHeight() - TOPBARHEIGHT);
 
         // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
         missionsButtonGroup.add(mission01);
@@ -198,26 +178,6 @@ public class MissionsMenu implements Screen, InputProcessor {
 
             }
         });
-        bridgeButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-
-            }
-        });
-        hangarButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new HangarScreen(game));
-            }
-        });
-
-
-        shopButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new ShopScreen(game));
-            }
-        });
 
         missionMapImage.setHeight(920);
         missionMapImage.setWidth(410);
@@ -232,16 +192,13 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         stage.addActor(currencyLabel);
         stage.addActor(menuImage);
-        stage.addActor(topbarImage);
         stage.addActor(missionMapImage);
         stage.addActor(commanderImage);
         stage.addActor(launchButton);
-        stage.addActor(bridgeButton);
-        stage.addActor(shopButton);
-        stage.addActor(hangarButton);
         stage.addActor(mission01);
         stage.addActor(mission02);
         stage.addActor(mission03);
+
     }
 
     @Override
@@ -290,6 +247,7 @@ public class MissionsMenu implements Screen, InputProcessor {
 //        skin.dispose();
         stage.dispose();
         dialog.dispose();
+        menuTopBar.dispose();
 
     }
 
