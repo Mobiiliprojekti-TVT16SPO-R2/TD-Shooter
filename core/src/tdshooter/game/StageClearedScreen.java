@@ -15,15 +15,18 @@ public class StageClearedScreen implements Screen {
     private int healthLeft;
     private int earnedCurrency;
     private int totalCurrency;
+    private int highscore;
     private float runningTime;
     private float waitTime;
+    private boolean newHighscore;
 
-    public StageClearedScreen(final TDShooterGdxGame game, int earnedCurrency, int healthLeft)
+    public StageClearedScreen(final TDShooterGdxGame game, int earnedCurrency, int healthLeft, String missionName, boolean newHighscore)
     {
         this.game = game;
         this.earnedCurrency = earnedCurrency;
         this.healthLeft = healthLeft;
         this.totalCurrency = 0;
+        this.newHighscore = newHighscore;
         runningTime = 0;
         waitTime = 2.0f;
 
@@ -32,6 +35,12 @@ public class StageClearedScreen implements Screen {
         if(prefs.contains(currencyKey))
         {
             totalCurrency = prefs.getInteger(currencyKey);
+        }
+        String highscoreKey = "highscore" + missionName;
+
+        if (prefs.contains(highscoreKey))
+        {
+                highscore = prefs.getInteger(highscoreKey);
         }
 
         camera = new OrthographicCamera();
@@ -53,6 +62,12 @@ public class StageClearedScreen implements Screen {
         game.font.draw(game.batch, "Currency Earned: " + earnedCurrency, 100, 580);
         game.font.draw(game.batch, "Total Currency: " + totalCurrency, 100, 560);
         game.font.draw(game.batch, "Player Health Left: " + healthLeft, 100, 540);
+        if (newHighscore){
+            game.font.draw(game.batch, "New Highscore!!! " + highscore, 100, 620);
+        }
+        else {
+            game.font.draw(game.batch, "Highscore: " + highscore, 100, 620);
+        }
         game.batch.end();
 
         if (Gdx.input.isTouched()) {

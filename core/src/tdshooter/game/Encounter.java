@@ -29,7 +29,7 @@ public class Encounter extends Destroyable{
         this.points = points;
     }
 
-    public void update(){
+    public void update(float delta){
         this.hitbox.y -= this.speed * Gdx.graphics.getDeltaTime();
     }
 

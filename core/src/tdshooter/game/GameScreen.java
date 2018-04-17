@@ -48,7 +48,7 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean gamePaused = false;
     private Player player;
     private ScrollingBackground background;
-//    private Music backgroundMusic;
+    private Music backgroundMusic;
     private OrthographicCamera camera;
     private ArrayList<Encounter> encounters;
     private ArrayList<Projectile> playerProjectiles;
@@ -58,7 +58,7 @@ public class GameScreen implements Screen, InputProcessor {
     private ArrayList<Effect> effects;
 
     private int encountersDestroyed;
-//    private ArrayList<Long> oldSoundIds;
+    private ArrayList<Long> oldSoundIds;
 
     private int fps;
     private Skin skin;
@@ -80,12 +80,15 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean loot_not_given;
     private String missionName;
 
+    private int missionNumber;
+
     private GameHUD hud;
     private Effect deathAnimation;
     private int effectCounter = 0;
+    private boolean newHighscore = false;
     InputMultiplexer multiplexer;
 
-    public GameScreen(final TDShooterGdxGame game, String missionName) {
+    public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
         this.game = game;
         camera = new OrthographicCamera();
         encounters = new ArrayList<Encounter>();
@@ -96,7 +99,10 @@ public class GameScreen implements Screen, InputProcessor {
 
 //        deathAnimation = new Effect(800, 1300, 0);
 
+        this.missionNumber = missionNumber;
+
         options = Gdx.app.getPreferences("options");
+
         if(options.contains("soundvolume")) {
             soundVolume = options.getFloat("soundvolume");
         }
@@ -116,7 +122,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-//        oldSoundIds = new ArrayList<Long>();
+        oldSoundIds = new ArrayList<Long>();
 
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
@@ -137,18 +143,16 @@ public class GameScreen implements Screen, InputProcessor {
 
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
-//        backgroundMusic = mission.getBackgroundMusic();
-//        backgroundMusic.setLooping(true);
-//        backgroundMusic.setVolume(musicVolume);
-//        backgroundMusic.play();
+        backgroundMusic = mission.getBackgroundMusic();
+        backgroundMusic.setLooping(true);
+        backgroundMusic.setVolume(musicVolume);
+        backgroundMusic.play();
 
-
-        hud = new GameHUD(viewport, game.batch, (Skin) skin, player);
-
+        hud = new GameHUD(viewport, game.batch, skin, player);
 
         //Play sound Effects once, to initialize prev_sound_id
-//        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
-//        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
 
         stage = new Stage(viewport, game.batch);
 
@@ -183,7 +187,7 @@ public class GameScreen implements Screen, InputProcessor {
             processUserInput();
 
             if (mission.isMissionOver()) {
-                endGame();
+                gameWon();
             }
 
             moveAllObjects(delta);
@@ -192,8 +196,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         drawAllObjects(delta);
     }
-
-
 
     private void processUserInput() {
         if(Gdx.input.isTouched() || Gdx.input.isTouched(1) || Gdx.input.isTouched(2)) {
@@ -236,16 +238,16 @@ public class GameScreen implements Screen, InputProcessor {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-//                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
-//                oldSoundIds.remove(0); // remove oldest
-//                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
+                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                oldSoundIds.remove(0); // remove oldest
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
                 if (bullet.overlaps(encounter)){
-//                    ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
-//                    oldSoundIds.remove(0); // remove oldest
-//                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
+                    ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                    oldSoundIds.remove(0); // remove oldest
+                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed() && loot_not_given){
@@ -278,15 +280,15 @@ public class GameScreen implements Screen, InputProcessor {
                 enemyProjectiles.remove(i);
             }
             else if (bullet.overlaps(player)){
-//                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
-//                oldSoundIds.remove(0); // remove oldest
-//                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume));
+                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                oldSoundIds.remove(0); // remove oldest
+                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume));
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
         }
         if (player.isDestroyed()){
-            endGame();
+            gameLost();
         }
 
         for (int i = 0; i < items.size(); i++) {
@@ -302,9 +304,26 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
-    private void endGame() {
+    private void gameWon() {
         saveCurrency();
-        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints()));
+        updateLevelProgess();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints(), missionName, newHighscore));
+        dispose();
+    }
+
+    private void updateLevelProgess() {
+        Preferences prefs = Gdx.app.getPreferences("savedata");
+        int levelProgress = prefs.getInteger("levelprogress", 1);
+        if (levelProgress == missionNumber) {
+            levelProgress++;
+        }
+        prefs.putInteger("levelprogress", levelProgress);
+        prefs.flush();
+    }
+
+    private void gameLost() {
+        saveCurrency();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints(), missionName, newHighscore));
         dispose();
     }
 
@@ -377,7 +396,7 @@ public class GameScreen implements Screen, InputProcessor {
             bullet.update();
         }
         for (Encounter encounter : encounters){
-            encounter.update();
+            encounter.update(delta);
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
             }
@@ -413,28 +432,48 @@ public class GameScreen implements Screen, InputProcessor {
         {
             totalCurrency = earnedCurrency;
         }
+        String highscoreKey = "highscore" + missionName;
+        int thisScore = player.getPoints();
+        int oldHighscore;
+
+        if (prefs.contains(highscoreKey)) {
+            oldHighscore = prefs.getInteger(highscoreKey);
+            if (thisScore > oldHighscore) {
+                prefs.putInteger(highscoreKey,thisScore);
+                newHighscore = true;
+            }
+        }
 
         prefs.putInteger(currencyKey, totalCurrency);
         prefs.flush();
     }
 
     private void superWeaponUse() {
-        for (int i = 0; i < encounters.size() ; i++) {
-            Encounter encounter = encounters.get(i);
-//            Effect effect = deathAnimation;
-//            effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-            Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-            effects.add(effect);
-            effectCounter ++;
-            player.setPoints(encounter.getPoints());
 
-            if (loot_not_given) {
-                encounter.dropItem(items);
-                loot_not_given = false;
+        for (int i = 0; i < encounters.size() ; ) {
+
+            Encounter encounter = encounters.get(i);
+
+            if (!(encounter instanceof Boss)) {
+                encounter.getsDamage(250);
             }
-            loot_not_given = true;
+            if (encounter.isDestroyed()) {
+                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                effects.add(effect);
+                effectCounter ++;
+                player.setPoints(encounter.getPoints());
+                if (loot_not_given) {
+                    encounter.dropItem(items);
+                    loot_not_given = false;
+                }
+                loot_not_given = true;
+                encounters.remove(i);
+            }
+            else {
+                i++;
+            }
         }
-        encounters.clear();
+//        encounters.clear();
         superWeapon = true;
     }
 
@@ -472,7 +511,7 @@ public class GameScreen implements Screen, InputProcessor {
         restartButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game, missionName));
+                game.setScreen(new GameScreen(game, missionName, missionNumber));
             }
         });
         exitButton.addListener(new ClickListener(){
@@ -490,14 +529,14 @@ public class GameScreen implements Screen, InputProcessor {
                         musicVolume = options.getFloat("musicvolume");
                     }
                     musicMuted = false;
-//                    backgroundMusic.setVolume(musicVolume);
+                    backgroundMusic.setVolume(musicVolume);
                     options.putBoolean("musicmuted", musicMuted);
                     options.flush();
                 }
                 else {
                     musicVolume = 0.0f;
                     musicMuted = true;
-//                    backgroundMusic.setVolume(musicVolume);
+                    backgroundMusic.setVolume(musicVolume);
                     options.putBoolean("musicmuted", musicMuted);
                     options.flush();
                 }
@@ -543,7 +582,7 @@ public class GameScreen implements Screen, InputProcessor {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 musicVolume = musicSlider.getValue();
-//                backgroundMusic.setVolume(musicVolume);
+                backgroundMusic.setVolume(musicVolume);
                 options.putFloat("musicvolume", musicVolume);
                 options.flush();
                 if (musicVolume == 0.0f) {
@@ -609,7 +648,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void dispose() {
 //        skin.dispose();
         stage.dispose();
-//        backgroundMusic.stop();
+        backgroundMusic.stop();
         hud.dispose();
     }
 
