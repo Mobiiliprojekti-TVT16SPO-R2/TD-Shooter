@@ -95,9 +95,9 @@ public class MissionsMenu implements Screen, InputProcessor {
     @Override
     public void show() {
 
-        int TOPBARHEIGHT = 60;
-
         dialog.setSize(VIEWPORTWIDTH, 360);
+        int missionbuttonDiameter = 80;
+
         // Luodaan painikkeet
         TextButton launchButton = new TextButton("Launch", skin);
 
@@ -105,18 +105,15 @@ public class MissionsMenu implements Screen, InputProcessor {
         TextButton mission02 = new TextButton("    2", skin, "toggle");
         TextButton mission03 = new TextButton("    3", skin, "toggle");
 
-        Label currencyLabel = new Label("Currency: 0", skin);
-        currencyLabel.setPosition(VIEWPORTWIDTH - 200, VIEWPORTHEIGHT - TOPBARHEIGHT);
-
         // Asetetaan mission-painikkeiden kooot
-        mission01.setWidth(60);
-        mission01.setHeight(60);
+        mission01.setWidth(missionbuttonDiameter);
+        mission01.setHeight(missionbuttonDiameter);
 
-        mission02.setWidth(60);
-        mission02.setHeight(60);
+        mission02.setWidth(missionbuttonDiameter);
+        mission02.setHeight(missionbuttonDiameter);
 
-        mission03.setWidth(60);
-        mission03.setHeight(60);
+        mission03.setWidth(missionbuttonDiameter);
+        mission03.setHeight(missionbuttonDiameter);
 
         // Asetetaan luotujen painikkeiden paikat
         launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth(), 600);
@@ -190,7 +187,6 @@ public class MissionsMenu implements Screen, InputProcessor {
         commanderImage.setScale(0.7f);
         commanderImage.setPosition(-100, 100);
 
-        stage.addActor(currencyLabel);
         stage.addActor(menuImage);
         stage.addActor(missionMapImage);
         stage.addActor(commanderImage);

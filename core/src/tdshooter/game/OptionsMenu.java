@@ -81,31 +81,31 @@ public class OptionsMenu implements Screen, InputProcessor {
         }
         musicLabel = new Label("Music volume", skin);
         //musicLabel.setScale(1,1);
-        musicLabel.setPosition(150, 550);
+        musicLabel.setPosition(150, 460);
 
         soundLabel = new Label("Soundeffects volume", skin);
         //soundLabel.setScale(1,1);
-        soundLabel.setPosition(150, 650);
+        soundLabel.setPosition(150, 660);
 
         stage = new Stage(viewport, game.batch);
 
         soundButton = new TextButton("", skin, "small");
         soundButton.setWidth(50);
-        soundButton.setPosition(150,580);
+        soundButton.setPosition(150,550);
 
         musicButton = new TextButton("", skin, "small");
         musicButton.setWidth(50);
-        musicButton.setPosition(150,380);
+        musicButton.setPosition(150,350);
 
         soundSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
         soundSlider.setValue(soundVolume);
         soundSlider.setWidth(400);
-        soundSlider.setPosition(220, 600);
+        soundSlider.setPosition(220, 580);
 
         musicSlider = new Slider(0.0f, 1.0f,0.01f, false, skin);
         musicSlider.setValue(musicVolume);
         musicSlider.setWidth(400);
-        musicSlider.setPosition(220, 400);
+        musicSlider.setPosition(220, 380);
 
         musicButton.addListener(new ClickListener(){
             @Override

@@ -56,7 +56,6 @@ public class HangarScreen implements Screen, InputProcessor {
         skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
         skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
-
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         scientistTexture = game.assets.get("Menu/Character_Scientist.png");
 
