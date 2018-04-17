@@ -85,7 +85,7 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         stage = new Stage(viewport, game.batch);
 
-        menuTopBar = new MenuTopBar(viewport, game.batch, skin, game.assets);
+        menuTopBar = new MenuTopBar(viewport, skin, game);
         dialog = new PopupDialog(viewport, game.batch, skin, game.assets);
         InputMultiplexer multiplexer = new InputMultiplexer();
         //multiplexer.addProcessor(dialog);
@@ -251,6 +251,9 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         stage.act();
         stage.draw();
+
+        menuTopBar.update(delta);
+        menuTopBar.draw();
 
         dialog.update(delta);
         dialog.draw();
