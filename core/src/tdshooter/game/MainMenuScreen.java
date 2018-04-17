@@ -47,7 +47,7 @@ public class MainMenuScreen implements Screen {
         skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
         skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
-        menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
+        menuBackground = game.assets.get("Menu/Background_StartMenu.png");
         menuImage = new Image(menuBackground);
         menuImage.setHeight(VIEWPORTHEIGHT);
         menuImage.setWidth(VIEWPORTWIDTH);
