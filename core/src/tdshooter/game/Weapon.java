@@ -44,17 +44,23 @@ class Weapon {
         //first create bulletmodel by type
         switch (projectileType) {
             case 1:
-                bulletModel = new Projectile(-500,0, 24, 32, 5, 1000, bulletImage1);
+                bulletModel = new Projectile(-500,0, 24, 32, 5, 1200, bulletImage1);
                 break;
             case 2:
-                bulletModel = new Projectile(-500,0, 18, 64, 10, 2000, bulletImage1);
+                bulletModel = new Projectile(-500,0, 18, 64, 8, 2000, bulletImage1);
                 break;
             case 3:
-                bulletModel = new Projectile(-500,0, 32, 48, 13, 1400, bulletImage2);
+                bulletModel = new Projectile(-500,0, 18, 72, 12, 2500, bulletImage2);
+                break;
+            case 4:
+                bulletModel = new Projectile(-500,0, 18, 80, 16, 3000, bulletImage2);
+                break;
+            case 5:
+                bulletModel = new Projectile(-500,0, 32, 48, 10, 2200, bulletImage2);
                 break;
 
                 //ENEMY BULLETS HERE
-            case 4:
+            case 6:
                 bulletModel = new Projectile(-500,0, 24, 24, 5, -500, bulletImage3);
                 break;
             default: //same as basic
@@ -160,12 +166,17 @@ class Weapon {
                 default:
                     break;
             }
+
+            firingSound.play(0.8f);
+
             lastBulletTime = TimeUtils.nanoTime();
         }
     }
 
-    public void setTurretCount(int turretCount) {
-        this.turretCount = turretCount;
+    public void upgradeTurretCount(int turretCount) {
+        if (this.turretCount < turretCount) {
+            this.turretCount = turretCount;
+        }
     }
 
     public void setCooldownReduction(int percent) {
@@ -176,29 +187,3 @@ class Weapon {
 //        Gdx.app.log("DEBUG", "new CDR is: " + this.cooldownReduction);
     }
 }
-
-//
-//    private void spawnBullet() {
-//        Projectile bullet = new Projectile((int)player.hitbox.x + 96 - 6,(int)player.hitbox.y + 42,
-//                24, 36, 5, 800, 35, bulletImage);
-//
-//        playerProjectiles.add(bullet);
-//
-//        Projectile bullet2 = new Projectile((int)player.hitbox.x - 6,(int)player.hitbox.y + 42,
-//                24, 36, 5, 800, -35, bulletImage);
-//        playerProjectiles.add(bullet2);
-//
-//        Projectile bullet3 = new Projectile((int)player.hitbox.x + 72 - 6,(int)player.hitbox.y + 50,
-//                24, 36, 5, 800, 25, bulletImage);
-//        playerProjectiles.add(bullet3);
-//
-//        Projectile bullet4 = new Projectile((int)player.hitbox.x + 24 - 6,(int)player.hitbox.y + 50,
-//                24, 36, 5, 800,  -25,  bulletImage);
-//        playerProjectiles.add(bullet4);
-//
-//        Projectile bullet5 = new Projectile((int)player.hitbox.x + 48 - 6,(int)player.hitbox.y + 58,
-//                24, 36, 5, 800, bulletImage);
-//        playerProjectiles.add(bullet5);
-//
-//    }
-
