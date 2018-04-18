@@ -102,14 +102,14 @@ public class MenuTopBar extends Stage {
         shopButton.setWidth(190);
         shopButton.setHeight(110);
 
-        leftButtonOnImage.setWidth(190);
-        leftButtonOnImage.setHeight(110);
         leftButtonOffImage.setWidth(190);
         leftButtonOffImage.setHeight(110);
+        leftButtonOnImage.setWidth(190);
+        leftButtonOnImage.setHeight(110);
         middleButtonOffImage.setWidth(195);
         middleButtonOffImage.setHeight(110);
         middleButtonOnImage.setWidth(195);
-        middleButtonOffImage.setHeight(110);
+        middleButtonOnImage.setHeight(110);
         rightButtonOffImage.setWidth(190);
         rightButtonOffImage.setHeight(110);
         rightButtonOnImage.setWidth(190);
