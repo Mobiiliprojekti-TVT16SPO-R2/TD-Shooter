@@ -1,8 +1,8 @@
 taustakuvan avainsana
 musiikin avainsana
-tehtävän lopetusaika
+tehtï¿½vï¿½n lopetusaika
 taustan skrollausnopeus
 looppaako taustakuva (0, 1)
-vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum), x koordinaatti, y koordinaatti, spawnaika
-toisen vihollisen tyyppi, x, y, aika
+vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum), x koordinaatti, y koordinaatti, spawnaika, item type, flight type
+toisen vihollisen tyyppi, x, y, aika, item, flight
 3. vihollinen jne.

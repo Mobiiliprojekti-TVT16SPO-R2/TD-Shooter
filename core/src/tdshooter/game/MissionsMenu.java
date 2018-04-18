@@ -248,7 +248,7 @@ public class MissionsMenu implements Screen, InputProcessor {
         if (keycode == Input.Keys.BACK) {
             game.setScreen(new MainMenuScreen(game));
             dispose();
-
+            return true;
         }
         return false;
     }
