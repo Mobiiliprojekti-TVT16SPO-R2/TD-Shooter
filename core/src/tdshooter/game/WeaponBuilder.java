@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
  */
 enum WeaponType
 {
-    WEAPON01(0), WEAPON02(1), WEAPON03(2);
+    WEAPON01_LVL1(0), WEAPON01_LVL2(1), WEAPON01_LVL3(2),
+    WEAPON02_LVL1(3), WEAPON02_LVL2(4), WEAPON02_LVL3(5),
+    WEAPON03_LVL1(6), WEAPON03_LVL2(7), WEAPON03_LVL3(8);
 
     private int value;
 
@@ -39,22 +41,42 @@ public class WeaponBuilder
     static public Weapon create(WeaponType weaponType, AssetManager assets)
     {
 
-        Sound firingSound1 = assets.get("Sounds/hitSound.wav");
+        Sound firingSound1 = assets.get("Sounds/gun1.wav");
+        Sound firingSound2 = assets.get("Sounds/gun2.wav");
+        Sound firingSound3 = assets.get("Sounds/shotgun.wav");
         Texture firingImage1 = assets.get("Bullets/bullet1_small.png");
 
         Weapon weapon;
         switch(weaponType)
         {
-            case WEAPON01:
-                weapon = new Weapon(1, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+            case WEAPON01_LVL1:
+                weapon = new Weapon(2, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+                break;
+            case WEAPON01_LVL2:
+                weapon = new Weapon(3, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
+                break;
+            case WEAPON01_LVL3:
+                weapon = new Weapon(4, 1, (long) 70000000, false, 20, firingSound1, firingImage1);
                 break;
 
-            case WEAPON02:
-                weapon = new Weapon(1, 2, (long) 90000000, false, 0, firingSound1, firingImage1);
+            case WEAPON02_LVL1:
+                weapon = new Weapon(2, 2, (long) 90000000, false, 0, firingSound2, firingImage1);
+                break;
+            case WEAPON02_LVL2:
+                weapon = new Weapon(2, 3, (long) 90000000, false, 0, firingSound2, firingImage1);
+                break;
+            case WEAPON02_LVL3:
+                weapon = new Weapon(2, 4, (long) 90000000, false, 0, firingSound2, firingImage1);
                 break;
 
-            case WEAPON03:
-                weapon = new Weapon(1, 3, (long) 300000000, false, 80, firingSound1, firingImage1);
+            case WEAPON03_LVL1:
+                weapon = new Weapon(5, 5, (long) 300000000, false, 80, firingSound3, firingImage1);
+                break;
+            case WEAPON03_LVL2:
+                weapon = new Weapon(6, 5, (long) 300000000, false, 90, firingSound3, firingImage1);
+                break;
+            case WEAPON03_LVL3:
+                weapon = new Weapon(7, 5, (long) 300000000, false, 100, firingSound3, firingImage1);
                 break;
 
             default:
