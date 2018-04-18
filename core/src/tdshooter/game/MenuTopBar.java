@@ -214,20 +214,20 @@ public class MenuTopBar extends Stage {
     public void setNextScreen() {
         switch (screenToSet) {
             case 1:
-                game.setScreen(new MissionsMenu(game));
                 dispose();
+                game.setScreen(new MissionsMenu(game));
                 break;
             case 2:
-                game.setScreen(new HangarScreen(game));
                 dispose();
+                game.setScreen(new HangarScreen(game));
                 break;
             case 3:
-                game.setScreen(new ShopScreen(game));
                 dispose();
+                game.setScreen(new ShopScreen(game));
                 break;
             default:
-                game.setScreen(new MissionsMenu(game));
                 dispose();
+                game.setScreen(new MissionsMenu(game));
                 break;
         }
     }
@@ -239,4 +239,6 @@ public class MenuTopBar extends Stage {
     public boolean isReadyForNextScreen() {
         return readyForNextScreen;
     }
+
+
 }
