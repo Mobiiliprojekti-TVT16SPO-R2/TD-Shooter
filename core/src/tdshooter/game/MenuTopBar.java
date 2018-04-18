@@ -89,7 +89,6 @@ public class MenuTopBar extends Stage {
         textButtonStyle.downFontColor = Color.YELLOW;
         textButtonStyle.fontColor = Color.BLACK;
 
-
         bridgeButton = new TextButton("Bridge", textButtonStyle);
         hangarButton = new TextButton("Hangar", textButtonStyle);
         shopButton = new TextButton("Shop", textButtonStyle);

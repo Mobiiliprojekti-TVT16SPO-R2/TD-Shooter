@@ -36,10 +36,16 @@ public class ShopScreen implements Screen, InputProcessor
     private Texture menuBackground;
     private Texture quarterTexture;
     private MenuTopBar menuTopBar;
+    private ShopItemSlot armorShopitem;
+    private ShopItemSlot weapon1Shopitem;
+    private ShopItemSlot weapon2Shopitem;
+    private ShopItemSlot weapon3Shopitem;
 
     private int currentCurrency;
     private int weapon01Level;
-    private final int maxWeapon01Level = 3;
+    private int weapon02Level;
+    private int weapon03Level;
+    private final int maxWeaponLevel = 3;
 
     public ShopScreen(final TDShooterGdxGame game)
     {
@@ -73,10 +79,32 @@ public class ShopScreen implements Screen, InputProcessor
             weapon01Level = 0;
         }
 
+        if(prefs.contains("weapon02")) {
+            weapon02Level = prefs.getInteger("weapon02");
+        } else {
+            weapon02Level = 0;
+        }
+
+        if(prefs.contains("weapon03")) {
+            weapon03Level = prefs.getInteger("weapon03");
+        } else {
+            weapon03Level = 0;
+        }
+
+        armorShopitem = new ShopItemSlot(viewport, skin, game, 1, 0);
+        weapon1Shopitem = new ShopItemSlot(viewport, skin, game, 2, weapon01Level);
+        weapon2Shopitem = new ShopItemSlot(viewport, skin, game, 3, weapon02Level);
+        weapon3Shopitem = new ShopItemSlot(viewport, skin, game, 4, weapon03Level);
+
+        armorShopitem.setPosition(300,300);
 
         menuTopBar = new MenuTopBar(viewport, skin, game, 3);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(armorShopitem);
+        multiplexer.addProcessor(weapon1Shopitem);
+        multiplexer.addProcessor(weapon2Shopitem);
+        multiplexer.addProcessor(weapon3Shopitem);
         multiplexer.addProcessor(menuTopBar);
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(this);
@@ -100,7 +128,7 @@ public class ShopScreen implements Screen, InputProcessor
                 int cost = 20;
                 if(currentCurrency - cost >= 0)
                 {
-                    if(weapon01Level < maxWeapon01Level)
+                    if(weapon01Level < maxWeaponLevel)
                     {
                         currentCurrency -= cost;
                         weapon01Level++;
