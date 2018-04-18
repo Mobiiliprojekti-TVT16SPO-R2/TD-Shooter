@@ -38,7 +38,7 @@ public class ShootingEnemy extends Encounter {
         this.shootRNG = shootRNG;
 
         bulletImage = (Texture) assets.get("Bullets/alien_bullet_test.png");
-        firingSound1 = (Sound) assets.get("hitSound.wav");
+        firingSound1 = (Sound) assets.get("Sounds/hitSound.wav");
         firingImage1 = (Texture) assets.get("Bullets/bullet1_small.png");
 
         weapon1 = new Weapon(this.turretCount, 4, this.cooldownTime, false, this.spread, firingSound1, firingImage1);

@@ -150,8 +150,8 @@ public class GameScreen implements Screen, InputProcessor {
         hud = new GameHUD(viewport, game.batch, skin, player);
 
         //Play sound Effects once, to initialize prev_sound_id
-        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
-        oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(0.0f));
 
         stage = new Stage(viewport, game.batch);
 
@@ -238,16 +238,16 @@ public class GameScreen implements Screen, InputProcessor {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                ((Sound)game.assets.get("Sounds/hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
+                oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(soundVolume)); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
                 if (bullet.overlaps(encounter)){
-                    ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                    ((Sound)game.assets.get("Sounds/hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                     oldSoundIds.remove(0); // remove oldest
-                    oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume)); // play and add new
+                    oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(soundVolume)); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed() && loot_not_given){
@@ -280,9 +280,9 @@ public class GameScreen implements Screen, InputProcessor {
                 enemyProjectiles.remove(i);
             }
             else if (bullet.overlaps(player)){
-                ((Sound)game.assets.get("hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                ((Sound)game.assets.get("Sounds/hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("hitSound.wav")).play(soundVolume));
+                oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(soundVolume));
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }

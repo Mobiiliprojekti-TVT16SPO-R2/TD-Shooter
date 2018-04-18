@@ -39,7 +39,7 @@ public class WeaponBuilder
     static public Weapon create(WeaponType weaponType, AssetManager assets)
     {
 
-        Sound firingSound1 = assets.get("hitSound.wav");
+        Sound firingSound1 = assets.get("Sounds/hitSound.wav");
         Texture firingImage1 = assets.get("Bullets/bullet1_small.png");
 
         Weapon weapon;
