@@ -159,6 +159,7 @@ public class GameScreen implements Screen, InputProcessor {
         multiplexer.addProcessor(hud);
         multiplexer.addProcessor(this);
         Gdx.input.setInputProcessor(multiplexer);
+        Gdx.input.setCatchBackKey(true);
 
         setPauseMenu();
     }

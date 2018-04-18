@@ -26,18 +26,14 @@ public class PopupDialog extends Stage {
 
          super(viewport, batch);
 
-        Table table = new Table();
-            table.setDebug(true);
-            table.setFillParent(true);
-
         BitmapFont font = skin.getFont("font");
-        font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 5);
+//        font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 5);
         Label.LabelStyle myLabelstyle =
                 new Label.LabelStyle(font, Color.BLACK);
 
         dialogTexture = assets.get("Menu/valikko-puhekupla_Vaalennettu.png");
         dialogImage = new Image(dialogTexture);
-        textLabel = new Label("no text", myLabelstyle);
+        textLabel = new Label(" ", myLabelstyle);
         textLabel.setFontScale(0.9f);
         textLabel.setWidth(dialogWidth - margin - padding);
         textLabel.setHeight(dialogHeight - margin - padding);

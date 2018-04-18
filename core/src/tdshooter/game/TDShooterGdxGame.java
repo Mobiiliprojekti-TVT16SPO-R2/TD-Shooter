@@ -22,6 +22,7 @@ public class TDShooterGdxGame extends Game {
 	public BitmapFont font;
 	public BitmapFont fontSkin;
 	public AssetManager assets;
+	public Skin skin;
 //	private Texture texture;
 	public final int VIEWPORTWIDTH = 720;
 	public final int VIEWPORTHEIGHT = 1280;
@@ -31,6 +32,7 @@ public class TDShooterGdxGame extends Game {
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 		parameter.size = 24;
 		font = generator.generateFont(parameter);// font size 12 pixels
+		font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 8); //line spacing lower
 		parameter.size = 50;
 		fontSkin = generator.generateFont(parameter);
 		generator.dispose();
@@ -92,11 +94,19 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
 //		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
 
-		assets.load("hitSound.wav", Sound.class);
+		assets.load("Sounds/hitSound.wav", Sound.class);
+		assets.load("Sounds/gun1.wav", Sound.class);
+		assets.load("Sounds/gun2.wav", Sound.class);
+		assets.load("Sounds/shotgun.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);
 
 		assets.finishLoading();
+
+		skin = new Skin();
+		skin.add("font", fontSkin);
+		skin.addRegions((TextureAtlas) assets.get("Skin/glassy-ui.atlas"));
+		skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
 		// Luodaan pelin eka ase, jos sitä ei vielä ole
 		Preferences prefs = Gdx.app.getPreferences("savedata");

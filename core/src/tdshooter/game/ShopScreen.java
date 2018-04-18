@@ -20,8 +20,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-import java.util.ArrayList;
-
 public class ShopScreen implements Screen, InputProcessor
 {
     private final int VIEWPORTHEIGHT = 1280;
@@ -54,14 +52,7 @@ public class ShopScreen implements Screen, InputProcessor
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
-//        atlas = (TextureAtlas)game.assets.get("Skin/glassy-ui.atlas");
-//        skin = (Skin)game.assets.get("Skin/glassy-ui.json");
-
-        skin = new Skin();
-        skin.add("font", game.fontSkin);
-        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
-        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
-
+        skin = game.skin;
 
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         quarterTexture = game.assets.get("Menu/Character_QuarterMaster.png");
@@ -144,6 +135,10 @@ public class ShopScreen implements Screen, InputProcessor
         menuTopBar.update(delta);
         menuTopBar.draw();
 
+        if (menuTopBar.isReadyForNextScreen()){
+            menuTopBar.setNextScreen();
+            dispose();
+        }
     }
 
     @Override

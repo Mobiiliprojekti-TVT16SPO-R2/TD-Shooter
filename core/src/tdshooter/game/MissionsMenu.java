@@ -9,15 +9,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -37,7 +34,6 @@ public class MissionsMenu implements Screen, InputProcessor {
     private StretchViewport viewport;
     private Skin skin;
     private Stage stage;
-    private TextureAtlas atlas;
     private Texture menuBackground;
     private Texture commanderTexture;
     private Texture missionMapTexture;
@@ -57,10 +53,7 @@ public class MissionsMenu implements Screen, InputProcessor {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-        skin = new Skin();
-        skin.add("font", game.fontSkin);
-        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
-        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+        skin = gam.skin;
 
         Preferences prefs = Gdx.app.getPreferences("savedata");
         if(prefs.contains("levelprogress")) {
@@ -100,7 +93,6 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         // Luodaan painikkeet
         TextButton launchButton = new TextButton("Launch", skin);
-
         TextButton mission01 = new TextButton("    1", skin, "toggle");
         TextButton mission02 = new TextButton("    2", skin, "toggle");
         TextButton mission03 = new TextButton("    3", skin, "toggle");
@@ -116,7 +108,7 @@ public class MissionsMenu implements Screen, InputProcessor {
         mission03.setHeight(missionbuttonDiameter);
 
         // Asetetaan luotujen painikkeiden paikat
-        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth(), 600);
+        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth() + 40, 600);
 
         // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
         missionsButtonGroup.add(mission01);
@@ -194,7 +186,6 @@ public class MissionsMenu implements Screen, InputProcessor {
         stage.addActor(mission01);
         stage.addActor(mission02);
         stage.addActor(mission03);
-
     }
 
     @Override
@@ -207,6 +198,12 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         menuTopBar.update(delta);
         menuTopBar.draw();
+
+        if (menuTopBar.isReadyForNextScreen()){
+            menuTopBar.setNextScreen();
+            dispose();
+            Gdx.app.log("DEBUG" , "Missionsmenu/menuTopBar is ready for next screen");
+        }
 
         dialog.update(delta);
         dialog.draw();
@@ -240,11 +237,10 @@ public class MissionsMenu implements Screen, InputProcessor {
 
     @Override
     public void dispose() {
-//        skin.dispose();
         stage.dispose();
         dialog.dispose();
         menuTopBar.dispose();
-
+        Gdx.app.log("DEBUG", "missionsmenu dispose()-executed");
     }
 
     @Override
