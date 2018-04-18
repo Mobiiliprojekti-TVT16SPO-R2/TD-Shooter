@@ -185,7 +185,7 @@ public class Player extends Destroyable{
         this.currency += items[3];
 
         for(Weapon weapon : weapons) {
-            weapon.setTurretCount(this.turretCount);
+            weapon.upgradeTurretCount(this.turretCount);
             weapon.setCooldownReduction(this.cooldownReduction);
         }
 

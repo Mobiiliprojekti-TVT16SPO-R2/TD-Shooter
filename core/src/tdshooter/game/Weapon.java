@@ -44,19 +44,19 @@ class Weapon {
         //first create bulletmodel by type
         switch (projectileType) {
             case 1:
-                bulletModel = new Projectile(-500,0, 24, 32, 5, 1000, bulletImage1);
+                bulletModel = new Projectile(-500,0, 24, 32, 5, 1200, bulletImage1);
                 break;
             case 2:
-                bulletModel = new Projectile(-500,0, 18, 64, 10, 2000, bulletImage1);
+                bulletModel = new Projectile(-500,0, 18, 64, 8, 2000, bulletImage1);
                 break;
             case 3:
-                bulletModel = new Projectile(-500,0, 32, 48, 13, 1400, bulletImage2);
+                bulletModel = new Projectile(-500,0, 18, 72, 12, 2500, bulletImage2);
                 break;
             case 4:
-                bulletModel = new Projectile(-500,0, 32, 56, 18, 1800, bulletImage2);
+                bulletModel = new Projectile(-500,0, 18, 80, 16, 3000, bulletImage2);
                 break;
             case 5:
-                bulletModel = new Projectile(-500,0, 32, 64, 23, 2200, bulletImage2);
+                bulletModel = new Projectile(-500,0, 32, 48, 10, 2200, bulletImage2);
                 break;
 
                 //ENEMY BULLETS HERE
@@ -173,8 +173,10 @@ class Weapon {
         }
     }
 
-    public void setTurretCount(int turretCount) {
-        this.turretCount = turretCount;
+    public void upgradeTurretCount(int turretCount) {
+        if (this.turretCount < turretCount) {
+            this.turretCount = turretCount;
+        }
     }
 
     public void setCooldownReduction(int percent) {

@@ -57,19 +57,16 @@ public class GameScreen implements Screen, InputProcessor {
     private ArrayList<Item> items;
     private ArrayList<Effect> effects;
 
-    private int encountersDestroyed;
     private ArrayList<Long> oldSoundIds;
 
     private int fps;
     private Skin skin;
-    private TextureAtlas atlas;
     private StretchViewport viewport;
     private Stage stage;
     private boolean inputBoolean = true;
     private Texture menuTexture;
     private Texture flashTexture;
     private Image menuImage;
-    private Table menuTable;
     private float soundVolume = 0.5f;
     private float musicVolume = 0.5f;
     private boolean soundMuted = false;
@@ -83,20 +80,18 @@ public class GameScreen implements Screen, InputProcessor {
     private int missionNumber;
 
     private GameHUD hud;
-    private Effect deathAnimation;
     private int effectCounter = 0;
     InputMultiplexer multiplexer;
 
     public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
         this.game = game;
+        skin = game.skin;
         camera = new OrthographicCamera();
         encounters = new ArrayList<Encounter>();
         playerProjectiles = new ArrayList<Projectile>();
         enemyProjectiles = new ArrayList<Projectile>();
         items = new ArrayList<Item>();
         effects = new ArrayList<Effect>();
-
-//        deathAnimation = new Effect(800, 1300, 0);
 
         this.missionNumber = missionNumber;
 
@@ -125,11 +120,6 @@ public class GameScreen implements Screen, InputProcessor {
 
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
-
-        skin = new Skin();
-        skin.add("font", game.fontSkin);
-        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
-        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
         menuTexture = game.assets.get("menu_test.png");
         menuImage = new Image(menuTexture);

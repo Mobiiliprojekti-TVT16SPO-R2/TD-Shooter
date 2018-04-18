@@ -114,6 +114,16 @@ public class TDShooterGdxGame extends Game {
 			prefs.putInteger("weapon01", 1);
 			prefs.flush();
 		}
+			//lisätty käyttöön muiden aseiden testausta varten, voidaan POISTAA LOPULLISESTA
+					if(prefs.contains("weapon02") == false) {
+						prefs.putInteger("weapon02", 1);
+						prefs.flush();
+					}
+					if(prefs.contains("weapon03") == false) {
+						prefs.putInteger("weapon03", 1);
+						prefs.flush();
+					}
+
 		// luodaan kassapohja pelaajalle
 		if(prefs.contains("currency") == false) {
 			prefs.putInteger("currency", 0);
