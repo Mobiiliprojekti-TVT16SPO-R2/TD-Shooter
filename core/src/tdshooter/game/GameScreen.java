@@ -86,6 +86,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Effect deathAnimation;
     private int effectCounter = 0;
     private boolean newHighscore = false;
+    private boolean encounterEffect = true;
     InputMultiplexer multiplexer;
 
     public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
@@ -235,6 +236,7 @@ public class GameScreen implements Screen, InputProcessor {
             loot_not_given = true;
             if (encounter.hitbox.y + 64 < 0) {
                 encounter.getsDamage(1000);
+                encounterEffect = false;
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
@@ -258,12 +260,15 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
             if (encounter.isDestroyed()){
-//                Effect effect = deathAnimation;
+                if (encounterEffect){
+//                    Effect effect = deathAnimation;
 //                effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-                effects.add(effect);
-                effectCounter ++;
+                    Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                    effects.add(effect);
+                    effectCounter ++;
+                }
                 encounters.remove(i);
+                encounterEffect = true;
             }
         }
         for (int j = 0; j < playerProjectiles.size(); j++) {
