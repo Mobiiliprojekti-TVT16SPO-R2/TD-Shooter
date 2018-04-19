@@ -44,10 +44,68 @@ public class Player extends Destroyable{
         destination = new Vector3();
         weapons = new ArrayList<Weapon>();
 
+        createWeapons(assets);
+
+    }
+
+    private void createWeapons(AssetManager assets) {
         Preferences prefs = Gdx.app.getPreferences("savedata");
         if(prefs.contains("weapon01")) {
             int level = prefs.getInteger("weapon01");
-            weapons.add(WeaponBuilder.create(WeaponType.WEAPON01, assets));
+            switch (level) {
+                case 0:
+                    break;
+                case 1:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON01_LVL1, assets));
+                    break;
+                case 2:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON01_LVL2, assets));
+                    break;
+                case 3:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON01_LVL3, assets));
+                    break;
+                default:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON01_LVL3, assets));
+                    break;
+            }
+        }
+        if(prefs.contains("weapon02")) {
+            int level = prefs.getInteger("weapon02");
+            switch (level) {
+                case 0:
+                    break;
+                case 1:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON02_LVL1, assets));
+                    break;
+                case 2:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON02_LVL2, assets));
+                    break;
+                case 3:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON02_LVL3, assets));
+                    break;
+                default:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON02_LVL3, assets));
+                    break;
+            }
+        }
+        if(prefs.contains("weapon03")) {
+            int level = prefs.getInteger("weapon03");
+            switch (level) {
+                case 0:
+                    break;
+                case 1:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON03_LVL1, assets));
+                    break;
+                case 2:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON03_LVL2, assets));
+                    break;
+                case 3:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON03_LVL3, assets));
+                    break;
+                default:
+                    weapons.add(WeaponBuilder.create(WeaponType.WEAPON03_LVL3, assets));
+                    break;
+            }
         }
     }
 
@@ -127,7 +185,7 @@ public class Player extends Destroyable{
         this.currency += items[3];
 
         for(Weapon weapon : weapons) {
-            weapon.setTurretCount(this.turretCount);
+            weapon.upgradeTurretCount(this.turretCount);
             weapon.setCooldownReduction(this.cooldownReduction);
         }
 

@@ -30,4 +30,9 @@ public class SinCurveFlight extends FlightPattern
         // sinin aallon derivaatta (muutosnopeus) kerrottuna delta-ajalla
         parent.hitbox.x += amplitude * MathUtils.cos(angularFrequency * time) * angularFrequency * delta;
     }
+
+    @Override
+    public boolean isBossDive() {
+        return false;
+    }
 }

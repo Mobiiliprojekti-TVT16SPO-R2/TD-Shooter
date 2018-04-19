@@ -9,12 +9,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 
@@ -48,13 +45,7 @@ public class HangarScreen implements Screen, InputProcessor {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-//        atlas = (TextureAtlas) game.assets.get("Skin/glassy-ui.atlas");
-//        skin = game.assets.get("Skin/glassy-ui.json");
-
-        skin = new Skin();
-        skin.add("font", game.fontSkin);
-        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
-        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+        skin = game.skin;
 
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         scientistTexture = game.assets.get("Menu/Character_Scientist.png");
@@ -95,6 +86,12 @@ public class HangarScreen implements Screen, InputProcessor {
 
         menuTopBar.update(delta);
         menuTopBar.draw();
+
+        if (menuTopBar.isReadyForNextScreen()){
+            dispose();
+            menuTopBar.setNextScreen();
+        }
+
     }
 
     @Override
@@ -126,8 +123,8 @@ public class HangarScreen implements Screen, InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.BACK) {
-            dispose();
             game.setScreen(new MainMenuScreen(game));
+            dispose();
         }
         return false;
     }

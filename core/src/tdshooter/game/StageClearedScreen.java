@@ -1,8 +1,6 @@
 package tdshooter.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -28,21 +26,30 @@ public class StageClearedScreen implements Screen, InputProcessor {
     private final int VIEWPORTHEIGHT = 1280;
 
     private int earnedCurrency;
+    private int yourScore;
     private int totalCurrency;
+    private int highscore;
     private boolean isNewHighscore;
 
-    public StageClearedScreen(final TDShooterGdxGame game, int earnedCurrency, String missionName, boolean isNewHighscore)
+    public StageClearedScreen(final TDShooterGdxGame game, int earnedCurrency, int yourScore, String missionName, boolean isNewHighscore)
     {
         this.game = game;
         this.earnedCurrency = earnedCurrency;
         this.totalCurrency = 0;
         this.isNewHighscore = isNewHighscore;
+        this.yourScore = yourScore;
 
         Preferences prefs = Gdx.app.getPreferences("savedata");
         String currencyKey = "currency";
         if(prefs.contains(currencyKey))
         {
             totalCurrency = prefs.getInteger(currencyKey);
+        }
+        String highscoreKey = "highscore" + missionName;
+
+        if (prefs.contains(highscoreKey))
+        {
+                highscore = prefs.getInteger(highscoreKey);
         }
 
         camera = new OrthographicCamera();
@@ -83,10 +90,14 @@ public class StageClearedScreen implements Screen, InputProcessor {
         Label stageClearedLabel = new Label("Stage Cleared!", skin);
         stageClearedLabel.setFontScale(2.0f);
         Label currencyEarnedLabel = new Label("Currency Earned: " + earnedCurrency, skin);
-        Label newHighscoreLabel = new Label("", skin);
+        Label highscoreLabel = new Label("", skin);
+        Label yourScoreLabel = new Label("Your score: " + yourScore, skin);
         if(isNewHighscore)
         {
-            newHighscoreLabel.setText("New Highscore!");
+            highscoreLabel.setText("New Highscore!  " + highscore);
+        }
+        else {
+            highscoreLabel.setText("Highscore:  " + highscore);
         }
         Label touchToContinueLabel = new Label("Touch to Continue.", skin);
         touchToContinueLabel.setFontScale(1.5f);
@@ -95,11 +106,13 @@ public class StageClearedScreen implements Screen, InputProcessor {
         table.row();
         table.add(currencyEarnedLabel).left();
         table.row();
-        if(isNewHighscore)
-        {
-            table.add(newHighscoreLabel).left();
-            table.row();
-        }
+
+
+        table.add(highscoreLabel).left();
+        table.row();
+        table.add(yourScoreLabel).left();
+        table.row();
+
         table.add(touchToContinueLabel).center().spaceTop(300.0f);
 
         stage.addActor(table);

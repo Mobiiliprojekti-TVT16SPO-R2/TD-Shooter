@@ -1,12 +1,9 @@
 package tdshooter.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,16 +37,18 @@ public class MenuTopBar extends Stage {
     private TextButton hangarButton;
     private TextButton shopButton;
     private TDShooterGdxGame game;
+    private boolean readyForNextScreen = false;
 
     private int TOPBARHEIGHT = 58;
     private int VIEWPORTWIDTH;
     private int VIEWPORTHEIGHT;
     private int currentScreen = 1;
+    private int screenToSet = 1;
     private Preferences prefs;
 
     private int currency = 0;
 
-    public MenuTopBar(Viewport viewport, Skin skin, TDShooterGdxGame gam, int screenindex) {
+    public MenuTopBar(Viewport viewport, Skin skin, TDShooterGdxGame gam, int screenindex ) {
 
         super(viewport, gam.batch);
         game = gam;
@@ -190,42 +189,54 @@ public class MenuTopBar extends Stage {
         bridgeButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setScreen(1);
+                screenToSet = 1;
+                readyForNextScreen = true;
             }
         });
         hangarButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setScreen(2);
+                screenToSet = 2;
+                readyForNextScreen = true;
             }
         });
 
         shopButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setScreen(3);
+                screenToSet = 3;
+                readyForNextScreen = true;
             }
         });
 
     }
 
-    private void setScreen(int selection) {
-        switch (selection) {
+    public void setNextScreen() {
+        switch (screenToSet) {
             case 1:
                 game.setScreen(new MissionsMenu(game));
+                dispose();
                 break;
             case 2:
                 game.setScreen(new HangarScreen(game));
+                dispose();
                 break;
             case 3:
                 game.setScreen(new ShopScreen(game));
+                dispose();
                 break;
             default:
+                game.setScreen(new MissionsMenu(game));
+                dispose();
                 break;
         }
     }
 
     public void update(float delta) {
         super.act(delta);
+    }
+
+    public boolean isReadyForNextScreen() {
+        return readyForNextScreen;
     }
 }
