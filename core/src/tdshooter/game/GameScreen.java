@@ -306,7 +306,7 @@ public class GameScreen implements Screen, InputProcessor {
     private void gameWon() {
         saveCurrency();
         updateLevelProgess();
-        game.setScreen(new StageClearedScreen(game, player.getCurrency(), missionName, true));
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getPoints(), missionName, newHighscore));
         dispose();
     }
 
@@ -322,7 +322,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void gameLost() {
         saveCurrency();
-        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints(), missionName, newHighscore));
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getPoints(), missionName, newHighscore));
         dispose();
     }
 
