@@ -2,7 +2,7 @@ package tdshooter.game;
 
 enum FlightType
 {
-    LOW_F_SIN(1), HIGH_F_SIN(2), STRAIGHT_DOWN(3), DIAGONAL_45_LEFT(4), DIAGONAL_45_RIGHT(5);
+    LOW_F_SIN(1), HIGH_F_SIN(2), STRAIGHT_DOWN(3), DIAGONAL_45_LEFT(4), DIAGONAL_45_RIGHT(5), WIDE_LOW_F_SIN(6), WIDE_HIGH_F_SIN(7), EXTRAWIDE_SLOW_F_SIN(8);
 
     private int value;
 
@@ -51,6 +51,18 @@ public class FlightPatternBuilder
 
             case DIAGONAL_45_RIGHT:
                 pattern = new StraightFlight(parent, -45);
+                break;
+
+            case WIDE_LOW_F_SIN:
+                pattern = new SinCurveFlight(parent, 100, 1.0f);
+                break;
+
+            case WIDE_HIGH_F_SIN:
+                pattern = new SinCurveFlight(parent, 100, 0.5f);
+                break;
+
+            case EXTRAWIDE_SLOW_F_SIN:
+                pattern = new SinCurveFlight(parent, 300, 0.2f);
                 break;
 
             default:

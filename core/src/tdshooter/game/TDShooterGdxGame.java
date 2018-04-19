@@ -110,16 +110,16 @@ public class TDShooterGdxGame extends Game {
 
 		// Luodaan pelin eka ase, jos sitä ei vielä ole
 		Preferences prefs = Gdx.app.getPreferences("savedata");
-		if(prefs.contains("weapon01") == false) {
+		if(prefs.contains("weapon01") == true) {
 			prefs.putInteger("weapon01", 1);
 			prefs.flush();
 		}
 			//lisätty käyttöön muiden aseiden testausta varten, voidaan POISTAA LOPULLISESTA
-					if(prefs.contains("weapon02") == false) {
+					if(prefs.contains("weapon02") == true) {
 						prefs.putInteger("weapon02", 1);
 						prefs.flush();
 					}
-					if(prefs.contains("weapon03") == false) {
+					if(prefs.contains("weapon03") == true) {
 						prefs.putInteger("weapon03", 1);
 						prefs.flush();
 					}
