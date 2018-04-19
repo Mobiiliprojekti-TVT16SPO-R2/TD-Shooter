@@ -29,6 +29,7 @@ public class StageClearedScreen implements Screen, InputProcessor {
 
     private int earnedCurrency;
     private int totalCurrency;
+    private int highscore;
     private boolean isNewHighscore;
 
     public StageClearedScreen(final TDShooterGdxGame game, int earnedCurrency, String missionName, boolean isNewHighscore)
@@ -43,6 +44,12 @@ public class StageClearedScreen implements Screen, InputProcessor {
         if(prefs.contains(currencyKey))
         {
             totalCurrency = prefs.getInteger(currencyKey);
+        }
+        String highscoreKey = "highscore" + missionName;
+
+        if (prefs.contains(highscoreKey))
+        {
+                highscore = prefs.getInteger(highscoreKey);
         }
 
         camera = new OrthographicCamera();

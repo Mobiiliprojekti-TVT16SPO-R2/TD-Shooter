@@ -57,6 +57,7 @@ public class GameScreen implements Screen, InputProcessor {
     private ArrayList<Item> items;
     private ArrayList<Effect> effects;
 
+    private int encountersDestroyed;
     private ArrayList<Long> oldSoundIds;
 
     private int fps;
@@ -81,6 +82,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     private GameHUD hud;
     private int effectCounter = 0;
+    private boolean newHighscore = false;
+    private boolean encounterEffect = true;
+    private boolean bossIsAlive = false;
     InputMultiplexer multiplexer;
 
     public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
@@ -182,7 +186,7 @@ public class GameScreen implements Screen, InputProcessor {
 
             moveAllObjects(delta);
             checkCollisions();
-            mission.update(delta);
+            mission.update(delta, bossIsAlive);
         }
         drawAllObjects(delta);
     }
@@ -225,6 +229,7 @@ public class GameScreen implements Screen, InputProcessor {
             loot_not_given = true;
             if (encounter.hitbox.y + 64 < 0) {
                 encounter.getsDamage(1000);
+                encounterEffect = false;
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
@@ -248,12 +253,16 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
             if (encounter.isDestroyed()){
-//                Effect effect = deathAnimation;
-//                effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-                effects.add(effect);
-                effectCounter ++;
+                if (encounterEffect){
+                    Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                    effects.add(effect);
+                    effectCounter ++;
+                    if (encounter instanceof Boss) {
+                        bossIsAlive = false;
+                    }
+                }
                 encounters.remove(i);
+                encounterEffect = true;
             }
         }
         for (int j = 0; j < playerProjectiles.size(); j++) {
@@ -312,7 +321,8 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void gameLost() {
-        game.setScreen(new StageFailedScreen(game, missionName, missionNumber));
+        saveCurrency();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getHitPoints(), missionName, newHighscore));
         dispose();
     }
 
@@ -384,10 +394,17 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles){
             bullet.update();
         }
-        for (Encounter encounter : encounters){
+        for (int i = 0; i < encounters.size() ; i++) {
+
+            Encounter encounter = encounters.get(i);
             encounter.update(delta);
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
+            }
+
+            if (encounter instanceof Boss) {
+                ((Boss) encounter).spawnWeaklings(encounters);
+                bossIsAlive = true;
             }
         }
         for (Item item : items){
@@ -421,28 +438,48 @@ public class GameScreen implements Screen, InputProcessor {
         {
             totalCurrency = earnedCurrency;
         }
+        String highscoreKey = "highscore" + missionName;
+        int thisScore = player.getPoints();
+        int oldHighscore;
+
+        if (prefs.contains(highscoreKey)) {
+            oldHighscore = prefs.getInteger(highscoreKey);
+            if (thisScore > oldHighscore) {
+                prefs.putInteger(highscoreKey,thisScore);
+                newHighscore = true;
+            }
+        }
 
         prefs.putInteger(currencyKey, totalCurrency);
         prefs.flush();
     }
 
     private void superWeaponUse() {
-        for (int i = 0; i < encounters.size() ; i++) {
-            Encounter encounter = encounters.get(i);
-//            Effect effect = deathAnimation;
-//            effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-            Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
-            effects.add(effect);
-            effectCounter ++;
-            player.setPoints(encounter.getPoints());
 
-            if (loot_not_given) {
-                encounter.dropItem(items);
-                loot_not_given = false;
+        for (int i = 0; i < encounters.size() ; ) {
+
+            Encounter encounter = encounters.get(i);
+
+            if (!(encounter instanceof Boss)) {
+                encounter.getsDamage(250);
             }
-            loot_not_given = true;
+            if (encounter.isDestroyed()) {
+                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                effects.add(effect);
+                effectCounter ++;
+                player.setPoints(encounter.getPoints());
+                if (loot_not_given) {
+                    encounter.dropItem(items);
+                    loot_not_given = false;
+                }
+                loot_not_given = true;
+                encounters.remove(i);
+            }
+            else {
+                i++;
+            }
         }
-        encounters.clear();
+//        encounters.clear();
         superWeapon = true;
     }
 

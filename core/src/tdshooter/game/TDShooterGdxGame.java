@@ -45,7 +45,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_2.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_3.png", Texture.class);
-		assets.load("Encounters/AlienBeast_BigMomma.png", Texture.class);
+		assets.load("Encounters/Boss/AlienBeast_BigMomma.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_2_VERSION2.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_3_VERSION2.png", Texture.class);

@@ -32,12 +32,18 @@ public class Mission {
         loadFromFile(fileName, assets);
     }
 
-    public void update(float delta)
+    public void update(float delta, boolean bossIsAlive)
     {
+
         runningTime += delta;
-        if(runningTime > endingTime)
+        if(!bossIsAlive)
         {
-            missionOver = true;
+            if (runningTime > endingTime) {
+                runningTime2 += delta;
+                if (runningTime2 > waitingTime) {
+                    missionOver = true;
+                }
+            }
         }
 
         if(!missionOver)
@@ -152,6 +158,8 @@ public class Mission {
     private boolean missionOver;
     private float scrollSpeed;
     private float runningTime;
+    private float runningTime2;
+    private float waitingTime = 3.0f;
     private float endingTime;
     private ArrayList<SpawnInfo> spawnInfoList;
     private ArrayList<Encounter> enemyList;

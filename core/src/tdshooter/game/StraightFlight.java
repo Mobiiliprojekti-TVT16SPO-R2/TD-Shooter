@@ -17,4 +17,9 @@ public class StraightFlight extends FlightPattern
         parent.hitbox.y -= MathUtils.cosDeg(angle) * parent.speed * delta;
         parent.hitbox.x += MathUtils.sinDeg(angle) * parent.speed * delta;
     }
+
+    @Override
+    public boolean isBossDive() {
+        return false;
+    }
 }

@@ -72,6 +72,14 @@ public class MissionsMenu implements Screen, InputProcessor {
         missionNameList = new ArrayList<String>();
         setMissionNameList();
 
+        for (int i = 0; i < missionNameList.size(); i++) {
+            String highscoreKey = "highscore" + missionNameList.get(i);
+            if (!prefs.contains(highscoreKey)) {
+                prefs.putInteger(highscoreKey, 0);
+            }
+        }
+        prefs.flush();
+
         stage = new Stage(viewport, game.batch);
 
         menuTopBar = new MenuTopBar(viewport, skin, game, 1);
