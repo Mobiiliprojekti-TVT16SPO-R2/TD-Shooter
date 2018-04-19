@@ -17,6 +17,7 @@ public class GameHUD extends Stage
     private ProgressBar healthBar;
     private Label scoreLabel;
     private TextButton superWeaponButton;
+    private TextButton changeWeaponButton;
     private boolean superWeaponClicked = false;
 
     public GameHUD(Viewport viewport, Batch batch, Skin skin, final Player player)
@@ -27,7 +28,7 @@ public class GameHUD extends Stage
         Table table = new Table();
         table.setDebug(true);
         table.setFillParent(true);
-        superWeaponButton = new TextButton("Super", skin);
+        superWeaponButton = new TextButton("Nuke", skin);
         superWeaponButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -36,6 +37,13 @@ public class GameHUD extends Stage
                     superWeaponClicked = true;
                     player.setSuperWeaponInt();
                 }
+            }
+        });
+        changeWeaponButton = new TextButton("Switch", skin);
+        changeWeaponButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                    player.swapWeapons();
             }
         });
         healthBar = new ProgressBar(0, player.getMaxHitpoints(), player.getMaxHitpoints() / 50.0f,
@@ -47,6 +55,7 @@ public class GameHUD extends Stage
         table.add(healthBar).width(300.0f).right().top().expand();
         table.row();
         table.add(superWeaponButton).width(200).bottom();
+        table.add(changeWeaponButton).width(200).bottom().right();
         this.addActor(table);
     }
 

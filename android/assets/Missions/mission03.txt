@@ -1,5 +1,5 @@
 Backgrounds/Map_4_Asteroids.png
-ambient/space_ambience.mp3
+music/missionmusic1.mp3
 60
 100
 1

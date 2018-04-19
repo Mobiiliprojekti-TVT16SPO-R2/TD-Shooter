@@ -97,12 +97,17 @@ public class TDShooterGdxGame extends Game {
 //		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
 
 		assets.load("Sounds/hitSound.wav", Sound.class);
+		assets.load("Sounds/hitSound2.wav", Sound.class);
 		assets.load("Sounds/gun1.wav", Sound.class);
+		assets.load("Sounds/gun1_remake.wav", Sound.class);
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);
 		assets.load("ambient/space_ambience.mp3", Music.class);
+		assets.load("ambient/rain.mp3", Music.class);
+		assets.load("music/missionmusic1.mp3", Music.class);
+		assets.load("music/missionmusic2.mp3", Music.class);
 
 		assets.finishLoading();
 

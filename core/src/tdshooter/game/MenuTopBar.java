@@ -239,4 +239,10 @@ public class MenuTopBar extends Stage {
     public boolean isReadyForNextScreen() {
         return readyForNextScreen;
     }
+
+    @Override
+    public void dispose(){
+        super.dispose();
+
+    }
 }
