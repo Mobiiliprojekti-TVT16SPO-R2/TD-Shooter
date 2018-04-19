@@ -77,7 +77,7 @@ public class MenuTopBar extends Stage {
         topBarImage = new Image(topBarTexture);
 
         BitmapFont font = skin.getFont("font");
-        font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 5);
+
         Label.LabelStyle myLabelstyle =
                 new Label.LabelStyle(font, Color.BLUE);
         selectedScreenLabel = new Label("no name", myLabelstyle);

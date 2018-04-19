@@ -1,5 +1,5 @@
 Backgrounds/Map_4_Asteroids.png
-rain.mp3
+ambient/space_ambience.mp3
 60
 100
 1
