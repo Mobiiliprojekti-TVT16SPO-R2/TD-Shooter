@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
  */
 enum EncounterType
 {
-    BASIC_ENEMY_LVL1(0), SHOOTING_ENEMY_LVL1(1), SHOOTING_ENEMY_LVL2(2);
+    BASIC_ENEMY_LVL1(0), SHOOTING_ENEMY_LVL1(1), SHOOTING_ENEMY_LVL2(2), SHOOTING_ENEMY_LVL3(3), BASIC_ENEMY_LVL3(3);
 
     private int value;
 
