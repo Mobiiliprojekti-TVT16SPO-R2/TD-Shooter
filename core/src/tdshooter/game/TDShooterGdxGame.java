@@ -68,8 +68,10 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3.png", Texture.class);
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
-		assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
-		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
+        assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
+        assets.load("Backgrounds/Map_4_Asteroids.png", Texture.class);
+        assets.load("Backgrounds/Map_5_Moon.png", Texture.class);
+        assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
@@ -110,16 +112,16 @@ public class TDShooterGdxGame extends Game {
 
 		// Luodaan pelin eka ase, jos sitä ei vielä ole
 		Preferences prefs = Gdx.app.getPreferences("savedata");
-		if(prefs.contains("weapon01") == true) {
+		if(prefs.contains("weapon01") == false) {
 			prefs.putInteger("weapon01", 1);
 			prefs.flush();
 		}
 			//lisätty käyttöön muiden aseiden testausta varten, voidaan POISTAA LOPULLISESTA
-					if(prefs.contains("weapon02") == true) {
+					if(prefs.contains("weapon02") == false) {
 						prefs.putInteger("weapon02", 1);
 						prefs.flush();
 					}
-					if(prefs.contains("weapon03") == true) {
+					if(prefs.contains("weapon03") == false) {
 						prefs.putInteger("weapon03", 1);
 						prefs.flush();
 					}

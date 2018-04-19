@@ -46,11 +46,11 @@ public class FlightPatternBuilder
                 break;
 
             case DIAGONAL_45_LEFT:
-                pattern = new StraightFlight(parent, 45);
+                pattern = new StraightFlight(parent, 35);
                 break;
 
             case DIAGONAL_45_RIGHT:
-                pattern = new StraightFlight(parent, -45);
+                pattern = new StraightFlight(parent, -35);
                 break;
 
             case WIDE_LOW_F_SIN:
@@ -62,7 +62,7 @@ public class FlightPatternBuilder
                 break;
 
             case EXTRAWIDE_SLOW_F_SIN:
-                pattern = new SinCurveFlight(parent, 300, 0.2f);
+                pattern = new SinCurveFlight(parent, 300, 0.5f);
                 break;
 
             default:

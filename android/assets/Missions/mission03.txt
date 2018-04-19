@@ -1,4 +1,4 @@
-Backgrounds/Map_3_Islands.png
+Backgrounds/Map_4_Asteroids.png
 rain.mp3
 60
 100

@@ -78,7 +78,7 @@ public class EncounterBuilder
 
             case FIGHTERBRUISER_ENEMY:
                 encounter = new ShootingEnemy(1000, 2000, 180, 180,
-                        400, 60,160 , 5, 300, 1500000000, 280,
+                        400, 60,100 , 5, 300, 1500000000, 280,
                         400 , (Texture)assets.get("Encounters/AlienFighter_Bruiser.png"), assets);
                 break;
             default:
