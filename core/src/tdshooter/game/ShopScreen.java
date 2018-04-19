@@ -96,7 +96,10 @@ public class ShopScreen implements Screen, InputProcessor
         weapon2Shopitem = new ShopItemSlot(viewport, skin, game, 3, weapon02Level);
         weapon3Shopitem = new ShopItemSlot(viewport, skin, game, 4, weapon03Level);
 
-        armorShopitem.setPosition(300,300);
+        armorShopitem.setPosition(230,850);
+        weapon1Shopitem.setPosition(230,600);
+        weapon2Shopitem.setPosition(230,350);
+        weapon3Shopitem.setPosition(230,100);
 
         menuTopBar = new MenuTopBar(viewport, skin, game, 3);
 
@@ -115,41 +118,11 @@ public class ShopScreen implements Screen, InputProcessor
 
     @Override
     public void show() {
-
-        final TextButton buyButton = new TextButton("Level: " + weapon01Level, skin);
-        final Label currencyLabel = new Label("Currency: " + currentCurrency, new Label.LabelStyle(game.font, Color.WHITE));
-
-        buyButton.setPosition((VIEWPORTWIDTH - buyButton.getWidth()) / 2, (VIEWPORTHEIGHT - buyButton.getHeight()) / 2);
-        currencyLabel.setPosition(VIEWPORTWIDTH - currencyLabel.getWidth(), VIEWPORTHEIGHT - currencyLabel.getHeight());
-
-        buyButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                int cost = 20;
-                if(currentCurrency - cost >= 0)
-                {
-                    if(weapon01Level < maxWeaponLevel)
-                    {
-                        currentCurrency -= cost;
-                        weapon01Level++;
-                        prefs.putInteger("currency", currentCurrency);
-                        prefs.putInteger("weapon01", weapon01Level);
-                        prefs.flush();
-
-                        currencyLabel.setText("Currency: " + currentCurrency);
-                        buyButton.setText("Level: " + weapon01Level);
-                    }
-                }
-            }
-        });
-
         quarterImage.setScale(0.7f);
-        quarterImage.setPosition(0, 100);
+        quarterImage.setPosition(0, 150);
 
         stage.addActor(menuImage);
         stage.addActor(quarterImage);
-        stage.addActor(buyButton);
-        stage.addActor(currencyLabel);
     }
 
     @Override
@@ -162,6 +135,16 @@ public class ShopScreen implements Screen, InputProcessor
 
         menuTopBar.update(delta);
         menuTopBar.draw();
+
+        armorShopitem.update(delta);
+        weapon1Shopitem.update(delta);
+        weapon2Shopitem.update(delta);
+        weapon3Shopitem.update(delta);
+        armorShopitem.draw();
+        weapon1Shopitem.draw();
+        weapon2Shopitem.draw();
+        weapon3Shopitem.draw();
+
 
         if (menuTopBar.isReadyForNextScreen()){
             menuTopBar.setNextScreen();
@@ -193,6 +176,10 @@ public class ShopScreen implements Screen, InputProcessor
     public void dispose() {
         stage.dispose();
         menuTopBar.dispose();
+        armorShopitem.dispose();
+        weapon1Shopitem.dispose();
+        weapon2Shopitem.dispose();
+        weapon3Shopitem.dispose();
     }
 
     @Override

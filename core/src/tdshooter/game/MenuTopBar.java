@@ -79,7 +79,9 @@ public class MenuTopBar extends Stage {
         BitmapFont font = skin.getFont("font");
         font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 5);
         Label.LabelStyle myLabelstyle =
-                new Label.LabelStyle(font, Color.BLUE);
+                new Label.LabelStyle(font, Color.YELLOW);
+        Label.LabelStyle blackLabelstyle =
+                new Label.LabelStyle(font, Color.BLACK);
         selectedScreenLabel = new Label("no name", myLabelstyle);
         selectedScreenLabel.setAlignment(Align.center);
 
@@ -137,7 +139,7 @@ public class MenuTopBar extends Stage {
             currency = prefs.getInteger("currency", 0);
         }
 
-        currencyLabel = new Label("Currency:  " + currency, myLabelstyle);
+        currencyLabel = new Label("Currency:  " + currency, blackLabelstyle);
         currencyLabel.setFontScale(0.7f);
         currencyLabel.setPosition(VIEWPORTWIDTH - currencyLabel.getWidth() - 30, VIEWPORTHEIGHT - currencyLabel.getHeight() );
 
@@ -235,6 +237,10 @@ public class MenuTopBar extends Stage {
 
     public void update(float delta) {
         super.act(delta);
+        if(prefs.contains("currency")) {
+            currency = prefs.getInteger("currency", 0);
+            currencyLabel.setText("Currency:  " + currency);
+        }
     }
 
     public boolean isReadyForNextScreen() {
