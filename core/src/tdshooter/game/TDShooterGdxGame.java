@@ -89,6 +89,19 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/vasen-valittu.png", Texture.class);
 		assets.load("Menu/ylapalkki2.png", Texture.class);
 		assets.load("Menu/puhekupla.png", Texture.class);
+		assets.load("Menu/logo-lapinakyva.png", Texture.class);
+		assets.load("Menu/startmenu-painike-normaali.png", Texture.class);
+		assets.load("Menu/startmenu-painike-pohjassa.png", Texture.class);
+		assets.load("shopitems/Item_Armor.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_Bazooka.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_Laser.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_MissileBattery.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_Nuke.png", Texture.class);
+		assets.load("shopitems/Weapon_ElephantCannon.png", Texture.class);
+		assets.load("shopitems/Weapon_MachineGunCannon.png", Texture.class);
+		assets.load("shopitems/Weapon_ScatterCannon.png", Texture.class);
+		assets.load("shopitems/raksi.png", Texture.class);
+
 		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
 		assets.load("effects/flash_test.png", Texture.class);
@@ -100,6 +113,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Sounds/gun1.wav", Sound.class);
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
+		assets.load("Sounds/cashier.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);
 
@@ -116,15 +130,19 @@ public class TDShooterGdxGame extends Game {
 			prefs.putInteger("weapon01", 1);
 			prefs.flush();
 		}
-			//lisätty käyttöön muiden aseiden testausta varten, voidaan POISTAA LOPULLISESTA
-					if(prefs.contains("weapon02") == false) {
-						prefs.putInteger("weapon02", 1);
-						prefs.flush();
-					}
-					if(prefs.contains("weapon03") == false) {
-						prefs.putInteger("weapon03", 1);
-						prefs.flush();
-					}
+		//luodaan pohjatieto muille aseille
+		if(prefs.contains("weapon02") == false) {
+			prefs.putInteger("weapon02", 0);
+			prefs.flush();
+		}
+		if(prefs.contains("weapon03") == false) {
+			prefs.putInteger("weapon03", 0);
+			prefs.flush();
+		}
+		if(prefs.contains("shield") == false) {
+			prefs.putInteger("shield", 0);
+			prefs.flush();
+		}
 
 		// luodaan kassapohja pelaajalle
 		if(prefs.contains("currency") == false) {
