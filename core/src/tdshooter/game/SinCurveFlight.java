@@ -23,7 +23,7 @@ public class SinCurveFlight extends FlightPattern
         parent.hitbox.y -= parent.speed * delta;
 
         time += delta;
-        if(time > MathUtils.PI2) {
+        if(time > MathUtils.PI2 / angularFrequency) {
             time = 0;
         }
 
