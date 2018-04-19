@@ -45,7 +45,6 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_2.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_3.png", Texture.class);
-		assets.load("Encounters/Boss/AlienBeast_BigMomma.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_2_VERSION2.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_3_VERSION2.png", Texture.class);
@@ -53,6 +52,9 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/Alien_Mine.png", Texture.class);
 		assets.load("Encounters/AlienMine_Machine.png", Texture.class);
 		assets.load("Encounters/AlienMine_Organic.png", Texture.class);
+		assets.load("Encounters/Boss/Boss_World1_AlienMother.png", Texture.class);
+		assets.load("Encounters/Boss/Boss_World2_CyborgBeast.png", Texture.class);
+		assets.load("Encounters/Boss/Boss_World3_FlagShip.png", Texture.class);
 		assets.load("Bullets/bullet1_small.png", Texture.class);
 		assets.load("Bullets/bullet1.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);

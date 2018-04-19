@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 /**
@@ -343,7 +344,6 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
         }
-//        if (animation) {
             if (!gamePaused) {
                 for (int i = 0; i < effects.size(); i++) {
                     Effect effect = effects.get(i);
@@ -354,7 +354,6 @@ public class GameScreen implements Screen, InputProcessor {
                     }
                 }
             }
-//        }
         if (superWeapon) {
             game.batch.draw(flashTexture, 0, 0);
             superWeapon = false;
@@ -410,9 +409,13 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
-        for (Effect effect : effects){
+        for (int i = 0; i < effects.size() ; i++) {
+            Effect effect = effects.get(i);
             effect.update();
         }
+//        for (Effect effect : effects){
+//            effect.update();
+//        }
         hud.update(delta);
     }
 

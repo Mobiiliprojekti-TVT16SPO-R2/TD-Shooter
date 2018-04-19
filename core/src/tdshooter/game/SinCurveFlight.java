@@ -35,4 +35,9 @@ public class SinCurveFlight extends FlightPattern
     public boolean isBossDive() {
         return false;
     }
+
+    @Override
+    public void setVariables() {
+
+    }
 }
