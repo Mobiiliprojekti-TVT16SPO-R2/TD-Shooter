@@ -62,14 +62,12 @@ public class GameScreen implements Screen, InputProcessor {
 
     private int fps;
     private Skin skin;
-    private TextureAtlas atlas;
     private StretchViewport viewport;
     private Stage stage;
     private boolean inputBoolean = true;
     private Texture menuTexture;
     private Texture flashTexture;
     private Image menuImage;
-    private Table menuTable;
     private float soundVolume = 0.5f;
     private float musicVolume = 0.5f;
     private boolean soundMuted = false;
@@ -83,10 +81,10 @@ public class GameScreen implements Screen, InputProcessor {
     private int missionNumber;
 
     private GameHUD hud;
-    private Effect deathAnimation;
     private int effectCounter = 0;
     private boolean newHighscore = false;
     private boolean encounterEffect = true;
+    private boolean bossIsAlive = false;
     InputMultiplexer multiplexer;
 
     public GameScreen(final TDShooterGdxGame game, String missionName, int missionNumber) {
@@ -98,7 +96,6 @@ public class GameScreen implements Screen, InputProcessor {
         items = new ArrayList<Item>();
         effects = new ArrayList<Effect>();
 
-//        deathAnimation = new Effect(800, 1300, 0);
 
         this.missionNumber = missionNumber;
 
@@ -193,7 +190,7 @@ public class GameScreen implements Screen, InputProcessor {
 
             moveAllObjects(delta);
             checkCollisions();
-            mission.update(delta);
+            mission.update(delta, bossIsAlive);
         }
         drawAllObjects(delta);
     }
@@ -261,11 +258,12 @@ public class GameScreen implements Screen, InputProcessor {
             }
             if (encounter.isDestroyed()){
                 if (encounterEffect){
-//                    Effect effect = deathAnimation;
-//                effect.setAtributes(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
                     Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
                     effects.add(effect);
                     effectCounter ++;
+                    if (encounter instanceof Boss) {
+                        bossIsAlive = false;
+                    }
                 }
                 encounters.remove(i);
                 encounterEffect = true;
@@ -400,15 +398,20 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles){
             bullet.update();
         }
-        for (Encounter encounter : encounters){
+        for (int i = 0; i < encounters.size() ; i++) {
+
+            Encounter encounter = encounters.get(i);
             encounter.update(delta);
             if (encounter instanceof ShootingEnemy) {
                 ((ShootingEnemy) encounter).shoot(enemyProjectiles);
             }
+
             if (encounter instanceof Boss) {
                 ((Boss) encounter).spawnWeaklings(encounters);
+                bossIsAlive = true;
             }
         }
+
         for (Item item : items){
             item.update();
         }

@@ -58,8 +58,4 @@ public class Encounter extends Destroyable{
     public void setItemDrop(Item item){
         this.itemDrop = item;
     }
-
-    //Flight patterns
-
-    //
 }
