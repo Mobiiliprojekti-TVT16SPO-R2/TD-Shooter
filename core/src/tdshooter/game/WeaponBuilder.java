@@ -41,8 +41,8 @@ public class WeaponBuilder
     static public Weapon create(WeaponType weaponType, AssetManager assets)
     {
 
-        Sound firingSound1 = assets.get("Sounds/gun2.wav");
-        Sound firingSound2 = assets.get("Sounds/gun1.wav");
+        Sound firingSound1 = assets.get("Sounds/gun1_remake.wav");
+        Sound firingSound2 = assets.get("Sounds/gun2.wav");
         Sound firingSound3 = assets.get("Sounds/shotgun.wav");
         Texture firingImage1 = assets.get("Bullets/bullet1_small.png");
 

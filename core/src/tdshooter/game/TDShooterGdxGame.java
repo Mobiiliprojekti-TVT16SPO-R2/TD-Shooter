@@ -70,8 +70,10 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3.png", Texture.class);
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
-		assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
-		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
+        assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
+        assets.load("Backgrounds/Map_4_Asteroids.png", Texture.class);
+        assets.load("Backgrounds/Map_5_Moon.png", Texture.class);
+        assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
@@ -110,12 +112,18 @@ public class TDShooterGdxGame extends Game {
 //		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
 
 		assets.load("Sounds/hitSound.wav", Sound.class);
+		assets.load("Sounds/hitSound2.wav", Sound.class);
 		assets.load("Sounds/gun1.wav", Sound.class);
+		assets.load("Sounds/gun1_remake.wav", Sound.class);
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
 		assets.load("Sounds/cashier.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);
+		assets.load("ambient/space_ambience.mp3", Music.class);
+		assets.load("ambient/rain.mp3", Music.class);
+		assets.load("music/missionmusic1.mp3", Music.class);
+		assets.load("music/missionmusic2.mp3", Music.class);
 
 		assets.finishLoading();
 

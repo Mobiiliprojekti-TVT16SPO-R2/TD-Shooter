@@ -210,7 +210,6 @@ public class MissionsMenu implements Screen, InputProcessor {
         if (menuTopBar.isReadyForNextScreen()){
             menuTopBar.setNextScreen();
             dispose();
-            Gdx.app.log("DEBUG" , "Missionsmenu/menuTopBar is ready for next screen");
         }
 
         dialog.update(delta);
