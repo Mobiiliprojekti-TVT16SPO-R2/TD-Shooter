@@ -61,7 +61,6 @@ public class ShopItemSlot extends Stage {
 
         //STYLING
         BitmapFont font = skin.getFont("font");
-        font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 5);
         blackLabelstyle = new Label.LabelStyle(font, Color.BLACK);
         yellowLabelstyle = new Label.LabelStyle(font, Color.YELLOW);
         whiteLabelstyle = new Label.LabelStyle(font, Color.WHITE);
