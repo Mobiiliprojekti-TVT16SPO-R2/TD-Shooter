@@ -6,9 +6,11 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
@@ -37,6 +39,18 @@ public class MissionsMenu implements Screen, InputProcessor {
     private Texture menuBackground;
     private Texture commanderTexture;
     private Texture missionMapTexture;
+    private Texture mapWaypoint1Texture;
+    private Texture mapWaypoint4Texture;
+    private Texture mapWaypoint5Texture;
+    private Texture mapWaypoint6Texture;
+    private Texture mapWaypoint7Texture;
+    private Texture mapWaypoint8Texture;
+    private Image mapWaypoint1Image;
+    private Image mapWaypoint4Image;
+    private Image mapWaypoint5Image;
+    private Image mapWaypoint6Image;
+    private Image mapWaypoint7Image;
+    private Image mapWaypoint8Image;
     private Image commanderImage;
     private Image menuImage;
     private Image missionMapImage;
@@ -44,7 +58,20 @@ public class MissionsMenu implements Screen, InputProcessor {
     private ButtonGroup missionsButtonGroup;
     private PopupDialog dialog;
     private MenuTopBar menuTopBar;
+
+    private MissionSelectionButton mission01;
+    private TextButton mission01TextButton;
+    private TextButton mission02TextButton;
+    private TextButton mission03TextButton;
+    private TextButton mission04TextButton;
+    private TextButton mission05TextButton;
+    private TextButton mission06TextButton;
+    private TextButton mission07TextButton;
+    private TextButton mission08TextButton;
+
     private int levelProgress;
+    
+    private int missionbuttonDiameter = 80;
 
     public MissionsMenu(final  TDShooterGdxGame gam){
         game = gam;
@@ -54,19 +81,72 @@ public class MissionsMenu implements Screen, InputProcessor {
         viewport.apply();
 
         skin = gam.skin;
+        BitmapFont font = skin.getFont("font");
 
         Preferences prefs = Gdx.app.getPreferences("savedata");
         if(prefs.contains("levelprogress")) {
             levelProgress = prefs.getInteger("levelprogress", 1);
         }
 
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.overFontColor = Color.YELLOW;
+        textButtonStyle.downFontColor = Color.YELLOW;
+        textButtonStyle.fontColor = Color.WHITE;
+        
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         commanderTexture = game.assets.get("Menu/Character_Commander.png");
         missionMapTexture = game.assets.get("Menu/Bridge_Screen_Map_with_lines.png");
+        mapWaypoint1Texture = game.assets.get("mapitems/reitti-1.png");
+        mapWaypoint4Texture = game.assets.get("mapitems/reitti-4.png");
+        mapWaypoint5Texture = game.assets.get("mapitems/reitti-5.png");
+        mapWaypoint6Texture = game.assets.get("mapitems/reitti-6.png");
+        mapWaypoint7Texture = game.assets.get("mapitems/reitti-7.png");
+        mapWaypoint8Texture = game.assets.get("mapitems/reitti-8.png");
 
         menuImage = new Image(menuBackground);
         commanderImage = new Image(commanderTexture);
         missionMapImage = new Image(missionMapTexture);
+        mapWaypoint1Image = new Image(mapWaypoint1Texture);
+        mapWaypoint4Image = new Image(mapWaypoint4Texture);
+        mapWaypoint5Image = new Image(mapWaypoint5Texture);
+        mapWaypoint6Image = new Image(mapWaypoint6Texture);
+        mapWaypoint7Image = new Image(mapWaypoint7Texture);
+        mapWaypoint8Image = new Image(mapWaypoint8Texture);
+
+        mission01 = new MissionSelectionButton(viewport, game);
+
+        // Luodaan painikkeet
+        TextButton launchButton = new TextButton("Launch", textButtonStyle);
+        TextButton mission01 = new TextButton("", textButtonStyle);
+        TextButton mission02 = new TextButton("", textButtonStyle);
+        TextButton mission03 = new TextButton("", textButtonStyle);
+        TextButton mission04 = new TextButton("", textButtonStyle);
+        TextButton mission05 = new TextButton("", textButtonStyle);
+        TextButton mission06 = new TextButton("", textButtonStyle);
+        TextButton mission07 = new TextButton("", textButtonStyle);
+        TextButton mission08 = new TextButton("", textButtonStyle);
+
+        // Asetetaan mission-painikkeiden kooot
+        mission01.setWidth(missionbuttonDiameter);
+        mission01.setHeight(missionbuttonDiameter);
+        mission02.setWidth(missionbuttonDiameter);
+        mission02.setHeight(missionbuttonDiameter);
+        mission03.setWidth(missionbuttonDiameter);
+        mission03.setHeight(missionbuttonDiameter);
+        mission04.setWidth(missionbuttonDiameter);
+        mission04.setHeight(missionbuttonDiameter);
+        mission05.setWidth(missionbuttonDiameter);
+        mission05.setHeight(missionbuttonDiameter);
+        mission06.setWidth(missionbuttonDiameter);
+        mission06.setHeight(missionbuttonDiameter);
+        mission07.setWidth(missionbuttonDiameter);
+        mission07.setHeight(missionbuttonDiameter);
+        mission08.setWidth(missionbuttonDiameter);
+        mission08.setHeight(missionbuttonDiameter);
+
+        // Asetetaan luotujen painikkeiden paikat
+        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth() + 40, 600);
 
         missionsButtonGroup = new ButtonGroup();
         missionNameList = new ArrayList<String>();
@@ -97,27 +177,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     public void show() {
 
         dialog.setSize(VIEWPORTWIDTH, 360);
-        int missionbuttonDiameter = 80;
-
-        // Luodaan painikkeet
-        TextButton launchButton = new TextButton("Launch", skin);
-        TextButton mission01 = new TextButton("    1", skin, "toggle");
-        TextButton mission02 = new TextButton("    2", skin, "toggle");
-        TextButton mission03 = new TextButton("    3", skin, "toggle");
-
-        // Asetetaan mission-painikkeiden kooot
-        mission01.setWidth(missionbuttonDiameter);
-        mission01.setHeight(missionbuttonDiameter);
-
-        mission02.setWidth(missionbuttonDiameter);
-        mission02.setHeight(missionbuttonDiameter);
-
-        mission03.setWidth(missionbuttonDiameter);
-        mission03.setHeight(missionbuttonDiameter);
-
-        // Asetetaan luotujen painikkeiden paikat
-        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth() + 40, 600);
-
+        
         // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
         missionsButtonGroup.add(mission01);
         missionsButtonGroup.add(mission02);
@@ -125,18 +185,15 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         switch (levelProgress){
             case 1:
-                mission02.setDisabled(true);
-                mission03.setDisabled(true);
+                
                 break;
             case 2:
-                mission03.setDisabled(true);
                 break;
             case 3:
                 break;
             default:
                 break;
         }
-
         // Asetetaan yhtäaikaa valittujen painikkeiden enimmäis- ja minimimäärät
         // Ja jos enimmäismäärä ylittyy poistetaan edellinen valinta
         missionsButtonGroup.setMaxCheckCount(1);
@@ -146,21 +203,21 @@ public class MissionsMenu implements Screen, InputProcessor {
         mission01.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dialog.setText("teststring1, only 1 line:  ");
+                dialog.setText("Aliens! I knew this would happen some day. Go get them private!");
             }
         });
 
         mission02.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dialog.setText("teststring2, and now here is some lines, maybe 2 or 3 with text this long.. ");
+                dialog.setText("Aliens are trying to take over our farmlands! We will not tolerate this! You know what to do. ");
             }
         });
 
         mission03.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dialog.setText("teststring3, this text probably will be too long to fit in this textbox, so it will not show properly, at least i think so.. ");
+                dialog.setText("We managed to push them back to the ocean islands, but we are detecting some heavy organisms. Be careful out there pilot!");
             }
         });
 

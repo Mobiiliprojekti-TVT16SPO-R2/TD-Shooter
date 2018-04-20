@@ -103,6 +103,17 @@ public class TDShooterGdxGame extends Game {
 		assets.load("shopitems/Weapon_MachineGunCannon.png", Texture.class);
 		assets.load("shopitems/Weapon_ScatterCannon.png", Texture.class);
 		assets.load("shopitems/raksi.png", Texture.class);
+		assets.load("mapitems/karttapainike-locked.png", Texture.class);
+		assets.load("mapitems/karttapainike-selected.png", Texture.class);
+		assets.load("mapitems/karttapainike-unlocked.png", Texture.class);
+		assets.load("mapitems/reitti-1.png", Texture.class);
+		assets.load("mapitems/reitti-2.png", Texture.class);
+		assets.load("mapitems/reitti-3.png", Texture.class);
+		assets.load("mapitems/reitti-4.png", Texture.class);
+		assets.load("mapitems/reitti-5.png", Texture.class);
+		assets.load("mapitems/reitti-6.png", Texture.class);
+		assets.load("mapitems/reitti-7.png", Texture.class);
+		assets.load("mapitems/reitti-8.png", Texture.class);
 
 		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
