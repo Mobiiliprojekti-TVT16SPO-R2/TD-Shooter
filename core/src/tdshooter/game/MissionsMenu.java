@@ -60,6 +60,13 @@ public class MissionsMenu implements Screen, InputProcessor {
     private MenuTopBar menuTopBar;
 
     private MissionSelectionButton mission01;
+    private MissionSelectionButton mission02;
+    private MissionSelectionButton mission03;
+    private MissionSelectionButton mission04;
+    private MissionSelectionButton mission05;
+    private MissionSelectionButton mission06;
+    private MissionSelectionButton mission07;
+    private MissionSelectionButton mission08;
     private TextButton mission01TextButton;
     private TextButton mission02TextButton;
     private TextButton mission03TextButton;
@@ -68,6 +75,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     private TextButton mission06TextButton;
     private TextButton mission07TextButton;
     private TextButton mission08TextButton;
+    private TextButton launchButton;
 
     private int levelProgress;
     
@@ -115,35 +123,51 @@ public class MissionsMenu implements Screen, InputProcessor {
         mapWaypoint8Image = new Image(mapWaypoint8Texture);
 
         mission01 = new MissionSelectionButton(viewport, game);
+        mission02 = new MissionSelectionButton(viewport, game);
+        mission03 = new MissionSelectionButton(viewport, game);
+        mission04 = new MissionSelectionButton(viewport, game);
+        mission05 = new MissionSelectionButton(viewport, game);
+        mission06 = new MissionSelectionButton(viewport, game);
+        mission07 = new MissionSelectionButton(viewport, game);
+        mission08 = new MissionSelectionButton(viewport, game);
 
         // Luodaan painikkeet
-        TextButton launchButton = new TextButton("Launch", textButtonStyle);
-        TextButton mission01 = new TextButton("", textButtonStyle);
-        TextButton mission02 = new TextButton("", textButtonStyle);
-        TextButton mission03 = new TextButton("", textButtonStyle);
-        TextButton mission04 = new TextButton("", textButtonStyle);
-        TextButton mission05 = new TextButton("", textButtonStyle);
-        TextButton mission06 = new TextButton("", textButtonStyle);
-        TextButton mission07 = new TextButton("", textButtonStyle);
-        TextButton mission08 = new TextButton("", textButtonStyle);
+        launchButton = new TextButton("Launch", textButtonStyle);
+        mission01TextButton = new TextButton("", textButtonStyle);
+        mission02TextButton = new TextButton("", textButtonStyle);
+        mission03TextButton = new TextButton("", textButtonStyle);
+        mission04TextButton = new TextButton("", textButtonStyle);
+        mission05TextButton = new TextButton("", textButtonStyle);
+        mission06TextButton = new TextButton("", textButtonStyle);
+        mission07TextButton = new TextButton("", textButtonStyle);
+        mission08TextButton = new TextButton("", textButtonStyle);
 
         // Asetetaan mission-painikkeiden kooot
-        mission01.setWidth(missionbuttonDiameter);
-        mission01.setHeight(missionbuttonDiameter);
-        mission02.setWidth(missionbuttonDiameter);
-        mission02.setHeight(missionbuttonDiameter);
-        mission03.setWidth(missionbuttonDiameter);
-        mission03.setHeight(missionbuttonDiameter);
-        mission04.setWidth(missionbuttonDiameter);
-        mission04.setHeight(missionbuttonDiameter);
-        mission05.setWidth(missionbuttonDiameter);
-        mission05.setHeight(missionbuttonDiameter);
-        mission06.setWidth(missionbuttonDiameter);
-        mission06.setHeight(missionbuttonDiameter);
-        mission07.setWidth(missionbuttonDiameter);
-        mission07.setHeight(missionbuttonDiameter);
-        mission08.setWidth(missionbuttonDiameter);
-        mission08.setHeight(missionbuttonDiameter);
+        mission01TextButton.setWidth(missionbuttonDiameter);
+        mission01TextButton.setHeight(missionbuttonDiameter);
+        mission02TextButton.setWidth(missionbuttonDiameter);
+        mission02TextButton.setHeight(missionbuttonDiameter);
+        mission03TextButton.setWidth(missionbuttonDiameter);
+        mission03TextButton.setHeight(missionbuttonDiameter);
+        mission04TextButton.setWidth(missionbuttonDiameter);
+        mission04TextButton.setHeight(missionbuttonDiameter);
+        mission05TextButton.setWidth(missionbuttonDiameter);
+        mission05TextButton.setHeight(missionbuttonDiameter);
+        mission06TextButton.setWidth(missionbuttonDiameter);
+        mission06TextButton.setHeight(missionbuttonDiameter);
+        mission07TextButton.setWidth(missionbuttonDiameter);
+        mission07TextButton.setHeight(missionbuttonDiameter);
+        mission08TextButton.setWidth(missionbuttonDiameter);
+        mission08TextButton.setHeight(missionbuttonDiameter);
+
+        mission01.setSize(missionbuttonDiameter);
+        mission02.setSize(missionbuttonDiameter);
+        mission03.setSize(missionbuttonDiameter);
+        mission04.setSize(missionbuttonDiameter);
+        mission05.setSize(missionbuttonDiameter);
+        mission06.setSize(missionbuttonDiameter);
+        mission07.setSize(missionbuttonDiameter);
+        mission08.setSize(missionbuttonDiameter);
 
         // Asetetaan luotujen painikkeiden paikat
         launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth() + 40, 600);
@@ -177,47 +201,96 @@ public class MissionsMenu implements Screen, InputProcessor {
     public void show() {
 
         dialog.setSize(VIEWPORTWIDTH, 360);
+        dialog.setText("Atteeeeent-ION Pilot! World is under attack by some pesky aliens! Our mission locations are shown in this map on the wall.");
         
         // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
-        missionsButtonGroup.add(mission01);
-        missionsButtonGroup.add(mission02);
-        missionsButtonGroup.add(mission03);
+        unlockByProgress();
 
-        switch (levelProgress){
-            case 1:
-                
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            default:
-                break;
-        }
         // Asetetaan yhtäaikaa valittujen painikkeiden enimmäis- ja minimimäärät
         // Ja jos enimmäismäärä ylittyy poistetaan edellinen valinta
         missionsButtonGroup.setMaxCheckCount(1);
         missionsButtonGroup.setMinCheckCount(1);
         missionsButtonGroup.setUncheckLast(true);
 
-        mission01.addListener(new ClickListener(){
+        mission01TextButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dialog.setText("Aliens! I knew this would happen some day. Go get them private!");
+                unlockByProgress();
+                mission01.setSelected();
+                dialog.setText("Aliens! Earth is under attack! This is your first mission. Good luck pilot!");
             }
         });
 
-        mission02.addListener(new ClickListener(){
+        mission02TextButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dialog.setText("Aliens are trying to take over our farmlands! We will not tolerate this! You know what to do. ");
+                if (levelProgress > 1){
+                    unlockByProgress();
+                    mission02.setSelected();
+                    dialog.setText("Aliens are trying to take over our food supplies! We will not tolerate this! You know what to do! ");
+                }
             }
         });
 
-        mission03.addListener(new ClickListener(){
+        mission03TextButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dialog.setText("We managed to push them back to the ocean islands, but we are detecting some heavy organisms. Be careful out there pilot!");
+                if (levelProgress > 2){
+                    unlockByProgress();
+                    mission03.setSelected();
+                    dialog.setText("We managed to push them back to the ocean islands, but we are detecting some heavy heatmap-activity. Be careful out there pilot!");
+                }
+            }
+        });
+
+        mission04TextButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (levelProgress > 3){
+                    unlockByProgress();
+                    mission04.setSelected();
+                    dialog.setText("Aliens are receiving some reinforcements form outer space, It seems they have bigger armament than we expected.");
+                }
+            }
+        });
+        mission05TextButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (levelProgress > 4){
+                    unlockByProgress();
+                    mission05.setSelected();
+                    dialog.setText("Aliens have some activity in lunar section, go investigate and then report back!");
+                }
+            }
+        });
+        mission06TextButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (levelProgress > 5){
+                    unlockByProgress();
+                    mission06.setSelected();
+                    dialog.setText("It seems aliens have constructed massive base on the dark side of the moon. We need to wipe them out!");
+                }
+            }
+        });
+        mission07TextButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (levelProgress > 6){
+                    unlockByProgress();
+                    mission07.setSelected();
+                    dialog.setText("We got them retreating, but they are still gathering forces near asteroidbelt behind moon.");
+                }
+            }
+        });
+        mission08TextButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (levelProgress > 7){
+                    unlockByProgress();
+                    mission08.setSelected();
+                    dialog.setText("We are detecting massive alien armada of battleships and cruisers! But we can survive this, if you take down their supreme leader!");
+                }
             }
         });
 
@@ -248,9 +321,137 @@ public class MissionsMenu implements Screen, InputProcessor {
         stage.addActor(missionMapImage);
         stage.addActor(commanderImage);
         stage.addActor(launchButton);
-        stage.addActor(mission01);
-        stage.addActor(mission02);
-        stage.addActor(mission03);
+        stage.addActor(mission01TextButton);
+        stage.addActor(mission02TextButton);
+        stage.addActor(mission03TextButton);
+        stage.addActor(mission04TextButton);
+        stage.addActor(mission05TextButton);
+        stage.addActor(mission06TextButton);
+        stage.addActor(mission07TextButton);
+        stage.addActor(mission08TextButton);
+    }
+
+    private void unlockByProgress() {
+        switch (levelProgress){
+            case 1:
+                mission01.setUnlocked();
+                mission02.setLocked();
+                mission03.setLocked();
+                mission04.setLocked();
+                mission05.setLocked();
+                mission06.setLocked();
+                mission07.setLocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                break;
+            case 2:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setLocked();
+                mission04.setLocked();
+                mission05.setLocked();
+                mission06.setLocked();
+                mission07.setLocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                break;
+            case 3:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setLocked();
+                mission05.setLocked();
+                mission06.setLocked();
+                mission07.setLocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                break;
+            case 4:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setUnlocked();
+                mission05.setLocked();
+                mission06.setLocked();
+                mission07.setLocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                missionsButtonGroup.add(mission04TextButton);
+                break;
+            case 5:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setUnlocked();
+                mission05.setUnlocked();
+                mission06.setLocked();
+                mission07.setLocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                missionsButtonGroup.add(mission04TextButton);
+                missionsButtonGroup.add(mission05TextButton);
+                break;
+            case 6:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setUnlocked();
+                mission05.setUnlocked();
+                mission06.setUnlocked();
+                mission07.setLocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                missionsButtonGroup.add(mission04TextButton);
+                missionsButtonGroup.add(mission05TextButton);
+                missionsButtonGroup.add(mission06TextButton);
+                break;
+            case 7:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setUnlocked();
+                mission05.setUnlocked();
+                mission06.setUnlocked();
+                mission07.setUnlocked();
+                mission08.setLocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                missionsButtonGroup.add(mission04TextButton);
+                missionsButtonGroup.add(mission05TextButton);
+                missionsButtonGroup.add(mission06TextButton);
+                missionsButtonGroup.add(mission07TextButton);
+                break;
+            case 8:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setUnlocked();
+                mission05.setUnlocked();
+                mission06.setUnlocked();
+                mission07.setUnlocked();
+                mission08.setUnlocked();
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                missionsButtonGroup.add(mission04TextButton);
+                missionsButtonGroup.add(mission05TextButton);
+                missionsButtonGroup.add(mission06TextButton);
+                missionsButtonGroup.add(mission07TextButton);
+                missionsButtonGroup.add(mission08TextButton);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -269,6 +470,23 @@ public class MissionsMenu implements Screen, InputProcessor {
             dispose();
         }
 
+        mission01.update(delta);
+        mission02.update(delta);
+        mission03.update(delta);
+        mission04.update(delta);
+        mission05.update(delta);
+        mission06.update(delta);
+        mission07.update(delta);
+        mission08.update(delta);
+        mission01.draw();
+        mission02.draw();
+        mission03.draw();
+        mission04.draw();
+        mission05.draw();
+        mission06.draw();
+        mission07.draw();
+        mission08.draw();
+
         dialog.update(delta);
         dialog.draw();
 
@@ -278,6 +496,11 @@ public class MissionsMenu implements Screen, InputProcessor {
         missionNameList.add("Missions/mission01.txt");
         missionNameList.add("Missions/mission02.txt");
         missionNameList.add("Missions/mission03.txt");
+        missionNameList.add("Missions/mission04.txt");
+        missionNameList.add("Missions/mission05.txt");
+        missionNameList.add("Missions/mission06.txt");
+        missionNameList.add("Missions/mission07.txt");
+        missionNameList.add("Missions/mission08.txt");
     }
     @Override
     public void resize(int width, int height) {

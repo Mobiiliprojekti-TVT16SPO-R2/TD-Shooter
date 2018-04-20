@@ -37,11 +37,27 @@ public class MissionSelectionButton extends Stage {
         super.act(delta);
     }
 
+    public void setPosition(int x, int y){
+        lockedButtonImage.setPosition(x,y);
+        unlockedButtonImage.setPosition(x,y);
+        selectedButtonImage.setPosition(x,y);
+    }
+
+    public void setSize(int diameter){
+        lockedButtonImage.setWidth(diameter);
+        unlockedButtonImage.setWidth(diameter);
+        selectedButtonImage.setWidth(diameter);
+        lockedButtonImage.setHeight(diameter);
+        unlockedButtonImage.setHeight(diameter);
+        selectedButtonImage.setHeight(diameter);
+    }
+
     public void setLocked(){
         lockedButtonImage.setVisible(true);
     }
     public void setUnlocked(){
         lockedButtonImage.setVisible(false);
+        selectedButtonImage.setVisible(false);
     }
     public void setSelected(){
         selectedButtonImage.setVisible(true);
