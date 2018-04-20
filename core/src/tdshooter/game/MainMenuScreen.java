@@ -6,9 +6,11 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -34,7 +36,26 @@ public class MainMenuScreen implements Screen {
     private Skin skin;
     private Stage stage;
     private Texture menuBackground;
+    private Texture menuButtonWhite;
+    private Texture menuButtonYellow;
+    private Texture gameLogoTexture;
     private Image menuImage;
+    private Image startButtonImage;
+    private Image optionsButtonImage;
+    private Image exitButtonImage;
+    private Image menuButtonOnImage;
+    private Image gameLogoImage;
+
+    private TextButton startGameButton;
+    private TextButton optionsButton;
+    private TextButton exitButton;
+
+    private int buttonLeftMargin = 50;
+    private int buttonSpacing = 10;
+    private int buttonRightOffset = 20;
+    private int buttonBottomMargin = 70;
+    private int buttonWidth = 260;
+    private int buttonHeight = 110;
 
     public MainMenuScreen(final TDShooterGdxGame gam) {
         game = gam;
@@ -42,40 +63,80 @@ public class MainMenuScreen implements Screen {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-        skin = new Skin();
-        skin.add("font", game.fontSkin);
-        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
-        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+        skin = gam.skin;
+
+        BitmapFont font = skin.getFont("font");
 
         menuBackground = game.assets.get("Menu/Background_StartMenu.png");
+        menuButtonWhite = game.assets.get("Menu/startmenu-painike-normaali.png");
+        menuButtonYellow = game.assets.get("Menu/startmenu-painike-pohjassa.png");
+        gameLogoTexture = game.assets.get("Menu/logo-lapinakyva.png");
+
         menuImage = new Image(menuBackground);
         menuImage.setHeight(VIEWPORTHEIGHT);
         menuImage.setWidth(VIEWPORTWIDTH);
 
+        gameLogoImage = new Image(gameLogoTexture);
+
+        startButtonImage = new Image(menuButtonYellow);
+        optionsButtonImage = new Image(menuButtonWhite);
+        exitButtonImage = new Image(menuButtonWhite);
+        menuButtonOnImage = new Image(menuButtonWhite);
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = font;
+        textButtonStyle.overFontColor = Color.YELLOW;
+        textButtonStyle.downFontColor = Color.YELLOW;
+        textButtonStyle.fontColor = Color.WHITE;
+
+        startGameButton = new TextButton("Start Game", textButtonStyle);
+        optionsButton = new TextButton("Options", textButtonStyle);
+        exitButton = new TextButton("Exit", textButtonStyle);
+
+        //Setting sizes
+        startGameButton.setWidth(buttonWidth);
+        optionsButton.setWidth(buttonWidth);
+        exitButton.setWidth(buttonWidth);
+        startGameButton.setHeight(buttonHeight);
+        optionsButton.setHeight(buttonHeight);
+        exitButton.setHeight(buttonHeight);
+
+        startButtonImage.setWidth(buttonWidth);
+        optionsButtonImage.setWidth(buttonWidth);
+        exitButtonImage.setWidth(buttonWidth);
+        menuButtonOnImage.setWidth(buttonWidth);
+        startButtonImage.setHeight(buttonHeight);
+        optionsButtonImage.setHeight(buttonHeight);
+        exitButtonImage.setHeight(buttonHeight);
+        menuButtonOnImage.setHeight(buttonHeight);
+
+        gameLogoImage.setWidth(500);
+        gameLogoImage.setHeight(400);
+
+        //Setting menubutton locations:
+        exitButton.setPosition(buttonLeftMargin, buttonBottomMargin);
+        optionsButton.setPosition(buttonLeftMargin + buttonRightOffset, exitButton.getY() + buttonHeight + buttonSpacing);
+        startGameButton.setPosition(buttonLeftMargin + buttonRightOffset*2, optionsButton.getY() + buttonHeight + buttonSpacing);
+
+        startButtonImage.setPosition(startGameButton.getX(),startGameButton.getY());
+        optionsButtonImage.setPosition(optionsButton.getX(),optionsButton.getY());
+        exitButtonImage.setPosition(exitButton.getX(),exitButton.getY());
+        menuButtonOnImage.setPosition(-400, -400); // off-screen on purpose
+
+        gameLogoImage.setPosition(110, 620);
+
         stage = new Stage(viewport, game.batch);
         Gdx.input.setCatchBackKey(false);
+
     }
     @Override
     public void show() {
 
         Gdx.input.setInputProcessor(stage);
-
-        Table mainTable = new Table();
-
-        //Set table to fill stage
-        mainTable.setFillParent(true);
-        //Set alignment of contents in the table.
-//        mainTable.center();
-        mainTable.setPosition(20, 200);
-//        mainTable.top();
-
-        TextButton playButton = new TextButton("Play", skin);
-        TextButton optionsButton = new TextButton("Options", skin);
-        TextButton exitButton = new TextButton("Exit", skin);
-
-        playButton.addListener(new ClickListener(){
+        startGameButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                menuButtonOnImage.setPosition(startGameButton.getX(),startGameButton.getY());
                 game.setScreen(new MissionsMenu(game));
                 dispose();
             }
@@ -83,6 +144,7 @@ public class MainMenuScreen implements Screen {
         optionsButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                menuButtonOnImage.setPosition(optionsButton.getX(),optionsButton.getY());
                 game.setScreen(new OptionsMenu(game));
                 dispose();
             }
@@ -90,18 +152,22 @@ public class MainMenuScreen implements Screen {
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                menuButtonOnImage.setPosition(exitButton.getX(),exitButton.getY());
                 Gdx.app.exit();
             }
         });
 
-        mainTable.add(playButton);
-        mainTable.row();
-        mainTable.add(optionsButton);
-        mainTable.row();
-        mainTable.add(exitButton);
-
         stage.addActor(menuImage);
-        stage.addActor(mainTable);
+        stage.addActor(gameLogoImage);
+
+        stage.addActor(startButtonImage);
+        stage.addActor(optionsButtonImage);
+        stage.addActor(exitButtonImage);
+        stage.addActor(menuButtonOnImage);
+
+        stage.addActor(startGameButton);
+        stage.addActor(optionsButton);
+        stage.addActor(exitButton);
     }
 
     @Override
