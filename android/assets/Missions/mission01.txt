@@ -1,8 +1,11 @@
 Backgrounds/Map_1_Forest_VER3.png
+Backgrounds/Clouds_BackGround.png
 music/missionmusic2.mp3
 50
 120
+90
 1
+
 0, 180, 1200, 3, 0, 1
 0, 540, 1200, 5, 0, 1
 0, 360, 1200, 7, 0, 1

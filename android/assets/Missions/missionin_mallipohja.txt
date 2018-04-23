@@ -1,6 +1,6 @@
-taustakuvan avainsana, string
-musiikin avainsana, string
+﻿taustakuvan avainsana, string
 pilvitason kuvan avainsana, string
+musiikin avainsana, string
 teht�v�n lopetusaika, int
 taustan skrollausnopeus, int
 pilvitason kuvan skrollausnopeus, int
@@ -9,17 +9,10 @@ vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum),
 tyyppi, x, y, aika, item, flight
 3. vihollinen jne.
 
-Encounters/AlienBeast_LVL_2.png", Texture.class);
-Encounters/AlienBeast_LVL_3.png", Texture.class);
-Encounters/AlienBeast_BigMomma.png", Texture.class);
-Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
-Encounters/AlienFighter_LVL_2_VERSION2.png", Texture.class);
-Encounters/AlienFighter_LVL_3_VERSION2.png", Texture.class);
-Encounters/AlienFighter_Bruiser.png", Texture.class);
-Encounters/AlienMine_Machine.png", Texture.class);
-Encounters/AlienMine_Organic.png", Texture.class);
+Spawnlocations x
 	144	288	432	576
-	    180	    360     540
+	    180	    360     540	
+
 	flights
 1 low f sin
 2 high f sin
@@ -37,7 +30,7 @@ Encounters/AlienMine_Organic.png", Texture.class);
 1 = hp
 4 = currency
 
-	beasts
+	beasts 
 1  = 0
 2  = 4
 3  = 5

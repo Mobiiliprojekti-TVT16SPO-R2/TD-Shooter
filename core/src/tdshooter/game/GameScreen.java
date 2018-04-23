@@ -51,6 +51,7 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean gamePaused = false;
     private Player player;
     private ScrollingBackground background;
+    private ScrollingBackground cloudLayer;
     private Music backgroundMusic;
     private OrthographicCamera camera;
     private ArrayList<Encounter> encounters;
@@ -135,7 +136,9 @@ public class GameScreen implements Screen, InputProcessor {
         mission = new Mission(missionName, game.assets, encounters);
         player = new Player(VIEWPORTWIDTH / 2 - 64 / 2,20, PLAYERSIZE_X , PLAYERSIZE_Y, 100,50, game.assets);
         background = new ScrollingBackground(mission.getBackground());
-
+        cloudLayer = new ScrollingBackground(mission.getCloudTexture());
+        cloudLayer.setLooping(true);
+        cloudLayer.setScrollSpeed(mission.getCloudScrollSpeed());
         background.setLooping(mission.isBackgroundLooping());
         background.setScrollSpeed(mission.getScrollSpeed());
         backgroundMusic = mission.getBackgroundMusic();
@@ -335,6 +338,7 @@ public class GameScreen implements Screen, InputProcessor {
     {
         game.batch.begin();
         background.draw(game.batch);
+        cloudLayer.draw(game.batch);
         player.draw(game.batch);
         for (Item item : items) {
             item.draw(game.batch);
@@ -390,6 +394,7 @@ public class GameScreen implements Screen, InputProcessor {
     private void moveAllObjects(float delta)
     {
         background.update(delta);
+        cloudLayer.update(delta);
         player.move(delta);
         for (Projectile bullet : playerProjectiles){
             bullet.update();

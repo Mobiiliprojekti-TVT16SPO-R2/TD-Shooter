@@ -1,7 +1,9 @@
 Backgrounds/Map_2_FarmLand.png
+Backgrounds/Clouds_BackGround.png
 music/missionmusic1.mp3
 60
 120
+90
 1
 
 1, 576, 1200, 3, 4, 3

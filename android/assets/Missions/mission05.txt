@@ -1,8 +1,11 @@
 Backgrounds/Map_5_Moon.png
+Backgrounds/Clouds_MoonDust_BackGround.png
 ambient/space_ambience.mp3
 80
 100
+90
 1
+
 0, 240, 1400, 1, 0, 1
 0, 240, 1400, 4, 1, 1
 1, 100, 1400, 10, 2, 1
