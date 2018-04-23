@@ -124,7 +124,7 @@ public class MissionsMenu implements Screen, InputProcessor {
         mapWaypoint10Texture = game.assets.get("mapitems/reitti-10.png");
         launchButtonTexture = game.assets.get("Menu/startmenu-painike-pohjassa.png");
         selectSound = game.assets.get("Sounds/menublip3.wav");
-        launchSound = game.assets.get("Sounds/menublip2.wav");
+        launchSound = game.assets.get("Sounds/start.wav");
 
 
         menuImage = new Image(menuBackground);
