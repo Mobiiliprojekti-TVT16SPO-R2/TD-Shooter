@@ -1,8 +1,10 @@
-taustakuvan avainsana
-musiikin avainsana
-teht�v�n lopetusaika
-taustan skrollausnopeus
-looppaako taustakuva (0, 1)
+taustakuvan avainsana, string
+musiikin avainsana, string
+pilvitason kuvan avainsana, string
+teht�v�n lopetusaika, int
+taustan skrollausnopeus, int
+pilvitason kuvan skrollausnopeus, int
+looppaako taustakuva (0, 1), int
 vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum), x koordinaatti, y koordinaatti, spawnaika, item type, flight type
 toisen vihollisen tyyppi, x, y, aika, item, flight
 3. vihollinen jne.
