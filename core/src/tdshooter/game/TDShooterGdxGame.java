@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
@@ -143,10 +141,13 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
 		assets.load("Sounds/cashier.wav", Sound.class);
+		assets.load("Sounds/laser.wav", Sound.class);
 		assets.load("ambient/space_ambience.mp3", Music.class);
 		assets.load("ambient/rain.mp3", Music.class);
 		assets.load("music/missionmusic1.mp3", Music.class);
 		assets.load("music/missionmusic2.mp3", Music.class);
+		assets.load("music/missionmusic1_amp.mp3", Music.class);
+		assets.load("music/missionmusic2_amp.mp3", Music.class);
 
 		assets.finishLoading();
 

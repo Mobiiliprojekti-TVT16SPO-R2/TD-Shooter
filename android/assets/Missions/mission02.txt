@@ -1,6 +1,6 @@
 Backgrounds/Map_2_FarmLand.png
 Backgrounds/Clouds_BackGround_Light.png
-music/missionmusic1.mp3
+music/missionmusic1_amp.mp3
 60
 120
 260
