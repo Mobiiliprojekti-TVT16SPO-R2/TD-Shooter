@@ -68,6 +68,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("powerups/PowerUp_FlightSpeed.png", Texture.class);
 		assets.load("powerups/PowerUp_HealthPack.png", Texture.class);
 		assets.load("Backgrounds/Map_Test_720_2297_2.png", Texture.class);
+		assets.load("Backgrounds/Clouds_BackGround.png", Texture.class);
 		assets.load("Backgrounds/Map_Test_1_original.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3.png", Texture.class);
@@ -81,6 +82,10 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Clouds_AsteroidDust_BackGround.png", Texture.class);
 		assets.load("Backgrounds/Clouds_MoonDust_BackGround.png", Texture.class);
 		assets.load("Backgrounds/Clouds_AlienArmada_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_BackGround_Light.png", Texture.class);
+		assets.load("Backgrounds/Clouds_AsteroidDust_BackGround_Light.png", Texture.class);
+		assets.load("Backgrounds/Clouds_MoonDust_BackGround_Light.png", Texture.class);
+		assets.load("Backgrounds/Clouds_AlienArmada_BackGround_Light.png", Texture.class);
         assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);

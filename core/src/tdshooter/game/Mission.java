@@ -87,17 +87,24 @@ public class Mission {
                 System.exit(1);
             }
 
-            if((backgroundMusic = assets.get(strArray[1])) == null)
+            if((cloudTexture = assets.get(strArray[1])) == null)
             {
-                Gdx.app.error("MissionReadError", filename + ": Music '" + strArray[1] + "' is not found.");
+                Gdx.app.error("MissionReadError", filename + ": Texture '" + strArray[1] + "' is not found.");
+                System.exit(1);
+            }
+
+            if((backgroundMusic = assets.get(strArray[2])) == null)
+            {
+                Gdx.app.error("MissionReadError", filename + ": Music '" + strArray[2] + "' is not found.");
                 System.exit(1);
             }
 
             try
             {
-                endingTime = Integer.parseInt(strArray[2]);
-                scrollSpeed = Integer.parseInt(strArray[3]);
-                backgroundLooping = Integer.parseInt(strArray[4]) != 0;
+                endingTime = Integer.parseInt(strArray[3]);
+                scrollSpeed = Integer.parseInt(strArray[4]);
+                cloudScrollSpeed = Integer.parseInt(strArray[5]);
+                backgroundLooping = Integer.parseInt(strArray[6]) != 0;
             }
             catch(NumberFormatException e)
             {
@@ -146,17 +153,22 @@ public class Mission {
     }
 
     public Texture getBackground() {return background;}
+    public Texture getCloudTexture() {return cloudTexture;}
     public Music getBackgroundMusic() {return backgroundMusic;}
     public boolean isBackgroundLooping() {return backgroundLooping;}
     public boolean isMissionOver() {return missionOver;}
     public float getScrollSpeed() {return scrollSpeed;}
+    public float getCloudScrollSpeed() {return cloudScrollSpeed;}
 
-    private final int numberOfHeaderLines = 5;
+    private final int numberOfHeaderLines = 7;
+
     private Texture background;
+    private Texture cloudTexture;
     private Music backgroundMusic;
     private boolean backgroundLooping;
     private boolean missionOver;
     private float scrollSpeed;
+    private float cloudScrollSpeed;
     private float runningTime;
     private float runningTime2;
     private float waitingTime = 3.0f;

@@ -344,6 +344,14 @@ public class MissionsMenu implements Screen, InputProcessor {
         mission06TextButton.setPosition(390, 760);
         mission07TextButton.setPosition(280, 850);
         mission08TextButton.setPosition(440, 900);
+        missionsButtonGroup.add(mission01TextButton);
+        missionsButtonGroup.add(mission02TextButton);
+        missionsButtonGroup.add(mission03TextButton);
+        missionsButtonGroup.add(mission04TextButton);
+        missionsButtonGroup.add(mission05TextButton);
+        missionsButtonGroup.add(mission06TextButton);
+        missionsButtonGroup.add(mission07TextButton);
+        missionsButtonGroup.add(mission08TextButton);
 
         mapWaypoint1Image.setPosition(390,350);
         mapWaypoint2Image.setPosition(340,470);
@@ -382,7 +390,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 mission07.setHidden();
                 mission08.setHidden();
                 stage.addActor(mission01TextButton);
-                missionsButtonGroup.add(mission01TextButton);
                 break;
             case 2:
                 mission01.setUnlocked();
@@ -396,8 +403,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mapWaypoint1Image);
                 stage.addActor(mission01TextButton);
                 stage.addActor(mission02TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
 
                 break;
             case 3:
@@ -414,9 +419,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mission01TextButton);
                 stage.addActor(mission02TextButton);
                 stage.addActor(mission03TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
                 break;
             case 4:
                 mission01.setUnlocked();
@@ -434,10 +436,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mission02TextButton);
                 stage.addActor(mission03TextButton);
                 stage.addActor(mission04TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
-                missionsButtonGroup.add(mission04TextButton);
                 break;
             case 5:
                 mission01.setUnlocked();
@@ -452,11 +450,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mapWaypoint2Image);
                 stage.addActor(mapWaypoint3Image);
                 stage.addActor(mapWaypoint4Image);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
-                missionsButtonGroup.add(mission04TextButton);
-                missionsButtonGroup.add(mission05TextButton);
                 stage.addActor(mission01TextButton);
                 stage.addActor(mission02TextButton);
                 stage.addActor(mission03TextButton);
@@ -483,12 +476,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mission04TextButton);
                 stage.addActor(mission05TextButton);
                 stage.addActor(mission06TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
-                missionsButtonGroup.add(mission04TextButton);
-                missionsButtonGroup.add(mission05TextButton);
-                missionsButtonGroup.add(mission06TextButton);
                 break;
             case 7:
                 mission01.setUnlocked();
@@ -512,13 +499,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mission05TextButton);
                 stage.addActor(mission06TextButton);
                 stage.addActor(mission07TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
-                missionsButtonGroup.add(mission04TextButton);
-                missionsButtonGroup.add(mission05TextButton);
-                missionsButtonGroup.add(mission06TextButton);
-                missionsButtonGroup.add(mission07TextButton);
                 break;
             case 8:
                 mission01.setUnlocked();
@@ -544,14 +524,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mission06TextButton);
                 stage.addActor(mission07TextButton);
                 stage.addActor(mission08TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
-                missionsButtonGroup.add(mission04TextButton);
-                missionsButtonGroup.add(mission05TextButton);
-                missionsButtonGroup.add(mission06TextButton);
-                missionsButtonGroup.add(mission07TextButton);
-                missionsButtonGroup.add(mission08TextButton);
                 break;
             default:
                 mission01.setUnlocked();
@@ -577,14 +549,6 @@ public class MissionsMenu implements Screen, InputProcessor {
                 stage.addActor(mission06TextButton);
                 stage.addActor(mission07TextButton);
                 stage.addActor(mission08TextButton);
-                missionsButtonGroup.add(mission01TextButton);
-                missionsButtonGroup.add(mission02TextButton);
-                missionsButtonGroup.add(mission03TextButton);
-                missionsButtonGroup.add(mission04TextButton);
-                missionsButtonGroup.add(mission05TextButton);
-                missionsButtonGroup.add(mission06TextButton);
-                missionsButtonGroup.add(mission07TextButton);
-                missionsButtonGroup.add(mission08TextButton);
                 break;
         }
     }
