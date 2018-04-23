@@ -1,6 +1,6 @@
 Backgrounds/Map_5_Moon.png
 ambient/space_ambience.mp3
-60
+80
 100
 1
 0, 240, 1400, 1, 0, 1

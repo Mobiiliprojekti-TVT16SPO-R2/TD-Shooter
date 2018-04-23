@@ -1,8 +1,53 @@
-taustakuvan avainsana
+﻿taustakuvan avainsana
 musiikin avainsana
 teht�v�n lopetusaika
 taustan skrollausnopeus
 looppaako taustakuva (0, 1)
 vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum), x koordinaatti, y koordinaatti, spawnaika, item type, flight type
-toisen vihollisen tyyppi, x, y, aika, item, flight
+tyyppi, x, y, aika, item, flight
 3. vihollinen jne.
+
+Encounters/AlienBeast_LVL_2.png", Texture.class);
+Encounters/AlienBeast_LVL_3.png", Texture.class);
+Encounters/AlienBeast_BigMomma.png", Texture.class);
+Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
+Encounters/AlienFighter_LVL_2_VERSION2.png", Texture.class);
+Encounters/AlienFighter_LVL_3_VERSION2.png", Texture.class);
+Encounters/AlienFighter_Bruiser.png", Texture.class);
+Encounters/AlienMine_Machine.png", Texture.class);
+Encounters/AlienMine_Organic.png", Texture.class);
+	144	288	432	576
+	    180	    360     540	
+	flights
+1 low f sin
+2 high f sin
+3 straight down
+4 diagonal right
+5 diagonal left
+6 boss
+7 bossdive
+8 bossdive vertical
+9 wide low f sin
+10 wide high f sin
+11 extrawide slow f sin
+
+	items
+1 = hp
+4 = currency
+
+	beasts 
+1  = 0
+2  = 4
+3  = 5
+	shooting
+1 = 1
+2 = 2
+3 = 3
+4 = 6
+	bosses
+9 = 1
+10 = 2
+11 = 3
+mines
+organic  = 7
+syntethic = 8
