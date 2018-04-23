@@ -14,5 +14,7 @@ public abstract class FlightPattern
     public abstract void update(float delta);
 
     public abstract boolean isBossDive();
+
+    public abstract void setVariables();
 }
 

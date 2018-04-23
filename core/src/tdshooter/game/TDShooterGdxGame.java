@@ -45,7 +45,6 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_2.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_3.png", Texture.class);
-		assets.load("Encounters/Boss/AlienBeast_BigMomma.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_2_VERSION2.png", Texture.class);
 		assets.load("Encounters/AlienFighter_LVL_3_VERSION2.png", Texture.class);
@@ -53,6 +52,9 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/Alien_Mine.png", Texture.class);
 		assets.load("Encounters/AlienMine_Machine.png", Texture.class);
 		assets.load("Encounters/AlienMine_Organic.png", Texture.class);
+		assets.load("Encounters/Boss/Boss_World1_AlienMother.png", Texture.class);
+		assets.load("Encounters/Boss/Boss_World2_CyborgBeast.png", Texture.class);
+		assets.load("Encounters/Boss/Boss_World3_FlagShip.png", Texture.class);
 		assets.load("Bullets/bullet1_small.png", Texture.class);
 		assets.load("Bullets/bullet1.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
@@ -69,8 +71,16 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_1_Forest_VER3_720.png", Texture.class);
 		assets.load("Backgrounds/Map_1_Forest_VER3.png", Texture.class);
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
-		assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
-		assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
+        assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
+        assets.load("Backgrounds/Map_4_Asteroids.png", Texture.class);
+		assets.load("Backgrounds/Map_5_Moon.png", Texture.class);
+		assets.load("Backgrounds/Map_6_Moon_AlienStructures.png", Texture.class);
+		assets.load("Backgrounds/Map_7_AlienArmada.png", Texture.class);
+		assets.load("Backgrounds/Clouds_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_AsteroidDust_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_MoonDust_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_AlienArmada_BackGround.png", Texture.class);
+        assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
@@ -88,6 +98,39 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/vasen-valittu.png", Texture.class);
 		assets.load("Menu/ylapalkki2.png", Texture.class);
 		assets.load("Menu/puhekupla.png", Texture.class);
+		assets.load("Menu/logo-lapinakyva.png", Texture.class);
+		assets.load("Menu/startmenu-painike-normaali.png", Texture.class);
+		assets.load("Menu/startmenu-painike-pohjassa.png", Texture.class);
+		assets.load("Menu/pelitila-equipmentjuttu_v2.png", Texture.class);
+        assets.load("Menu/pelitila-equipmentjuttu_mirrored.png", Texture.class);
+		assets.load("Menu/pelitila-healthbar_v2.png", Texture.class);
+		assets.load("Menu/pelitila-healthbar_jaljella_v3.png", Texture.class);
+		assets.load("Menu/pelitila-pausevalikko_v2.png", Texture.class);
+		assets.load("Menu/pelitila-ylapalkki_v2.png", Texture.class);
+
+		assets.load("shopitems/Item_Armor.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_Bazooka.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_Laser.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_MissileBattery.png", Texture.class);
+		assets.load("shopitems/SpecialWeapon_Nuke.png", Texture.class);
+		assets.load("shopitems/Weapon_ElephantCannon.png", Texture.class);
+		assets.load("shopitems/Weapon_MachineGunCannon.png", Texture.class);
+		assets.load("shopitems/Weapon_ScatterCannon.png", Texture.class);
+		assets.load("shopitems/raksi.png", Texture.class);
+		assets.load("mapitems/karttapainike-locked.png", Texture.class);
+		assets.load("mapitems/karttapainike-selected.png", Texture.class);
+		assets.load("mapitems/karttapainike-unlocked.png", Texture.class);
+		assets.load("mapitems/reitti-1.png", Texture.class);
+		assets.load("mapitems/reitti-2.png", Texture.class);
+		assets.load("mapitems/reitti-3.png", Texture.class);
+		assets.load("mapitems/reitti-4.png", Texture.class);
+		assets.load("mapitems/reitti-5.png", Texture.class);
+		assets.load("mapitems/reitti-6.png", Texture.class);
+		assets.load("mapitems/reitti-7.png", Texture.class);
+		assets.load("mapitems/reitti-8.png", Texture.class);
+        assets.load("mapitems/reitti-9.png", Texture.class);
+        assets.load("mapitems/reitti-10.png", Texture.class);
+
 		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
 		assets.load("effects/flash_test.png", Texture.class);
@@ -96,11 +139,18 @@ public class TDShooterGdxGame extends Game {
 //		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
 
 		assets.load("Sounds/hitSound.wav", Sound.class);
+		assets.load("Sounds/hitSound2.wav", Sound.class);
 		assets.load("Sounds/gun1.wav", Sound.class);
+		assets.load("Sounds/gun1_remake.wav", Sound.class);
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
+		assets.load("Sounds/cashier.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);
+		assets.load("ambient/space_ambience.mp3", Music.class);
+		assets.load("ambient/rain.mp3", Music.class);
+		assets.load("music/missionmusic1.mp3", Music.class);
+		assets.load("music/missionmusic2.mp3", Music.class);
 
 		assets.finishLoading();
 
@@ -115,15 +165,19 @@ public class TDShooterGdxGame extends Game {
 			prefs.putInteger("weapon01", 1);
 			prefs.flush();
 		}
-			//lisätty käyttöön muiden aseiden testausta varten, voidaan POISTAA LOPULLISESTA
-					if(prefs.contains("weapon02") == false) {
-						prefs.putInteger("weapon02", 1);
-						prefs.flush();
-					}
-					if(prefs.contains("weapon03") == false) {
-						prefs.putInteger("weapon03", 1);
-						prefs.flush();
-					}
+		//luodaan pohjatieto muille aseille
+		if(prefs.contains("weapon02") == false) {
+			prefs.putInteger("weapon02", 0);
+			prefs.flush();
+		}
+		if(prefs.contains("weapon03") == false) {
+			prefs.putInteger("weapon03", 0);
+			prefs.flush();
+		}
+		if(prefs.contains("shield") == false) {
+			prefs.putInteger("shield", 0);
+			prefs.flush();
+		}
 
 		// luodaan kassapohja pelaajalle
 		if(prefs.contains("currency") == false) {

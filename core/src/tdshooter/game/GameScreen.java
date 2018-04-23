@@ -10,6 +10,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,12 +21,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 /**
@@ -64,7 +67,8 @@ public class GameScreen implements Screen, InputProcessor {
     private Skin skin;
     private StretchViewport viewport;
     private Stage stage;
-    private boolean inputBoolean = true;
+    private boolean inputBoolean = false;
+    private boolean inputStageAdded = false;
     private Texture menuTexture;
     private Texture flashTexture;
     private Image menuImage;
@@ -72,8 +76,6 @@ public class GameScreen implements Screen, InputProcessor {
     private float musicVolume = 0.5f;
     private boolean soundMuted = false;
     private boolean musicMuted = false;
-    private Slider soundSlider;
-    private Slider musicSlider;
     private boolean superWeapon = false;
     private boolean loot_not_given;
     private String missionName;
@@ -125,7 +127,7 @@ public class GameScreen implements Screen, InputProcessor {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-        menuTexture = game.assets.get("menu_test.png");
+        menuTexture = game.assets.get("Menu/pelitila-pausevalikko_v2.png");
         menuImage = new Image(menuTexture);
         flashTexture = game.assets.get("effects/flash_test.png");
 
@@ -141,11 +143,11 @@ public class GameScreen implements Screen, InputProcessor {
         backgroundMusic.setVolume(musicVolume);
         backgroundMusic.play();
 
-        hud = new GameHUD(viewport, game.batch, skin, player);
+        hud = new GameHUD(viewport, game.batch, skin, player, missionNumber, game);
 
         //Play sound Effects once, to initialize prev_sound_id
-        oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(0.0f));
-        oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound2.wav")).play(0.0f));
+        oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound2.wav")).play(0.0f));
 
         stage = new Stage(viewport, game.batch);
 
@@ -170,11 +172,15 @@ public class GameScreen implements Screen, InputProcessor {
 
         if (gamePaused){
             inputBoolean = true;
-            multiplexer.addProcessor(stage);
-            Gdx.input.setInputProcessor(multiplexer);
+            if (!inputStageAdded) {
+                inputStageAdded = true;
+                multiplexer.addProcessor(stage);
+                Gdx.input.setInputProcessor(multiplexer);
+            }
         } else {
             if (inputBoolean){
                 inputBoolean = false;
+                inputStageAdded = false;
                 multiplexer.removeProcessor(stage);
                 Gdx.input.setInputProcessor(multiplexer);
             }
@@ -233,16 +239,16 @@ public class GameScreen implements Screen, InputProcessor {
             } else if (encounter.overlaps(player)){
                 encounter.collidesWith(player);
                 player.collidesWith(encounter);
-                ((Sound)game.assets.get("Sounds/hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                ((Sound)game.assets.get("Sounds/hitSound2.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(soundVolume)); // play and add new
+                oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound2.wav")).play(soundVolume)); // play and add new
             }
             for (int j = 0; j < playerProjectiles.size(); j++) {
                 Projectile bullet = playerProjectiles.get(j);
                 if (bullet.overlaps(encounter)){
-                    ((Sound)game.assets.get("Sounds/hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                    ((Sound)game.assets.get("Sounds/hitSound2.wav")).stop(oldSoundIds.get(0)); //stop oldest
                     oldSoundIds.remove(0); // remove oldest
-                    oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(soundVolume)); // play and add new
+                    oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound2.wav")).play(soundVolume)); // play and add new
                     encounter.getsDamage(bullet.damage);
                     playerProjectiles.remove(j);
                     if (encounter.isDestroyed() && loot_not_given){
@@ -279,9 +285,9 @@ public class GameScreen implements Screen, InputProcessor {
                 enemyProjectiles.remove(i);
             }
             else if (bullet.overlaps(player)){
-                ((Sound)game.assets.get("Sounds/hitSound.wav")).stop(oldSoundIds.get(0)); //stop oldest
+                ((Sound)game.assets.get("Sounds/hitSound2.wav")).stop(oldSoundIds.get(0)); //stop oldest
                 oldSoundIds.remove(0); // remove oldest
-                oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound.wav")).play(soundVolume));
+                oldSoundIds.add(((Sound)game.assets.get("Sounds/hitSound2.wav")).play(soundVolume));
                 player.getsDamage(bullet.damage);
                 enemyProjectiles.remove(i);
             }
@@ -313,7 +319,7 @@ public class GameScreen implements Screen, InputProcessor {
     private void updateLevelProgess() {
         Preferences prefs = Gdx.app.getPreferences("savedata");
         int levelProgress = prefs.getInteger("levelprogress", 1);
-        if (levelProgress == missionNumber) {
+        if ((levelProgress == missionNumber)&(levelProgress < 9)) {
             levelProgress++;
         }
         prefs.putInteger("levelprogress", levelProgress);
@@ -343,7 +349,6 @@ public class GameScreen implements Screen, InputProcessor {
         for (Projectile bullet : enemyProjectiles) {
             bullet.draw(game.batch);
         }
-//        if (animation) {
             if (!gamePaused) {
                 for (int i = 0; i < effects.size(); i++) {
                     Effect effect = effects.get(i);
@@ -354,21 +359,20 @@ public class GameScreen implements Screen, InputProcessor {
                     }
                 }
             }
-//        }
         if (superWeapon) {
             game.batch.draw(flashTexture, 0, 0);
             superWeapon = false;
         }
 
 
-        game.font.draw(game.batch, "FPS: " + fps, 0,310);
-        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, 130);
-        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , 160);
-        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , 190);
-        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , 220);
-        game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , 250);
-        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , 280);
-        game.font.draw(game.batch, "Effects: " + effects.size() + " " + effectCounter, 0 , 340);
+//        game.font.draw(game.batch, "FPS: " + fps, 0,310);
+//        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, 130);
+//        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , 160);
+//        game.font.draw(game.batch, "Projectiles: " + playerProjectiles.size(), 0 , 190);
+//        game.font.draw(game.batch, "Encounters: " + encounters.size(), 0 , 220);
+//        game.font.draw(game.batch, "Currency: " + player.getCurrency(), 0 , 250);
+//        game.font.draw(game.batch, "WEAPONCHOICE: " + player.getWeaponChoice(), 0 , 280);
+//        game.font.draw(game.batch, "Effects: " + effects.size() + " " + effectCounter, 0 , 340);
         game.batch.end();
 
         hud.draw();
@@ -410,9 +414,13 @@ public class GameScreen implements Screen, InputProcessor {
         for (Item item : items){
             item.update();
         }
-        for (Effect effect : effects){
+        for (int i = 0; i < effects.size() ; i++) {
+            Effect effect = effects.get(i);
             effect.update();
         }
+//        for (Effect effect : effects){
+//            effect.update();
+//        }
         hud.update(delta);
     }
 
@@ -479,34 +487,53 @@ public class GameScreen implements Screen, InputProcessor {
                 i++;
             }
         }
-//        encounters.clear();
         superWeapon = true;
     }
 
     private void setPauseMenu(){
 
-        int pauseMenuWidth = 300;
-        int pauseMenuHeight = 600;
+        int pauseMenuWidth = 550;
+        int pauseMenuHeight = 750;
 
-        TextButton resumeButton = new TextButton("Resume", skin);
-        TextButton restartButton = new TextButton("Restart", skin);
-        TextButton exitButton = new TextButton("Exit", skin);
-        TextButton musicButton = new TextButton("", skin);
-        TextButton soundButton = new TextButton("", skin);
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = game.font;
+        textButtonStyle.font.getData().setScale(1.3f);
+        textButtonStyle.overFontColor = Color.YELLOW;
+        textButtonStyle.downFontColor = Color.YELLOW;
+        textButtonStyle.fontColor = Color.WHITE;
 
-        soundSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
-        soundSlider.setValue(soundVolume);
+        TextButton resumeButton = new TextButton("Resume", textButtonStyle);
+        TextButton restartButton = new TextButton("Restart", textButtonStyle);
+        TextButton exitButton = new TextButton("Exit", textButtonStyle);
+        final TextButton musicButton = new TextButton("", textButtonStyle);
+        final TextButton soundButton = new TextButton("", textButtonStyle);
+        Label pauseMenuLabel = new Label("GAMEPAUSED", skin);
+        Label musicLabel = new Label("Music", skin);
+        Label soundLabel = new Label("Sound", skin);
 
-        musicSlider = new Slider(0.0f, 1.0f, 0.01f, false, skin);
-        musicSlider.setValue(musicVolume);
+        if (musicMuted){
+            musicButton.setText("Off");
+        }
+        else {
+            musicButton.setText("On");
+        }
+        if (soundMuted){
+            soundButton.setText("Off");
+        }
+        else {
+            soundButton.setText("On");
+        }
 
         resumeButton.setWidth(pauseMenuWidth);
+        resumeButton.setHeight(pauseMenuHeight / 5);
         restartButton.setWidth(pauseMenuWidth);
+        restartButton.setHeight(pauseMenuHeight / 5);
         exitButton.setWidth(pauseMenuWidth);
+        exitButton.setHeight(pauseMenuHeight / 5);
         musicButton.setWidth(pauseMenuWidth / 3);
+        musicButton.setHeight(pauseMenuHeight / 5);
         soundButton.setWidth(pauseMenuWidth / 3);
-        soundSlider.setWidth(pauseMenuWidth / 3 * 2);
-        musicSlider.setWidth(pauseMenuWidth / 3 * 2);
+        soundButton.setHeight(pauseMenuHeight / 5);
 
         resumeButton.addListener(new ClickListener(){
             @Override
@@ -538,6 +565,7 @@ public class GameScreen implements Screen, InputProcessor {
                     backgroundMusic.setVolume(musicVolume);
                     options.putBoolean("musicmuted", musicMuted);
                     options.flush();
+                    musicButton.setText("On");
                 }
                 else {
                     musicVolume = 0.0f;
@@ -545,6 +573,7 @@ public class GameScreen implements Screen, InputProcessor {
                     backgroundMusic.setVolume(musicVolume);
                     options.putBoolean("musicmuted", musicMuted);
                     options.flush();
+                    musicButton.setText("Off");
                 }
             }
         });
@@ -558,71 +587,45 @@ public class GameScreen implements Screen, InputProcessor {
                     soundMuted = false;
                     options.putBoolean("soundmuted", soundMuted);
                     options.flush();
+                    soundButton.setText("On");
                 }
                 else {
                     soundVolume = 0.0f;
                     soundMuted = true;
                     options.putBoolean("soundmuted", soundMuted);
                     options.flush();
+                    soundButton.setText("Off");
                 }
-            }
-        });
-
-        soundSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                soundVolume = soundSlider.getValue();
-                options.putFloat("soundvolume", soundVolume);
-                options.flush();
-                if (soundVolume == 0.0f) {
-                    soundMuted = true;
-                } else {
-                    soundMuted = false;
-                }
-                options.putBoolean("soundmuted", soundMuted);
-                options.flush();
-            }
-        });
-
-        musicSlider.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                musicVolume = musicSlider.getValue();
-                backgroundMusic.setVolume(musicVolume);
-                options.putFloat("musicvolume", musicVolume);
-                options.flush();
-                if (musicVolume == 0.0f) {
-                    musicMuted = true;
-                } else {
-                    musicMuted = false;
-                }
-                options.putBoolean("musicmuted", musicMuted);
-                options.flush();
             }
         });
 
         float corner_x = VIEWPORTWIDTH / 2 - pauseMenuWidth / 2;
-        float corner_y = VIEWPORTHEIGHT / 2 + pauseMenuHeight / 2 - 50;
-        float padding = 10;
-        float big_spacing = 100;
-        float spacing = 50;
+        float corner_y = VIEWPORTHEIGHT / 2 + pauseMenuHeight / 2;
+        float padding = 35;
+        float big_spacing = 125;
+        float smallPadding = 25;
 
-        resumeButton.setPosition(corner_x - padding, corner_y - padding - big_spacing);
-        restartButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 2);
-        soundSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 2 - spacing);
-        soundButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 3);
-        musicSlider.setPosition(corner_x - padding + (pauseMenuWidth / 3 + padding), corner_y - padding - big_spacing * 3 - spacing);
-        musicButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 4);
-        exitButton.setPosition(corner_x - padding, corner_y - padding - big_spacing * 5);
+        pauseMenuLabel.setPosition(corner_x + pauseMenuWidth / 2 - pauseMenuLabel.getWidth() / 2, corner_y - 95);
+        resumeButton.setPosition(corner_x, corner_y - big_spacing * 2);
+        restartButton.setPosition(corner_x, corner_y - big_spacing * 5);
+
+        musicLabel.setPosition(corner_x + pauseMenuWidth / 3 - musicLabel.getWidth() / 2, corner_y - big_spacing * 3 + padding);
+        soundLabel.setPosition(corner_x + pauseMenuWidth / 3 + pauseMenuWidth / 3 - musicLabel.getWidth() / 2, corner_y - big_spacing * 3 + padding);
+
+        soundButton.setPosition(corner_x + pauseMenuWidth / 3 + pauseMenuWidth / 3 - soundButton.getWidth() / 2, corner_y - big_spacing * 4 + smallPadding);
+        musicButton.setPosition(corner_x + pauseMenuWidth / 3 - musicButton.getWidth() / 2, corner_y - big_spacing * 4 + smallPadding);
+
+        exitButton.setPosition(corner_x, corner_y - big_spacing * 6);
 
         menuImage.setPosition(VIEWPORTWIDTH / 2 - (menuImage.getWidth() / 2), VIEWPORTHEIGHT / 2 - (menuImage.getHeight() / 2));
 
         stage.addActor(menuImage);
+        stage.addActor(pauseMenuLabel);
         stage.addActor(resumeButton);
         stage.addActor(restartButton);
-        stage.addActor(soundSlider);
+        stage.addActor(musicLabel);
+        stage.addActor(soundLabel);
         stage.addActor(soundButton);
-        stage.addActor(musicSlider);
         stage.addActor(musicButton);
         stage.addActor(exitButton);
     }
@@ -662,8 +665,12 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.BACK) {
             gamePaused = true;
+            return true;
         }
-        return true;
+        else {
+            return false;
+        }
+
     }
 
     @Override

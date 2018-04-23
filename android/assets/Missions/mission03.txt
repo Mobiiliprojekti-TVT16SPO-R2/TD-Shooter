@@ -1,6 +1,6 @@
 Backgrounds/Map_3_Islands.png
-rain.mp3
-75
+music/missionmusic1.mp3
+60
 100
 1
 0, 240, 1400, 1, 0, 1

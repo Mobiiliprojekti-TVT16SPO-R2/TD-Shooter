@@ -58,8 +58,6 @@ public class MenuTopBar extends Stage {
         VIEWPORTWIDTH = 720; //viewport.getScreenWidth();
         VIEWPORTHEIGHT = 1280; //viewport.getScreenHeight();
 
-        Gdx.app.log("DEBUG", "Viewportsize in MenuTopBar: " + VIEWPORTWIDTH + "; " + VIEWPORTHEIGHT);
-
         leftButtonOffTexture = game.assets.get("Menu/vasen-normaali.png");
         leftButtonOnTexture = game.assets.get("Menu/vasen-valittu.png");
         middleButtonOffTexture = game.assets.get("Menu/keskimmainen-normaali.png");
@@ -77,9 +75,11 @@ public class MenuTopBar extends Stage {
         topBarImage = new Image(topBarTexture);
 
         BitmapFont font = skin.getFont("font");
-        font.getData().setLineHeight(font.getLineHeight() - font.getSpaceWidth() + 5);
+
         Label.LabelStyle myLabelstyle =
-                new Label.LabelStyle(font, Color.BLUE);
+                new Label.LabelStyle(font, Color.YELLOW);
+        Label.LabelStyle blackLabelstyle =
+                new Label.LabelStyle(font, Color.BLACK);
         selectedScreenLabel = new Label("no name", myLabelstyle);
         selectedScreenLabel.setAlignment(Align.center);
 
@@ -88,7 +88,6 @@ public class MenuTopBar extends Stage {
         textButtonStyle.overFontColor = Color.BLUE;
         textButtonStyle.downFontColor = Color.YELLOW;
         textButtonStyle.fontColor = Color.BLACK;
-
 
         bridgeButton = new TextButton("Bridge", textButtonStyle);
         hangarButton = new TextButton("Hangar", textButtonStyle);
@@ -102,14 +101,16 @@ public class MenuTopBar extends Stage {
         shopButton.setWidth(190);
         shopButton.setHeight(110);
 
-        leftButtonOnImage.setWidth(190);
-        leftButtonOnImage.setHeight(110);
         leftButtonOffImage.setWidth(190);
         leftButtonOffImage.setHeight(110);
+        leftButtonOnImage.setWidth(190);
+        leftButtonOnImage.setHeight(110);
+
         middleButtonOffImage.setWidth(195);
         middleButtonOffImage.setHeight(110);
         middleButtonOnImage.setWidth(195);
-        middleButtonOffImage.setHeight(110);
+        middleButtonOnImage.setHeight(110);
+
         rightButtonOffImage.setWidth(190);
         rightButtonOffImage.setHeight(110);
         rightButtonOnImage.setWidth(190);
@@ -136,7 +137,7 @@ public class MenuTopBar extends Stage {
             currency = prefs.getInteger("currency", 0);
         }
 
-        currencyLabel = new Label("Currency:  " + currency, myLabelstyle);
+        currencyLabel = new Label("Currency:  " + currency, blackLabelstyle);
         currencyLabel.setFontScale(0.7f);
         currencyLabel.setPosition(VIEWPORTWIDTH - currencyLabel.getWidth() - 30, VIEWPORTHEIGHT - currencyLabel.getHeight() );
 
@@ -234,9 +235,19 @@ public class MenuTopBar extends Stage {
 
     public void update(float delta) {
         super.act(delta);
+        if(prefs.contains("currency")) {
+            currency = prefs.getInteger("currency", 0);
+            currencyLabel.setText("Currency:  " + currency);
+        }
     }
 
     public boolean isReadyForNextScreen() {
         return readyForNextScreen;
+    }
+
+    @Override
+    public void dispose(){
+        super.dispose();
+
     }
 }

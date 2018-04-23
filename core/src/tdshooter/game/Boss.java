@@ -1,5 +1,6 @@
 package tdshooter.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.RandomXS128;
@@ -12,19 +13,38 @@ public class Boss extends Encounter {
 
     AssetManager assets;
     private FlightPattern flightPattern;
+    private FlightPattern verticalFlight;
+    private FlightPattern diveFlight;
+//    private FlightPattern diveVerticalFlight;
     private RandomXS128 random;
     private int randomNumber;
     private int rng;
+    private int index;
     private boolean spawn;
     private long lastSpawnTime;
-    boolean flightSet;
+    private long lastDiveTime;
+    private long diveCooldown;
+    private long spawnCooldown;
+    private boolean flightSet = true;
 
-    public Boss(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, Texture image, AssetManager assets) {
+    public Boss(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int points, int index, Texture image, AssetManager assets) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, points, image);
         this.assets = assets;
-        rng = 120;
+        this.index = index;
+        rng = 3;
         spawn = false;
         lastSpawnTime = TimeUtils.nanoTime();
+        lastDiveTime = TimeUtils.nanoTime();
+        diveCooldown = 9000000000L;
+        spawnCooldown = 2000000000L;
+        verticalFlight = FlightPatternBuilder.create(FlightType.getByValue(6), this);
+
+        if (this.index == 1){
+            diveFlight = FlightPatternBuilder.create(FlightType.getByValue(7), this);
+        }
+        else if (this.index == 2){
+            diveFlight = FlightPatternBuilder.create(FlightType.getByValue(8), this);
+        }
     }
     public void spawnWeaklings(ArrayList<Encounter> enemyList) {
 
@@ -34,8 +54,6 @@ public class Boss extends Encounter {
 
             Encounter encounter = EncounterBuilder.create(EncounterType.getByValue(0), assets);
             FlightPattern flight = FlightPatternBuilder.create(FlightType.getByValue(3), encounter);
-            Item item = ItemBuilder.create(ItemType.getByValue(0), assets);
-            encounter.setItemDrop(item);
             encounter.setFlightPattern(flight);
             encounter.setPosition(new Vector2(plane_mid_x, plane_mid_y));
             enemyList.add(encounter);
@@ -44,36 +62,35 @@ public class Boss extends Encounter {
     }
     @Override
     public void update(float delta) {
-
         if(flightPattern != null) {
             flightPattern.update(delta);
         }
-
         if (!this.flightPattern.isBossDive()){
-            if (flightSet) {
-                FlightPattern flight2 = FlightPatternBuilder.create(FlightType.getByValue(6), this);
-                this.setFlightPattern(flight2);
-                flightSet = false;
-            }
-            if (TimeUtils.nanoTime() - lastSpawnTime > 2000000000) {
-                random = new RandomXS128(lastSpawnTime);
-                randomNumber = random.nextInt(rng) + 1;
-
-                if (randomNumber > rng - 10) {
-                    FlightPattern flight = FlightPatternBuilder.create(FlightType.getByValue(7), this);
-                    this.setFlightPattern(flight);
-                } else {
-                    spawn = true;
-                }
-                lastSpawnTime = TimeUtils.nanoTime();
-            }
+            bossAttack();
         }
         else {
-            flightSet = true;
+            flightSet = false;
         }
-
     }
     @Override
     public void setFlightPattern(FlightPattern flightPattern) {this.flightPattern = flightPattern;}
 
+    public void bossAttack(){
+        if (!flightSet) {
+            this.setFlightPattern(verticalFlight);
+            flightSet = true;
+        }
+        if (TimeUtils.nanoTime() - lastSpawnTime > spawnCooldown) {
+            random = new RandomXS128(lastSpawnTime);
+            randomNumber = random.nextInt(rng) + 1;
+            if (randomNumber > rng - 1  && TimeUtils.nanoTime() - lastDiveTime > diveCooldown) {
+                diveFlight.setVariables();
+                this.setFlightPattern(diveFlight);
+                lastDiveTime = TimeUtils.nanoTime();
+            } else {
+                spawn = true;
+            }
+            lastSpawnTime = TimeUtils.nanoTime();
+        }
+    }
 }
