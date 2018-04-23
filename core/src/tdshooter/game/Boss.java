@@ -26,8 +26,10 @@ public class Boss extends ShootingEnemy {
     private long diveCooldown;
     private long spawnCooldown;
     private boolean flightSet = true;
+    private boolean shootingBoss;
 
-    public Boss(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int turretCount, int spread, long cooldownTime, int shootRNG, int points, long spawnCooldown, int index, Texture image, AssetManager assets) {
+    public Boss(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int turretCount, int spread,
+                long cooldownTime, int shootRNG, int points, long spawnCooldown, int index, Texture image, AssetManager assets) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD, speed, turretCount, spread, cooldownTime, shootRNG, points, image, assets);
         this.assets = assets;
         this.index = index;
@@ -38,6 +40,13 @@ public class Boss extends ShootingEnemy {
         diveCooldown = 9000000000L;
         this.spawnCooldown = spawnCooldown; // 2000000000L
         verticalFlight = FlightPatternBuilder.create(FlightType.getByValue(6), this);
+
+        if (cooldownTime == 0) {
+            shootingBoss = false;
+        }
+        else {
+            shootingBoss = true;
+        }
 
         if (this.index == 1){
             diveFlight = FlightPatternBuilder.create(FlightType.getByValue(7), this);
@@ -110,22 +119,24 @@ public class Boss extends ShootingEnemy {
     }
     @Override
     public void shoot(ArrayList<Projectile> projectileList){
-        long randomSeed = TimeUtils.nanoTime();
-        random = new RandomXS128(randomSeed);
-        randomNumber = random.nextInt(this.shootRNG) + 1;
+        if (shootingBoss) {
+            long randomSeed = TimeUtils.nanoTime();
+            random = new RandomXS128(randomSeed);
+            randomNumber = random.nextInt(this.shootRNG) + 1;
 
-        if (randomNumber > shootRNG - 1 && !this.flightPattern.isBossDive()) {
+            if (randomNumber > shootRNG - 1 && !this.flightPattern.isBossDive()) {
 
-            int plane_mid_x = (int) (hitbox.x + (hitbox.width /2)); //middle of the plane
-            int plane_mid_y = (int) (hitbox.y);  // top of the plane
-            switch (weaponChoice) {
-                case 0:
-                    break;
-                case 1:
-                    weapon1.fire(plane_mid_x, plane_mid_y, projectileList);
-                    break;
-                default:
-                    break;
+                int plane_mid_x = (int) (hitbox.x + (hitbox.width / 2)); //middle of the plane
+                int plane_mid_y = (int) (hitbox.y);  // top of the plane
+                switch (weaponChoice) {
+                    case 0:
+                        break;
+                    case 1:
+                        weapon1.fire(plane_mid_x, plane_mid_y, projectileList);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }

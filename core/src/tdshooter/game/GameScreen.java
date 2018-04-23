@@ -422,9 +422,6 @@ public class GameScreen implements Screen, InputProcessor {
             Effect effect = effects.get(i);
             effect.update();
         }
-//        for (Effect effect : effects){
-//            effect.update();
-//        }
         hud.update(delta);
     }
 
