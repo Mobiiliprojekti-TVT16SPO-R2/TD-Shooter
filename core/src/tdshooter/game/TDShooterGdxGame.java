@@ -57,6 +57,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/Boss/Boss_World3_FlagShip.png", Texture.class);
 		assets.load("Bullets/bullet1_small.png", Texture.class);
 		assets.load("Bullets/bullet1.png", Texture.class);
+		assets.load("Bullets/Player_Bullet_Type_1.png", Texture.class);
+		assets.load("Bullets/Player_Bullet_Type_2.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("powerups/PowerUp_Armor.png", Texture.class);
@@ -149,6 +151,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
 		assets.load("Sounds/cashier.wav", Sound.class);
+		assets.load("Sounds/laser.wav", Sound.class);
+		assets.load("Sounds/laser.wav", Sound.class);
 		assets.load("Sounds/laser.wav", Sound.class);
 
 		assets.load("rain.mp3", Music.class);

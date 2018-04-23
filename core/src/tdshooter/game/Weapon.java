@@ -22,10 +22,14 @@ class Weapon {
     Sound firingSound;
     Texture firingImage;
     Projectile bulletModel,bullet1,bullet2,bullet3,bullet4,bullet5,bullet6,bullet7;
-    
+
     Texture bulletImage1;
     Texture bulletImage2;
     Texture bulletImage3;
+    Texture bulletImage4;
+    Texture bulletImage5;
+    Texture bulletImage6;
+    Texture bulletImage7;
 
     public Weapon(int turretCount, int projectileType, Long cooldownTime, boolean autoTargetting, int spread, Sound firingSound, Texture firingImage) {
         this.turretCount = turretCount;
@@ -37,9 +41,14 @@ class Weapon {
         this.firingImage = firingImage;
         
         //load all bullet textures
-        bulletImage1 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        bulletImage2 = new Texture(Gdx.files.internal("Bullets/bullet1.png"));
-        bulletImage3 = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
+        bulletImage1 = new Texture(Gdx.files.internal("Bullets/Player_Bullet_Type_1_fixed.png"));
+        bulletImage2 = new Texture(Gdx.files.internal("Bullets/Player_Bullet_Type_2_fixed.png"));
+        bulletImage3 = new Texture(Gdx.files.internal("Bullets/Alien_Bullet_Type_1_fixed.png"));
+        bulletImage4 = new Texture(Gdx.files.internal("Bullets/Alien_Bullet_Type_2.png"));
+        //old graphics down here
+        bulletImage5 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
+        bulletImage6 = new Texture(Gdx.files.internal("Bullets/bullet1.png"));
+        bulletImage7 = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
 
         //first create bulletmodel by type
         switch (projectileType) {
@@ -47,21 +56,24 @@ class Weapon {
                 bulletModel = new Projectile(-500,0, 24, 32, 5, 1200, bulletImage1);
                 break;
             case 2:
-                bulletModel = new Projectile(-500,0, 18, 64, 8, 2000, bulletImage1);
+                bulletModel = new Projectile(-500,0, 18, 64, 8, 2000, bulletImage2);
                 break;
             case 3:
-                bulletModel = new Projectile(-500,0, 18, 72, 12, 2500, bulletImage2);
+                bulletModel = new Projectile(-500,0, 22, 72, 12, 2500, bulletImage2);
                 break;
             case 4:
-                bulletModel = new Projectile(-500,0, 18, 80, 16, 3000, bulletImage2);
+                bulletModel = new Projectile(-500,0, 26, 80, 16, 3000, bulletImage1);
                 break;
             case 5:
-                bulletModel = new Projectile(-500,0, 32, 48, 10, 2200, bulletImage2);
+                bulletModel = new Projectile(-500,0, 32, 48, 10, 2200, bulletImage1);
                 break;
 
-                //ENEMY BULLETS HERE
+            //ENEMY BULLETS HERE
             case 6:
                 bulletModel = new Projectile(-500,0, 24, 24, 5, -500, bulletImage3);
+                break;
+            case 7:
+                bulletModel = new Projectile(-500,0, 24, 24, 5, -500, bulletImage4);
                 break;
             default: //same as basic
                 bulletModel = new Projectile(-500,0, 32, 32, 5, 700, bulletImage1);
