@@ -45,12 +45,16 @@ public class MissionsMenu implements Screen, InputProcessor {
     private Texture mapWaypoint6Texture;
     private Texture mapWaypoint7Texture;
     private Texture mapWaypoint8Texture;
+    private Texture mapWaypoint9Texture;
+    private Texture mapWaypoint10Texture;
     private Image mapWaypoint1Image;
-    private Image mapWaypoint4Image;
-    private Image mapWaypoint5Image;
+    private Image mapWaypoint2Image;
     private Image mapWaypoint6Image;
     private Image mapWaypoint7Image;
+    private Image mapWaypoint4Image;
     private Image mapWaypoint8Image;
+    private Image mapWaypoint3Image;
+    private Image mapWaypoint5Image;
     private Image commanderImage;
     private Image menuImage;
     private Image missionMapImage;
@@ -76,10 +80,12 @@ public class MissionsMenu implements Screen, InputProcessor {
     private TextButton mission07TextButton;
     private TextButton mission08TextButton;
     private TextButton launchButton;
+    private Texture launchButtonTexture;
+    private Image launchButtonImage;
 
     private int levelProgress;
     
-    private int missionbuttonDiameter = 80;
+    private int missionbuttonDiameter = 60;
 
     public MissionsMenu(final  TDShooterGdxGame gam){
         game = gam;
@@ -104,23 +110,29 @@ public class MissionsMenu implements Screen, InputProcessor {
         
         menuBackground = game.assets.get("Menu/Background_BaseMenu_720_1280.png");
         commanderTexture = game.assets.get("Menu/Character_Commander.png");
-        missionMapTexture = game.assets.get("Menu/Bridge_Screen_Map_with_lines.png");
+        missionMapTexture = game.assets.get("Menu/Bridge_Screen_Map.png");
         mapWaypoint1Texture = game.assets.get("mapitems/reitti-1.png");
         mapWaypoint4Texture = game.assets.get("mapitems/reitti-4.png");
         mapWaypoint5Texture = game.assets.get("mapitems/reitti-5.png");
         mapWaypoint6Texture = game.assets.get("mapitems/reitti-6.png");
         mapWaypoint7Texture = game.assets.get("mapitems/reitti-7.png");
         mapWaypoint8Texture = game.assets.get("mapitems/reitti-8.png");
+        mapWaypoint9Texture = game.assets.get("mapitems/reitti-9.png");
+        mapWaypoint10Texture = game.assets.get("mapitems/reitti-10.png");
+        launchButtonTexture = game.assets.get("Menu/startmenu-painike-pohjassa.png");
 
         menuImage = new Image(menuBackground);
         commanderImage = new Image(commanderTexture);
         missionMapImage = new Image(missionMapTexture);
+        launchButtonImage = new Image(launchButtonTexture);
         mapWaypoint1Image = new Image(mapWaypoint1Texture);
-        mapWaypoint4Image = new Image(mapWaypoint4Texture);
-        mapWaypoint5Image = new Image(mapWaypoint5Texture);
-        mapWaypoint6Image = new Image(mapWaypoint6Texture);
-        mapWaypoint7Image = new Image(mapWaypoint7Texture);
+        mapWaypoint2Image = new Image(mapWaypoint4Texture);
+        mapWaypoint6Image = new Image(mapWaypoint5Texture);
+        mapWaypoint7Image = new Image(mapWaypoint6Texture);
+        mapWaypoint4Image = new Image(mapWaypoint7Texture);
         mapWaypoint8Image = new Image(mapWaypoint8Texture);
+        mapWaypoint3Image = new Image(mapWaypoint9Texture);
+        mapWaypoint5Image = new Image(mapWaypoint10Texture);
 
         mission01 = new MissionSelectionButton(viewport, game);
         mission02 = new MissionSelectionButton(viewport, game);
@@ -170,7 +182,12 @@ public class MissionsMenu implements Screen, InputProcessor {
         mission08.setSize(missionbuttonDiameter);
 
         // Asetetaan luotujen painikkeiden paikat
-        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth() + 40, 600);
+        launchButton.setWidth(240);
+        launchButton.setHeight(100);
+        launchButton.setPosition(VIEWPORTWIDTH - launchButton.getWidth() + 40, 650);
+        launchButtonImage.setWidth(240);
+        launchButtonImage.setHeight(100);
+        launchButtonImage.setPosition(launchButton.getX(), launchButton.getY() -5);
 
         missionsButtonGroup = new ButtonGroup();
         missionNameList = new ArrayList<String>();
@@ -201,10 +218,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     public void show() {
 
         dialog.setSize(VIEWPORTWIDTH, 360);
-        dialog.setText("Atteeeeent-ION Pilot! World is under attack by some pesky aliens! Our mission locations are shown in this map on the wall.");
-        
-        // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
-        unlockByProgress();
+        dialog.setText("Attention Pilot! World is under attack by some pesky aliens! Our mission locations are shown in this map on the wall.");
 
         // Asetetaan yhtäaikaa valittujen painikkeiden enimmäis- ja minimimäärät
         // Ja jos enimmäismäärä ylittyy poistetaan edellinen valinta
@@ -308,27 +322,48 @@ public class MissionsMenu implements Screen, InputProcessor {
 
         missionMapImage.setHeight(920);
         missionMapImage.setWidth(410);
-        missionMapImage.setPosition(200, 160);
+        missionMapImage.setPosition(230, 160);
 
-        mission01.setPosition(350,320);
-        mission02.setPosition(355, 400);
-        mission03.setPosition(460, 390);
+        mission01.setPosition(370,320);
+        mission02.setPosition(510, 440);
+        mission03.setPosition(320, 490);
+        mission04.setPosition(510, 540);
+        mission05.setPosition(430, 660);
+        mission06.setPosition(390, 760);
+        mission07.setPosition(280, 850);
+        mission08.setPosition(440, 900);
+        mission01TextButton.setPosition(370,320);
+        mission02TextButton.setPosition(510, 440);
+        mission03TextButton.setPosition(320, 490);
+        mission04TextButton.setPosition(510, 540);
+        mission05TextButton.setPosition(430, 660);
+        mission06TextButton.setPosition(390, 760);
+        mission07TextButton.setPosition(280, 850);
+        mission08TextButton.setPosition(440, 900);
+
+        mapWaypoint1Image.setPosition(390,350);
+        mapWaypoint2Image.setPosition(340,470);
+        mapWaypoint3Image.setPosition(340,520);
+        mapWaypoint4Image.setPosition(440,560);
+        mapWaypoint5Image.setPosition(420,680);
+        mapWaypoint5Image.setScale(0.7f);
+        mapWaypoint6Image.setPosition(315, 780);
+        mapWaypoint6Image.setScale(0.8f);
+        mapWaypoint7Image.setPosition(300, 875);
+        mapWaypoint7Image.setScale(0.8f);
 
         commanderImage.setScale(0.7f);
-        commanderImage.setPosition(-100, 100);
+        commanderImage.setPosition(-150, 100);
 
         stage.addActor(menuImage);
         stage.addActor(missionMapImage);
         stage.addActor(commanderImage);
+        stage.addActor(launchButtonImage);
         stage.addActor(launchButton);
-        stage.addActor(mission01TextButton);
-        stage.addActor(mission02TextButton);
-        stage.addActor(mission03TextButton);
-        stage.addActor(mission04TextButton);
-        stage.addActor(mission05TextButton);
-        stage.addActor(mission06TextButton);
-        stage.addActor(mission07TextButton);
-        stage.addActor(mission08TextButton);
+
+        // Lisätään mission-painikkeet MissionsButtonGroup-ryhmään
+        unlockByProgress();
+
     }
 
     private void unlockByProgress() {
@@ -336,35 +371,45 @@ public class MissionsMenu implements Screen, InputProcessor {
             case 1:
                 mission01.setUnlocked();
                 mission02.setLocked();
-                mission03.setLocked();
-                mission04.setLocked();
-                mission05.setLocked();
-                mission06.setLocked();
-                mission07.setLocked();
-                mission08.setLocked();
+                mission03.setHidden();
+                mission04.setHidden();
+                mission05.setHidden();
+                mission06.setHidden();
+                mission07.setHidden();
+                mission08.setHidden();
+                stage.addActor(mission01TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 break;
             case 2:
                 mission01.setUnlocked();
                 mission02.setUnlocked();
                 mission03.setLocked();
-                mission04.setLocked();
-                mission05.setLocked();
-                mission06.setLocked();
-                mission07.setLocked();
-                mission08.setLocked();
+                mission04.setHidden();
+                mission05.setHidden();
+                mission06.setHidden();
+                mission07.setHidden();
+                mission08.setHidden();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
+
                 break;
             case 3:
                 mission01.setUnlocked();
                 mission02.setUnlocked();
                 mission03.setUnlocked();
                 mission04.setLocked();
-                mission05.setLocked();
-                mission06.setLocked();
-                mission07.setLocked();
-                mission08.setLocked();
+                mission05.setHidden();
+                mission06.setHidden();
+                mission07.setHidden();
+                mission08.setHidden();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
                 missionsButtonGroup.add(mission03TextButton);
@@ -375,9 +420,16 @@ public class MissionsMenu implements Screen, InputProcessor {
                 mission03.setUnlocked();
                 mission04.setUnlocked();
                 mission05.setLocked();
-                mission06.setLocked();
-                mission07.setLocked();
-                mission08.setLocked();
+                mission06.setHidden();
+                mission07.setHidden();
+                mission08.setHidden();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mapWaypoint3Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
+                stage.addActor(mission04TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
                 missionsButtonGroup.add(mission03TextButton);
@@ -390,13 +442,22 @@ public class MissionsMenu implements Screen, InputProcessor {
                 mission04.setUnlocked();
                 mission05.setUnlocked();
                 mission06.setLocked();
-                mission07.setLocked();
-                mission08.setLocked();
+                mission07.setHidden();
+                mission08.setHidden();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mapWaypoint3Image);
+                stage.addActor(mapWaypoint4Image);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
                 missionsButtonGroup.add(mission03TextButton);
                 missionsButtonGroup.add(mission04TextButton);
                 missionsButtonGroup.add(mission05TextButton);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
+                stage.addActor(mission04TextButton);
+                stage.addActor(mission05TextButton);
                 break;
             case 6:
                 mission01.setUnlocked();
@@ -406,7 +467,18 @@ public class MissionsMenu implements Screen, InputProcessor {
                 mission05.setUnlocked();
                 mission06.setUnlocked();
                 mission07.setLocked();
-                mission08.setLocked();
+                mission08.setHidden();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mapWaypoint3Image);
+                stage.addActor(mapWaypoint4Image);
+                stage.addActor(mapWaypoint5Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
+                stage.addActor(mission04TextButton);
+                stage.addActor(mission05TextButton);
+                stage.addActor(mission06TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
                 missionsButtonGroup.add(mission03TextButton);
@@ -423,6 +495,19 @@ public class MissionsMenu implements Screen, InputProcessor {
                 mission06.setUnlocked();
                 mission07.setUnlocked();
                 mission08.setLocked();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mapWaypoint3Image);
+                stage.addActor(mapWaypoint4Image);
+                stage.addActor(mapWaypoint5Image);
+                stage.addActor(mapWaypoint6Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
+                stage.addActor(mission04TextButton);
+                stage.addActor(mission05TextButton);
+                stage.addActor(mission06TextButton);
+                stage.addActor(mission07TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
                 missionsButtonGroup.add(mission03TextButton);
@@ -440,6 +525,21 @@ public class MissionsMenu implements Screen, InputProcessor {
                 mission06.setUnlocked();
                 mission07.setUnlocked();
                 mission08.setUnlocked();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mapWaypoint3Image);
+                stage.addActor(mapWaypoint4Image);
+                stage.addActor(mapWaypoint5Image);
+                stage.addActor(mapWaypoint6Image);
+                stage.addActor(mapWaypoint7Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
+                stage.addActor(mission04TextButton);
+                stage.addActor(mission05TextButton);
+                stage.addActor(mission06TextButton);
+                stage.addActor(mission07TextButton);
+                stage.addActor(mission08TextButton);
                 missionsButtonGroup.add(mission01TextButton);
                 missionsButtonGroup.add(mission02TextButton);
                 missionsButtonGroup.add(mission03TextButton);

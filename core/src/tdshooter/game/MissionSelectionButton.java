@@ -19,9 +19,9 @@ public class MissionSelectionButton extends Stage {
         super(viewport, gam.batch);
         game = gam;
 
-        lockedButtonTexture = game.assets.get("mapitems/karttapainike-locked.png.png");
-        unlockedButtonTexture = game.assets.get("mapitems/karttapainike-selected.png.png");
-        selectedButtonTexture = game.assets.get("mapitems/karttapainike-unlocked.png.png");
+        lockedButtonTexture = game.assets.get("mapitems/karttapainike-locked.png");
+        unlockedButtonTexture = game.assets.get("mapitems/karttapainike-unlocked.png");
+        selectedButtonTexture = game.assets.get("mapitems/karttapainike-selected.png");
 
         lockedButtonImage = new Image(lockedButtonTexture);
         unlockedButtonImage = new Image(unlockedButtonTexture);
@@ -62,4 +62,10 @@ public class MissionSelectionButton extends Stage {
     public void setSelected(){
         selectedButtonImage.setVisible(true);
     }
+    public void setHidden(){
+        selectedButtonImage.setVisible(false);
+        lockedButtonImage.setVisible(false);
+        unlockedButtonImage.setVisible(false);
+    }
+
 }

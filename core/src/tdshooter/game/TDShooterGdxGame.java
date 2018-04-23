@@ -114,6 +114,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("mapitems/reitti-6.png", Texture.class);
 		assets.load("mapitems/reitti-7.png", Texture.class);
 		assets.load("mapitems/reitti-8.png", Texture.class);
+        assets.load("mapitems/reitti-9.png", Texture.class);
+        assets.load("mapitems/reitti-10.png", Texture.class);
 
 		assets.load("testistausta.png", Texture.class);
 		assets.load("menu_test.png", Texture.class);
