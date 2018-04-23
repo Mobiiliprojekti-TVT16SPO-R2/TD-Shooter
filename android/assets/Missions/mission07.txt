@@ -1,4 +1,4 @@
-Backgrounds/Clouds_AlienArmada_BackGround.png
+Backgrounds/Map_4_Asteroids.png
 ambient/space_ambience.mp3
 60
 100
