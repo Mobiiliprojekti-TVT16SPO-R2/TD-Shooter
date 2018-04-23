@@ -19,7 +19,7 @@ public class BossFlight extends FlightPattern {
     @Override
     public void update(float delta) {
 
-        if (parent.hitbox.y >= 1280 - parent.hitbox.height) {
+        if (parent.hitbox.y >= 1280 - parent.hitbox.height - 80) {
             parent.hitbox.y -= parent.speed * delta;
         }
         else {
