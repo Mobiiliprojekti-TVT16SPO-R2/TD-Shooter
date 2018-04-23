@@ -1,8 +1,10 @@
-﻿taustakuvan avainsana
-musiikin avainsana
-teht�v�n lopetusaika
-taustan skrollausnopeus
-looppaako taustakuva (0, 1)
+taustakuvan avainsana, string
+musiikin avainsana, string
+pilvitason kuvan avainsana, string
+teht�v�n lopetusaika, int
+taustan skrollausnopeus, int
+pilvitason kuvan skrollausnopeus, int
+looppaako taustakuva (0, 1), int
 vihollisen tyyppi kokonaislukuna (katso Encounter-tiedoston EncounterType-enum), x koordinaatti, y koordinaatti, spawnaika, item type, flight type
 tyyppi, x, y, aika, item, flight
 3. vihollinen jne.
@@ -17,7 +19,7 @@ Encounters/AlienFighter_Bruiser.png", Texture.class);
 Encounters/AlienMine_Machine.png", Texture.class);
 Encounters/AlienMine_Organic.png", Texture.class);
 	144	288	432	576
-	    180	    360     540	
+	    180	    360     540
 	flights
 1 low f sin
 2 high f sin
@@ -35,7 +37,7 @@ Encounters/AlienMine_Organic.png", Texture.class);
 1 = hp
 4 = currency
 
-	beasts 
+	beasts
 1  = 0
 2  = 4
 3  = 5
