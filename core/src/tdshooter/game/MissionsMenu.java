@@ -550,6 +550,37 @@ public class MissionsMenu implements Screen, InputProcessor {
                 missionsButtonGroup.add(mission08TextButton);
                 break;
             default:
+                mission01.setUnlocked();
+                mission02.setUnlocked();
+                mission03.setUnlocked();
+                mission04.setUnlocked();
+                mission05.setUnlocked();
+                mission06.setUnlocked();
+                mission07.setUnlocked();
+                mission08.setUnlocked();
+                stage.addActor(mapWaypoint1Image);
+                stage.addActor(mapWaypoint2Image);
+                stage.addActor(mapWaypoint3Image);
+                stage.addActor(mapWaypoint4Image);
+                stage.addActor(mapWaypoint5Image);
+                stage.addActor(mapWaypoint6Image);
+                stage.addActor(mapWaypoint7Image);
+                stage.addActor(mission01TextButton);
+                stage.addActor(mission02TextButton);
+                stage.addActor(mission03TextButton);
+                stage.addActor(mission04TextButton);
+                stage.addActor(mission05TextButton);
+                stage.addActor(mission06TextButton);
+                stage.addActor(mission07TextButton);
+                stage.addActor(mission08TextButton);
+                missionsButtonGroup.add(mission01TextButton);
+                missionsButtonGroup.add(mission02TextButton);
+                missionsButtonGroup.add(mission03TextButton);
+                missionsButtonGroup.add(mission04TextButton);
+                missionsButtonGroup.add(mission05TextButton);
+                missionsButtonGroup.add(mission06TextButton);
+                missionsButtonGroup.add(mission07TextButton);
+                missionsButtonGroup.add(mission08TextButton);
                 break;
         }
     }
