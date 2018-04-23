@@ -104,6 +104,24 @@ public class ShopItemSlot extends Stage {
                 itemInfoLabel = new Label("current level: " + weaponLevel, whiteLabelstyle);
                 price = 200 + weaponLevel* 100;
                 break;
+            case 5:
+                itemTexture = game.assets.get("planes/Player_FighterPlane.png");
+                itemNameLabel = new Label("Fighter", blackLabelstyle);
+                itemInfoLabel = new Label("", whiteLabelstyle);
+                price = 200;
+                break;
+            case 6:
+                itemTexture = game.assets.get("planes/Player_BomberPlane.png");
+                itemNameLabel = new Label("Bomber", blackLabelstyle);
+                itemInfoLabel = new Label("", whiteLabelstyle);
+                price = 200;
+                break;
+            case 7:
+                itemTexture = game.assets.get("planes/Player_Interceptor.png");
+                itemNameLabel = new Label("Interceptor", blackLabelstyle);
+                itemInfoLabel = new Label("", whiteLabelstyle);
+                price = 200;
+                break;
             default:
                 itemTexture = game.assets.get("shopitems/Item_Armor.png");
                 itemNameLabel = new Label("Empty item", yellowLabelstyle);
@@ -204,6 +222,10 @@ public class ShopItemSlot extends Stage {
                     itemInfoLabel.setText("current level: " + currentweaponLevel);
                 }
             }
+        }
+        if (itemIndex >= 5){
+            itemButton.setText("Coming Soon!");
+            itemInfoLabel.setText("");
         }
     }
 

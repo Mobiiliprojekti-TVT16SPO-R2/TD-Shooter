@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
@@ -23,7 +21,6 @@ public class TDShooterGdxGame extends Game {
 	public BitmapFont fontSkin;
 	public AssetManager assets;
 	public Skin skin;
-//	private Texture texture;
 	public final int VIEWPORTWIDTH = 720;
 	public final int VIEWPORTHEIGHT = 1280;
 
@@ -36,12 +33,13 @@ public class TDShooterGdxGame extends Game {
 		parameter.size = 50;
 		fontSkin = generator.generateFont(parameter);
 		generator.dispose();
-//		texture = new Texture("Backgrounds/Loading_test.png");
 
 		batch = new SpriteBatch();
         assets = new AssetManager();
 
 		assets.load("planes/Player_FighterPlane.png", Texture.class);
+		assets.load("planes/Player_BomberPlane.png", Texture.class);
+		assets.load("planes/Player_Interceptor.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_2.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_3.png", Texture.class);
@@ -113,7 +111,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/pelitila-healthbar_jaljella_v3.png", Texture.class);
 		assets.load("Menu/pelitila-pausevalikko_v2.png", Texture.class);
 		assets.load("Menu/pelitila-ylapalkki_v2.png", Texture.class);
-
+		assets.load("Menu/Hangar_Dimming.png", Texture.class);
 		assets.load("shopitems/Item_Armor.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Bazooka.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Laser.png", Texture.class);
@@ -136,14 +134,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("mapitems/reitti-8.png", Texture.class);
         assets.load("mapitems/reitti-9.png", Texture.class);
         assets.load("mapitems/reitti-10.png", Texture.class);
-
-		assets.load("testistausta.png", Texture.class);
-		assets.load("menu_test.png", Texture.class);
 		assets.load("effects/flash_test.png", Texture.class);
-
 		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
-//		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
-
 		assets.load("Sounds/hitSound.wav", Sound.class);
 		assets.load("Sounds/hitSound2.wav", Sound.class);
 		assets.load("Sounds/gun1.wav", Sound.class);

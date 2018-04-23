@@ -17,14 +17,14 @@ import java.util.Random;
 public class ShootingEnemy extends Encounter {
 
     Texture bulletImage;
-    private RandomXS128 random;
-    private int shootRNG;
-    private int randomNumber = 0;
-    private Weapon weapon1;
+    protected RandomXS128 random;
+    protected int shootRNG;
+    protected int randomNumber = 0;
+    protected Weapon weapon1;
     private Sound firingSound1;
     private Texture firingImage1;
     private Long cooldownTime =(long) 0;
-    private int weaponChoice = 1;
+    protected int weaponChoice = 1;
     private int turretCount = 0;
     private int spread = 0;
 

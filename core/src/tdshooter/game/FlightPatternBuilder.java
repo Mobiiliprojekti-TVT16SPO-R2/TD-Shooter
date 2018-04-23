@@ -2,7 +2,8 @@ package tdshooter.game;
 
 enum FlightType
 {
-    LOW_F_SIN(1), HIGH_F_SIN(2), STRAIGHT_DOWN(3), DIAGONAL_45_LEFT(4), DIAGONAL_45_RIGHT(5), BOSS(6), BOSS_DIVE(7), BOSS_DIVE_VERTICAL(8), WIDE_LOW_F_SIN(9), WIDE_HIGH_F_SIN(10), EXTRAWIDE_SLOW_F_SIN(11);
+    LOW_F_SIN(1), HIGH_F_SIN(2), STRAIGHT_DOWN(3), DIAGONAL_45_LEFT(4), DIAGONAL_45_RIGHT(5), BOSS(6), BOSS_DIVE(7), BOSS_DIVE_VERTICAL(8),
+    WIDE_LOW_F_SIN(9), WIDE_HIGH_F_SIN(10), EXTRAWIDE_SLOW_F_SIN(11), BASIC_DIVE(12);
 
     private int value;
 
@@ -53,13 +54,13 @@ public class FlightPatternBuilder
                 pattern = new StraightFlight(parent, -35);
                 break;
             case BOSS:
-                pattern = new BossFlight(parent, 0);
+                pattern = new BossFlight(parent, 0, 945);
                 break;
             case BOSS_DIVE:
-                pattern = new BossFlight(parent, 1);
+                pattern = new BossFlight(parent, 1, 945);
                 break;
             case BOSS_DIVE_VERTICAL:
-                pattern = new BossFlight(parent, 2);
+                pattern = new BossFlight(parent, 2, 945);
                 break;
             case WIDE_LOW_F_SIN:
                 pattern = new SinCurveFlight(parent, 100, 1.0f);
@@ -71,6 +72,9 @@ public class FlightPatternBuilder
 
             case EXTRAWIDE_SLOW_F_SIN:
                 pattern = new SinCurveFlight(parent, 300, 0.5f);
+                break;
+            case BASIC_DIVE:
+                pattern = new BossFlight(parent, 3, 900);
                 break;
             default:
                 pattern = null;
