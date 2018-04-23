@@ -84,6 +84,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     private Texture launchButtonTexture;
     private Image launchButtonImage;
     private Sound selectSound;
+    private Sound launchSound;
 
     private int levelProgress;
     
@@ -122,7 +123,8 @@ public class MissionsMenu implements Screen, InputProcessor {
         mapWaypoint9Texture = game.assets.get("mapitems/reitti-9.png");
         mapWaypoint10Texture = game.assets.get("mapitems/reitti-10.png");
         launchButtonTexture = game.assets.get("Menu/startmenu-painike-pohjassa.png");
-        selectSound = game.assets.get("Sounds/menublip.wav");
+        selectSound = game.assets.get("Sounds/menublip3.wav");
+        launchSound = game.assets.get("Sounds/menublip2.wav");
 
 
         menuImage = new Image(menuBackground);
@@ -238,6 +240,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 unlockByProgress();
+                selectSound.play();
                 mission01.setSelected();
                 dialog.setText("Aliens! Earth is under attack! This is your first mission. Good luck pilot!");
             }
@@ -248,6 +251,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 1){
                     unlockByProgress();
+                    selectSound.play();
                     mission02.setSelected();
                     dialog.setText("Aliens are trying to take over our food supplies! We will not tolerate this! You know what to do! ");
                 }
@@ -259,6 +263,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 2){
                     unlockByProgress();
+                    selectSound.play();
                     mission03.setSelected();
                     dialog.setText("We managed to push them back to the ocean islands, but we are detecting some heavy heatmap-activity. Be careful out there pilot!");
                 }
@@ -270,6 +275,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 3){
                     unlockByProgress();
+                    selectSound.play();
                     mission04.setSelected();
                     dialog.setText("Aliens are receiving some reinforcements form outer space, It seems they have bigger armament than we expected.");
                 }
@@ -280,6 +286,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 4){
                     unlockByProgress();
+                    selectSound.play();
                     mission05.setSelected();
                     dialog.setText("Aliens have some activity in lunar section, go investigate and then report back!");
                 }
@@ -290,6 +297,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 5){
                     unlockByProgress();
+                    selectSound.play();
                     mission06.setSelected();
                     dialog.setText("It seems aliens have constructed massive base on the dark side of the moon. We need to wipe them out!");
                 }
@@ -300,6 +308,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 6){
                     unlockByProgress();
+                    selectSound.play();
                     mission07.setSelected();
                     dialog.setText("We got them retreating, but they are still gathering forces near asteroidbelt behind moon.");
                 }
@@ -310,6 +319,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             public void clicked(InputEvent event, float x, float y) {
                 if (levelProgress > 7){
                     unlockByProgress();
+                    selectSound.play();
                     mission08.setSelected();
                     dialog.setText("We are detecting massive alien armada of battleships and cruisers! But we can survive this, if you take down their supreme leader!");
                 }
@@ -322,6 +332,7 @@ public class MissionsMenu implements Screen, InputProcessor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 int index = missionsButtonGroup.getCheckedIndex();
+                launchSound.play();
                 game.setScreen(new GameScreen(game, missionNameList.get(index), index+1));
                 dispose();
 
@@ -383,7 +394,6 @@ public class MissionsMenu implements Screen, InputProcessor {
     }
 
     private void unlockByProgress() {
-        selectSound.play(0.8f);
         switch (levelProgress){
             case 1:
                 mission01.setUnlocked();

@@ -67,7 +67,7 @@ public class MenuTopBar extends Stage {
         rightButtonOffTexture = game.assets.get("Menu/oikea-normaali.png");
         rightButtonOnTexture = game.assets.get("Menu/oikea-valittu.png");
         topBarTexture = game.assets.get("Menu/ylapalkki2.png");
-        menuSelectSound = game.assets.get("Sound/hydraulics.wav");
+        menuSelectSound = game.assets.get("Sounds/hydraulics.wav");
 
         leftButtonOffImage = new Image(leftButtonOffTexture);
         leftButtonOnImage = new Image(leftButtonOnTexture);

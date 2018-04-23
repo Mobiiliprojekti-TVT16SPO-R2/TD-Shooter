@@ -74,7 +74,7 @@ public class MainMenuScreen implements Screen {
         menuButtonWhite = game.assets.get("Menu/startmenu-painike-normaali.png");
         menuButtonYellow = game.assets.get("Menu/startmenu-painike-pohjassa.png");
         gameLogoTexture = game.assets.get("Menu/logo-lapinakyva.png");
-        menuSelectSound = game.assets.get("Sounds/menublip.wav");
+        menuSelectSound = game.assets.get("Sounds/menublip2.wav");
 
         menuImage = new Image(menuBackground);
         menuImage.setHeight(VIEWPORTHEIGHT);
@@ -142,7 +142,7 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 menuButtonOnImage.setPosition(startGameButton.getX(),startGameButton.getY());
                 game.setScreen(new MissionsMenu(game));
-                menuSelectSound.play(0.8f);
+                menuSelectSound.play();
                 dispose();
             }
         });
@@ -151,7 +151,7 @@ public class MainMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 menuButtonOnImage.setPosition(optionsButton.getX(),optionsButton.getY());
                 game.setScreen(new OptionsMenu(game));
-                menuSelectSound.play(0.8f);
+                menuSelectSound.play();
                 dispose();
             }
         });
@@ -159,7 +159,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 menuButtonOnImage.setPosition(exitButton.getX(),exitButton.getY());
-                menuSelectSound.play(0.8f);
+                menuSelectSound.play();
                 Gdx.app.exit();
             }
         });
@@ -207,6 +207,5 @@ public class MainMenuScreen implements Screen {
 //        skin.dispose();
 //        atlas.dispose();
         stage.dispose();
-        menuSelectSound.dispose();
     }
 }
