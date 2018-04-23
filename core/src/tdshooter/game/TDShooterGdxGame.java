@@ -23,7 +23,6 @@ public class TDShooterGdxGame extends Game {
 	public BitmapFont fontSkin;
 	public AssetManager assets;
 	public Skin skin;
-//	private Texture texture;
 	public final int VIEWPORTWIDTH = 720;
 	public final int VIEWPORTHEIGHT = 1280;
 
@@ -36,7 +35,6 @@ public class TDShooterGdxGame extends Game {
 		parameter.size = 50;
 		fontSkin = generator.generateFont(parameter);
 		generator.dispose();
-//		texture = new Texture("Backgrounds/Loading_test.png");
 
 		batch = new SpriteBatch();
         assets = new AssetManager();
@@ -136,14 +134,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("mapitems/reitti-8.png", Texture.class);
         assets.load("mapitems/reitti-9.png", Texture.class);
         assets.load("mapitems/reitti-10.png", Texture.class);
-
-		assets.load("testistausta.png", Texture.class);
-		assets.load("menu_test.png", Texture.class);
 		assets.load("effects/flash_test.png", Texture.class);
-
 		assets.load("Skin/glassy-ui.atlas", TextureAtlas.class);
-//		assets.load("Skin/glassy-ui.json", Skin.class, new SkinLoader.SkinParameter("Skin/glassy-ui.atlas"));
-
 		assets.load("Sounds/hitSound.wav", Sound.class);
 		assets.load("Sounds/hitSound2.wav", Sound.class);
 		assets.load("Sounds/gun1.wav", Sound.class);
@@ -151,8 +143,6 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Sounds/gun2.wav", Sound.class);
 		assets.load("Sounds/shotgun.wav", Sound.class);
 		assets.load("Sounds/cashier.wav", Sound.class);
-
-		assets.load("rain.mp3", Music.class);
 		assets.load("ambient/space_ambience.mp3", Music.class);
 		assets.load("ambient/rain.mp3", Music.class);
 		assets.load("music/missionmusic1.mp3", Music.class);

@@ -5,21 +5,23 @@ import com.badlogic.gdx.Gdx;
 public class BossFlight extends FlightPattern {
 
     private int index;
+    private int flightHeight;
     private boolean bossDiveComplete = false;
     private boolean bossDive = false;
 
     private boolean destinationX;
-    public BossFlight(Collidable parent, int index) {
+    public BossFlight(Collidable parent, int index, int flightHeight) {
         super(parent);
         destinationX = true;
         this.index = index;
+        this.flightHeight = flightHeight;
 
     }
 
     @Override
     public void update(float delta) {
 
-        if (parent.hitbox.y >= 1280 - parent.hitbox.height - 80) {
+        if (parent.hitbox.y >= flightHeight) { //1280 - parent.hitbox.height - 80
             parent.hitbox.y -= parent.speed * delta;
         }
         else {
@@ -31,6 +33,9 @@ public class BossFlight extends FlightPattern {
             }
             else if (index == 2) {
                 bossDiveVerticalFlight(delta);
+            }
+            else if (index == 3) {
+                basicDive(delta);
             }
         }
     }
@@ -61,7 +66,7 @@ public class BossFlight extends FlightPattern {
         else {
             bossDiveComplete = true;
             parent.hitbox.y += (parent.speed * 3) * delta;
-            if (parent.hitbox.y >= 1280 - parent.hitbox.height - 80) {
+            if (parent.hitbox.y >= flightHeight) {
                 bossDive = false;
             }
         }
@@ -101,10 +106,13 @@ public class BossFlight extends FlightPattern {
             else {
                 parent.hitbox.x -= (parent.speed * 2) * delta;
             }
-            if (parent.hitbox.y > 1280 - parent.hitbox.height - 80) {
+            if (parent.hitbox.y > flightHeight) {
                 bossDive = false;
             }
         }
+    }
+    public void basicDive(float delta) {
+        parent.hitbox.y -= (parent.speed * 8) * delta;
     }
     @Override
     public void setVariables() {
