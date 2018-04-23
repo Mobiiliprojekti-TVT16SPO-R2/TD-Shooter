@@ -8,10 +8,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -28,6 +30,10 @@ public class StageFailedScreen implements Screen {
     private StretchViewport viewport;
     private Skin skin;
     private Stage stage;
+    private Texture retryTexture;
+    private Texture missionTexture;
+    private Image retryImage;
+    private Image missionImage;
 
     private String previousMissionName;
     private int previousMissionNumber;
@@ -42,10 +48,14 @@ public class StageFailedScreen implements Screen {
         viewport = new StretchViewport(VIEWPORTWIDTH, VIEWPORTHEIGHT, camera);
         viewport.apply();
 
-        skin = new Skin();
-        skin.add("font", game.fontSkin);
-        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
-        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+        skin = game.skin;
+
+        retryTexture = game.assets.get("Menu/vasen-normaali.png");
+        missionTexture = game.assets.get("Menu/oikea-normaali.png");
+
+        retryImage = new Image(retryTexture);
+        missionImage = new Image(missionTexture);
+
 
         stage = new Stage(viewport, game.batch);
 
@@ -67,11 +77,28 @@ public class StageFailedScreen implements Screen {
     @Override
     public void show()
     {
-        Table table = new Table();
-        table.setFillParent(true);
+        float midX = VIEWPORTWIDTH / 2;
+        float midY = VIEWPORTHEIGHT / 2;
 
-        TextButton retryButton = new TextButton("Retry", skin);
-        TextButton missionMenuButton = new TextButton("Missions", skin);
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = game.font;
+        textButtonStyle.overFontColor = Color.BLUE;
+        textButtonStyle.downFontColor = Color.YELLOW;
+        textButtonStyle.fontColor = Color.BLACK;
+        textButtonStyle.font.getData().setScale(1.3f);
+
+        TextButton retryButton = new TextButton("Retry", textButtonStyle);
+        TextButton missionMenuButton = new TextButton("Missions", textButtonStyle);
+
+        retryButton.setWidth(250);
+        retryButton.setHeight(150);
+        missionMenuButton.setWidth(250);
+        missionMenuButton.setHeight(150);
+
+        retryButton.setPosition(midX - retryButton.getWidth(),midY - 75);
+        missionMenuButton.setPosition(midX, midY- 75);
+
+
         retryButton.addListener(new EventListener() {
             @Override
             public boolean handle(Event event) {
@@ -91,13 +118,17 @@ public class StageFailedScreen implements Screen {
 
         Label missionFailedLabel = new Label("Dead!", skin);
         missionFailedLabel.setFontScale(2);
+        missionFailedLabel.setPosition(midX - missionFailedLabel.getWidth(), midY + 75);
 
-        table.add(missionFailedLabel).center().colspan(2);
-        table.row();
-        table.add(retryButton).center().right().space(20);
-        table.add(missionMenuButton).center().left().space(20);
+        retryImage.setPosition(retryButton.getX(), retryButton.getY());
+        missionImage.setPosition(missionMenuButton.getX(), missionMenuButton.getY());
 
-        stage.addActor(table);
+        stage.addActor(retryImage);
+        stage.addActor(missionImage);
+        stage.addActor(missionFailedLabel);
+        stage.addActor(retryButton);
+        stage.addActor(missionMenuButton);
+
     }
 
     @Override

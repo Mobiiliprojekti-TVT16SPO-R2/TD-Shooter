@@ -42,12 +42,14 @@ public class BossFlight extends FlightPattern {
     public void verticalFlight(float delta){
         if (parent.hitbox.x >= 720 - parent.hitbox.width) {
             destinationX = false;
-        } else if (parent.hitbox.x <= 0) {
+        }
+        else if (parent.hitbox.x <= 0) {
             destinationX = true;
         }
         if (destinationX) {
             parent.hitbox.x += parent.speed * delta;
-        } else {
+        }
+        else {
             parent.hitbox.x -= parent.speed * delta;
         }
     }
@@ -59,7 +61,7 @@ public class BossFlight extends FlightPattern {
         else {
             bossDiveComplete = true;
             parent.hitbox.y += (parent.speed * 3) * delta;
-            if (parent.hitbox.y >= 1280 - parent.hitbox.height) {
+            if (parent.hitbox.y >= 1280 - parent.hitbox.height - 80) {
                 bossDive = false;
             }
         }
@@ -72,12 +74,14 @@ public class BossFlight extends FlightPattern {
 
             if (parent.hitbox.x >= 720 - parent.hitbox.width) {
                 destinationX = false;
-            } else if (parent.hitbox.x <= 0) {
+            }
+            else if (parent.hitbox.x <= 0) {
                 destinationX = true;
             }
             if (destinationX) {
                 parent.hitbox.x += (parent.speed * 2) * delta;
-            } else {
+            }
+            else {
                 parent.hitbox.x -= (parent.speed * 2) * delta;
             }
         }
@@ -87,15 +91,17 @@ public class BossFlight extends FlightPattern {
             parent.hitbox.y += (parent.speed * 3) * delta;
             if (parent.hitbox.x >= 720 - parent.hitbox.width) {
                 destinationX = false;
-            } else if (parent.hitbox.x <= 0) {
+            }
+            else if (parent.hitbox.x <= 0) {
                 destinationX = true;
             }
             if (destinationX) {
                 parent.hitbox.x += (parent.speed * 2) * delta;
-            } else {
+            }
+            else {
                 parent.hitbox.x -= (parent.speed * 2) * delta;
             }
-            if (parent.hitbox.y > 1280 - parent.hitbox.height) {
+            if (parent.hitbox.y > 1280 - parent.hitbox.height - 80) {
                 bossDive = false;
             }
         }

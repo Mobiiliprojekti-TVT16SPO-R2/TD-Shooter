@@ -82,13 +82,13 @@ public class EncounterBuilder
                         400 , (Texture)assets.get("Encounters/AlienFighter_Bruiser.png"), assets);
                 break;
             case BOSS_ENEMY_1:
-                encounter = new Boss(1000, 2000, 255, 256, 3500, 50, 100, 500, 1, (Texture)assets.get("Encounters/Boss/Boss_World1_AlienMother.png"), assets);
+                encounter = new Boss(1000, 2000, 255, 256, 3500, 100, 100, 0, 0, 0, 1, 1000, 2000000000L, 1, (Texture)assets.get("Encounters/Boss/Boss_World1_AlienMother.png"), assets);
                 break;
             case BOSS_ENEMY_2:
-                encounter = new Boss(1000, 2000, 255, 256, 5000, 50, 100, 500, 2, (Texture)assets.get("Encounters/Boss/Boss_World2_CyborgBeast.png"), assets);
+                encounter = new Boss(1000, 2000, 255, 256, 10000, 50, 100, 7, 200, 500000000, 40, 2000, 4000000000L, 2, (Texture)assets.get("Encounters/Boss/Boss_World2_CyborgBeast.png"), assets);
                 break;
             case BOSS_ENEMY_3:
-                encounter = new Boss(1000, 2000, 255, 256, 10000, 50, 100, 500, 3, (Texture)assets.get("Encounters/Boss/Boss_World2_FlagShip.png"), assets);
+                encounter = new Boss(1000, 2000, 255, 256, 100000, 50, 100, 5, 5, 500000000, 40, 3000, 2000000000L, 3, (Texture)assets.get("Encounters/Boss/Boss_World2_FlagShip.png"), assets);
                 break;
 
             default:

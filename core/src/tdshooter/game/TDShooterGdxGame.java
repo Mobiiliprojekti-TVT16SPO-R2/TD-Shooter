@@ -42,6 +42,8 @@ public class TDShooterGdxGame extends Game {
         assets = new AssetManager();
 
 		assets.load("planes/Player_FighterPlane.png", Texture.class);
+		assets.load("planes/Player_BomberPlane.png", Texture.class);
+		assets.load("planes/Player_Interceptor.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_1_Test.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_2.png", Texture.class);
 		assets.load("Encounters/AlienBeast_LVL_3.png", Texture.class);
@@ -106,7 +108,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/pelitila-healthbar_jaljella_v3.png", Texture.class);
 		assets.load("Menu/pelitila-pausevalikko_v2.png", Texture.class);
 		assets.load("Menu/pelitila-ylapalkki_v2.png", Texture.class);
-
+		assets.load("Menu/Hangar_Dimming.png", Texture.class);
 		assets.load("shopitems/Item_Armor.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Bazooka.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Laser.png", Texture.class);
