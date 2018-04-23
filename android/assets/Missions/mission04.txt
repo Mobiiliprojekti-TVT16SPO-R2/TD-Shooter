@@ -1,9 +1,9 @@
 Backgrounds/Map_4_Asteroids.png
-Backgrounds/Clouds_AsteroidDust_BackGround.png
+Backgrounds/Clouds_AsteroidDust_BackGround_Light.png
 ambient/space_ambience.mp3
 80
 140
-90
+190
 1
 
 1, 144, 1200, 3, 4, 3

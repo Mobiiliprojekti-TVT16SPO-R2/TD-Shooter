@@ -1,9 +1,9 @@
 Backgrounds/Map_4_Asteroids.png
-Backgrounds/Clouds_MoonDust_BackGround.png
+Backgrounds/Clouds_MoonDust_BackGround_Light.png
 ambient/space_ambience.mp3
 60
-110
 120
+240
 1
 
 0, 240, 1400, 1, 0, 1
