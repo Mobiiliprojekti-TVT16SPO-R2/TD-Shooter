@@ -151,7 +151,6 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Sounds/flyby.wav", Sound.class);
 		assets.load("Sounds/start.wav", Sound.class);
 
-		assets.load("rain.mp3", Music.class);
 		assets.load("ambient/space_ambience.mp3", Music.class);
 		assets.load("ambient/rain.mp3", Music.class);
 		assets.load("music/missionmusic1.mp3", Music.class);
