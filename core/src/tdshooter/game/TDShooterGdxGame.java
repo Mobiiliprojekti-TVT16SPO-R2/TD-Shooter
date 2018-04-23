@@ -72,7 +72,13 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Map_2_FarmLand.png", Texture.class);
         assets.load("Backgrounds/Map_3_Islands.png", Texture.class);
         assets.load("Backgrounds/Map_4_Asteroids.png", Texture.class);
-        assets.load("Backgrounds/Map_5_Moon.png", Texture.class);
+		assets.load("Backgrounds/Map_5_Moon.png", Texture.class);
+		assets.load("Backgrounds/Map_6_Moon_AlienStructures.png", Texture.class);
+		assets.load("Backgrounds/Map_7_AlienArmada.png", Texture.class);
+		assets.load("Backgrounds/Clouds_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_AsteroidDust_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_MoonDust_BackGround.png", Texture.class);
+		assets.load("Backgrounds/Clouds_AlienArmada_BackGround.png", Texture.class);
         assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Background_StartMenu.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);

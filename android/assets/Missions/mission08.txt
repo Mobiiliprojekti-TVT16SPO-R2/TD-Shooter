@@ -1,5 +1,5 @@
-Backgrounds/Map_3_Islands.png
-rain.mp3
+Backgrounds/Map_7_AlienArmada.png
+ambient/space_ambience.mp3
 60
 100
 1

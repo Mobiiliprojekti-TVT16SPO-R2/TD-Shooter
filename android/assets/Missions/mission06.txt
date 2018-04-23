@@ -1,5 +1,5 @@
-Backgrounds/Map_3_Islands.png
-rain.mp3
+Backgrounds/Map_6_Moon_AlienStructures.png
+music/missionmusic2.mp3
 60
 100
 1
