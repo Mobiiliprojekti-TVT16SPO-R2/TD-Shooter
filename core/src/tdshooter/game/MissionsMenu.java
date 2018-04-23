@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -82,6 +83,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     private TextButton launchButton;
     private Texture launchButtonTexture;
     private Image launchButtonImage;
+    private Sound selectSound;
 
     private int levelProgress;
     
@@ -120,6 +122,8 @@ public class MissionsMenu implements Screen, InputProcessor {
         mapWaypoint9Texture = game.assets.get("mapitems/reitti-9.png");
         mapWaypoint10Texture = game.assets.get("mapitems/reitti-10.png");
         launchButtonTexture = game.assets.get("Menu/startmenu-painike-pohjassa.png");
+        selectSound = game.assets.get("Sounds/menublip.wav");
+
 
         menuImage = new Image(menuBackground);
         commanderImage = new Image(commanderTexture);
@@ -379,6 +383,7 @@ public class MissionsMenu implements Screen, InputProcessor {
     }
 
     private void unlockByProgress() {
+        selectSound.play(0.8f);
         switch (levelProgress){
             case 1:
                 mission01.setUnlocked();

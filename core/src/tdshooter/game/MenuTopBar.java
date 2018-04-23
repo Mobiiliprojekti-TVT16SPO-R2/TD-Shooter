@@ -2,6 +2,7 @@ package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -36,6 +37,7 @@ public class MenuTopBar extends Stage {
     private TextButton bridgeButton;
     private TextButton hangarButton;
     private TextButton shopButton;
+    private Sound menuSelectSound;
     private TDShooterGdxGame game;
     private boolean readyForNextScreen = false;
 
@@ -65,6 +67,7 @@ public class MenuTopBar extends Stage {
         rightButtonOffTexture = game.assets.get("Menu/oikea-normaali.png");
         rightButtonOnTexture = game.assets.get("Menu/oikea-valittu.png");
         topBarTexture = game.assets.get("Menu/ylapalkki2.png");
+        menuSelectSound = game.assets.get("Sound/hydraulics.wav");
 
         leftButtonOffImage = new Image(leftButtonOffTexture);
         leftButtonOnImage = new Image(leftButtonOnTexture);
@@ -192,6 +195,7 @@ public class MenuTopBar extends Stage {
             public void clicked(InputEvent event, float x, float y) {
                 screenToSet = 1;
                 readyForNextScreen = true;
+                menuSelectSound.play(0.8f);
             }
         });
         hangarButton.addListener(new ClickListener(){
@@ -199,6 +203,7 @@ public class MenuTopBar extends Stage {
             public void clicked(InputEvent event, float x, float y) {
                 screenToSet = 2;
                 readyForNextScreen = true;
+                menuSelectSound.play(0.8f);
             }
         });
 
@@ -207,6 +212,7 @@ public class MenuTopBar extends Stage {
             public void clicked(InputEvent event, float x, float y) {
                 screenToSet = 3;
                 readyForNextScreen = true;
+                menuSelectSound.play(0.8f);
             }
         });
 
