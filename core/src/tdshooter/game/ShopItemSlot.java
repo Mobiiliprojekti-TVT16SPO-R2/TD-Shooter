@@ -153,6 +153,7 @@ public class ShopItemSlot extends Stage {
                         switch (itemIndex) {
                             case 1:
                                 prefs.putInteger("shield", 50);
+                                currentweaponLevel = 3;
                                 disableItem();
                                 break;
                             case 2:
