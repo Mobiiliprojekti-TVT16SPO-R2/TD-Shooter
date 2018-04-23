@@ -220,6 +220,10 @@ public class MissionsMenu implements Screen, InputProcessor {
         dialog.setSize(VIEWPORTWIDTH, 360);
         dialog.setText("Attention Pilot! World is under attack by some pesky aliens! Our mission locations are shown in this map on the wall.");
 
+        if (levelProgress > 8 ) {
+            dialog.setText("Congratulations pilot! You managed to beat them all! You can still play some missions again whenever you will.");
+        }
+
         // Asetetaan yhtäaikaa valittujen painikkeiden enimmäis- ja minimimäärät
         // Ja jos enimmäismäärä ylittyy poistetaan edellinen valinta
         missionsButtonGroup.setMaxCheckCount(1);

@@ -314,7 +314,7 @@ public class GameScreen implements Screen, InputProcessor {
     private void updateLevelProgess() {
         Preferences prefs = Gdx.app.getPreferences("savedata");
         int levelProgress = prefs.getInteger("levelprogress", 1);
-        if (levelProgress == missionNumber) {
+        if ((levelProgress == missionNumber)&(levelProgress < 9)) {
             levelProgress++;
         }
         prefs.putInteger("levelprogress", levelProgress);
