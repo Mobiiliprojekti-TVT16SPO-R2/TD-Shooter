@@ -58,8 +58,6 @@ public class MenuTopBar extends Stage {
         VIEWPORTWIDTH = 720; //viewport.getScreenWidth();
         VIEWPORTHEIGHT = 1280; //viewport.getScreenHeight();
 
-        Gdx.app.log("DEBUG", "Viewportsize in MenuTopBar: " + VIEWPORTWIDTH + "; " + VIEWPORTHEIGHT);
-
         leftButtonOffTexture = game.assets.get("Menu/vasen-normaali.png");
         leftButtonOnTexture = game.assets.get("Menu/vasen-valittu.png");
         middleButtonOffTexture = game.assets.get("Menu/keskimmainen-normaali.png");
