@@ -21,8 +21,8 @@ public class ShootingEnemy extends Encounter {
     protected int shootRNG;
     protected int randomNumber = 0;
     protected Weapon weapon1;
-    private Sound firingSound1;
-    private Texture firingImage1;
+    protected Sound firingSound1;
+    protected Texture firingImage1;
     private Long cooldownTime =(long) 0;
     protected int weaponChoice = 1;
     private int turretCount = 0;

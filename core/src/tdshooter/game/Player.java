@@ -3,6 +3,7 @@ package tdshooter.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -29,10 +30,12 @@ public class Player extends Destroyable{
     private int superWeaponInt = 2;
     private long lastChangeTime;
     private ArrayList<Weapon> weapons;
+    private Sound cashSound;
 
     public Player(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, AssetManager assets) {
         super(hitbox_x, hitbox_y, hitbox_width, hitbox_height, hitP, hitD);
         playerImage = assets.get("planes/Player_FighterPlane.png");
+        cashSound = assets.get("Sounds/money.wav");
 
         baseMaxHitpoints = hitP;
         maxHitpoints = baseMaxHitpoints;
@@ -182,7 +185,11 @@ public class Player extends Destroyable{
         if (this.turretCount < 7){
             this.turretCount += items[2];
         }
+        int old_currency = this.currency;
         this.currency += items[3];
+        if (this.currency > old_currency) {
+            cashSound.play();
+        }
 
         for(Weapon weapon : weapons) {
             weapon.upgradeTurretCount(this.turretCount);

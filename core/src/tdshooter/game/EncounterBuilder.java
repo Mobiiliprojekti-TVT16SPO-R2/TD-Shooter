@@ -95,10 +95,10 @@ public class EncounterBuilder
                         (Texture)assets.get("Encounters/Boss/Boss_World2_CyborgBeast.png"), assets);
                 break;
             case BOSS_ENEMY_3:
-                encounter = new Boss(1000, 2000, 255, 256,
-                        100000, 50, 100, 5, 5, 500000000,
-                        40, 3000, 2000000000L, 3,
-                        (Texture)assets.get("Encounters/Boss/Boss_World2_FlagShip.png"), assets);
+                encounter = new Boss(1000, 2000, 320, 320,
+                        15000, 50, 100, 5, 5, 500000000,
+                        40, 3000, 4000000000L, 3,
+                        (Texture)assets.get("Encounters/Boss/Boss_World3_FlagShip.png"), assets);
                 break;
 
             default:

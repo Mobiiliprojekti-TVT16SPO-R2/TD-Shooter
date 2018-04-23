@@ -1,6 +1,5 @@
 package tdshooter.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.RandomXS128;
@@ -23,10 +22,15 @@ public class Boss extends ShootingEnemy {
     private boolean spawn;
     private long lastSpawnTime;
     private long lastDiveTime;
+    private long lastSuperShootTime;
     private long diveCooldown;
     private long spawnCooldown;
+    private long superShootCooldown;
     private boolean flightSet = true;
     private boolean shootingBoss;
+
+    private Weapon superWeapon1;
+    private Weapon superWeapon2;
 
     public Boss(int hitbox_x, int hitbox_y, int hitbox_width, int hitbox_height, int hitP, int hitD, float speed, int turretCount, int spread,
                 long cooldownTime, int shootRNG, int points, long spawnCooldown, int index, Texture image, AssetManager assets) {
@@ -38,6 +42,7 @@ public class Boss extends ShootingEnemy {
         lastSpawnTime = TimeUtils.nanoTime();
         lastDiveTime = TimeUtils.nanoTime();
         diveCooldown = 9000000000L;
+        superShootCooldown = 1000000000L;
         this.spawnCooldown = spawnCooldown; // 2000000000L
         verticalFlight = FlightPatternBuilder.create(FlightType.getByValue(6), this);
 
@@ -53,6 +58,9 @@ public class Boss extends ShootingEnemy {
         }
         else if (this.index == 2){
             diveFlight = FlightPatternBuilder.create(FlightType.getByValue(8), this);
+        } else if (this.index == 3) {
+            superWeapon1 = new Weapon(1, 7, cooldownTime, true, 0, super.firingSound1, super.firingImage1);
+            superWeapon2 = new Weapon(1, 7, cooldownTime, true, 0, super.firingSound1, super.firingImage1);
         }
     }
     public void spawnWeaklings(ArrayList<Encounter> enemyList) {
@@ -90,11 +98,31 @@ public class Boss extends ShootingEnemy {
         if(flightPattern != null) {
             flightPattern.update(delta);
         }
-        if (!this.flightPattern.isBossDive()){
-            bossAttack();
+        if (index != 3){
+            if (!this.flightPattern.isBossDive()){
+                bossAttack();
+            } else {
+                flightSet = false;
+            }
         }
-        else {
-            flightSet = false;
+    }
+
+    private void bossSuperShoot(ArrayList<Projectile> projectileList) {
+        if (TimeUtils.nanoTime() - lastSuperShootTime > superShootCooldown) {
+            int plane_mid_x_1 = (int) (hitbox.x + 15); //left side of the ship
+            int plane_mid_x_2 = (int) (hitbox.x + (hitbox.width) - 15); //right side of the ship
+            int plane_mid_y = (int) (hitbox.y + 15);  // head of the ship
+            switch (weaponChoice) {
+                case 0:
+                    break;
+                case 1:
+                    superWeapon1.fire(plane_mid_x_1, plane_mid_y, projectileList);
+                    superWeapon2.fire(plane_mid_x_2, plane_mid_y, projectileList);
+                    break;
+                default:
+                    break;
+            }
+            lastSuperShootTime = TimeUtils.nanoTime();
         }
     }
 
@@ -138,6 +166,9 @@ public class Boss extends ShootingEnemy {
                         break;
                 }
             }
+        }
+        if (index == 3) {
+            bossSuperShoot(projectileList);
         }
     }
     @Override

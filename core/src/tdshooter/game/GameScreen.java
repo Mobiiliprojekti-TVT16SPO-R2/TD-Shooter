@@ -367,7 +367,6 @@ public class GameScreen implements Screen, InputProcessor {
             superWeapon = false;
         }
 
-
 //        game.font.draw(game.batch, "FPS: " + fps, 0,310);
 //        game.font.draw(game.batch, "Player points: " + player.getPoints(), 0, 130);
 //        game.font.draw(game.batch, "Player HP: " + player.getHitPoints(), 0 , 160);
