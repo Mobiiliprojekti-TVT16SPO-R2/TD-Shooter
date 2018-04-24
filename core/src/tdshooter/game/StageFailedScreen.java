@@ -93,7 +93,7 @@ public class StageFailedScreen implements Screen {
         textButtonStyle.overFontColor = Color.BLUE;
         textButtonStyle.downFontColor = Color.YELLOW;
         textButtonStyle.fontColor = Color.BLACK;
-        textButtonStyle.font.getData().setScale(1.3f);
+        textButtonStyle.font.getData().setScale(2.0f);
 
         TextButton retryButton = new TextButton("Retry", textButtonStyle);
         TextButton missionMenuButton = new TextButton("Missions", textButtonStyle);
@@ -103,8 +103,8 @@ public class StageFailedScreen implements Screen {
         missionMenuButton.setWidth(250);
         missionMenuButton.setHeight(150);
 
-        retryButton.setPosition(midX - retryButton.getWidth(),midY - 75);
-        missionMenuButton.setPosition(midX, midY- 75);
+        retryButton.setPosition(midX - retryButton.getWidth(),midY - 85);
+        missionMenuButton.setPosition(midX, midY- 85);
 
 
         retryButton.addListener(new EventListener() {
@@ -124,12 +124,12 @@ public class StageFailedScreen implements Screen {
             }
         });
 
-        Label missionFailedLabel = new Label("Dead!", skin);
+        Label missionFailedLabel = new Label("You Died!", skin);
         missionFailedLabel.setFontScale(2);
-        missionFailedLabel.setPosition(midX - missionFailedLabel.getWidth(), midY + 75);
+        missionFailedLabel.setPosition(midX - missionFailedLabel.getWidth(), midY + 95);
 
-        retryImage.setPosition(retryButton.getX(), retryButton.getY());
-        missionImage.setPosition(missionMenuButton.getX(), missionMenuButton.getY());
+        retryImage.setPosition(retryButton.getX(), retryButton.getY() + 20);
+        missionImage.setPosition(missionMenuButton.getX(), missionMenuButton.getY() + 20);
 
         stage.addActor(retryImage);
         stage.addActor(missionImage);
