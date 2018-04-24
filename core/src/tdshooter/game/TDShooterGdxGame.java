@@ -117,7 +117,6 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/pelitila-pausevalikko_v2.png", Texture.class);
 		assets.load("Menu/pelitila-ylapalkki_v2.png", Texture.class);
 		assets.load("Menu/Hangar_Dimming.png", Texture.class);
-		assets.load("Menu/Stage_Cleared_Background.png", Texture.class);
 		assets.load("shopitems/Item_Armor.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Bazooka.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Laser.png", Texture.class);
