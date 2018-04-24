@@ -119,9 +119,9 @@ public class GameHUD extends Stage
         healthbarImage2.setPosition(healthbarImage.getX(), healthbarImage.getY());
         healthLabel.setPosition(healthbarImage.getX(), healthbarImage.getY());
 
-        scoreLabel.setPosition(game.VIEWPORTWIDTH / 2 - scoreLabel.getWidth() / 2 - 40, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - scoreLabel.getHeight() / 2);
+        scoreLabel.setPosition(game.VIEWPORTWIDTH / 2 - scoreLabel.getWidth() / 2 - 60, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - scoreLabel.getHeight() / 2);
         missionLabel.setPosition(80, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - missionLabel.getHeight() / 2);
-        currencyLabel.setPosition(game.VIEWPORTWIDTH - 100 - currencyLabel.getWidth(), game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - currencyLabel.getHeight() / 2);
+        currencyLabel.setPosition(game.VIEWPORTWIDTH - 120 - currencyLabel.getWidth(), game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - currencyLabel.getHeight() / 2);
 
         this.addActor(topbarImage);
         this.addActor(scoreLabel);
