@@ -86,6 +86,8 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Backgrounds/Clouds_AlienArmada_BackGround_Light.png", Texture.class);
         assets.load("Menu/Background_BaseMenu_720_1280.png", Texture.class);
 		assets.load("Menu/Background_StartMenu.png", Texture.class);
+		assets.load("Menu/MissionFailed_Screen.png", Texture.class);
+		assets.load("Menu/MissionSuccessful_Screen.png", Texture.class);
 		assets.load("Menu/Character_Commander.png", Texture.class);
 		assets.load("Menu/Character_QuarterMaster.png", Texture.class);
 		assets.load("Menu/Character_Scientist.png", Texture.class);

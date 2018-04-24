@@ -34,6 +34,8 @@ public class StageFailedScreen implements Screen {
     private Texture missionTexture;
     private Image retryImage;
     private Image missionImage;
+    private Texture backgroundTexture;
+    private Image backgroundImage;
 
     private String previousMissionName;
     private int previousMissionNumber;
@@ -52,12 +54,18 @@ public class StageFailedScreen implements Screen {
 
         retryTexture = game.assets.get("Menu/vasen-normaali.png");
         missionTexture = game.assets.get("Menu/oikea-normaali.png");
+        backgroundTexture = game.assets.get("Menu/MissionFailed_Screen.png");
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.setWidth(VIEWPORTWIDTH);
+        backgroundImage.setHeight(VIEWPORTHEIGHT);
 
         retryImage = new Image(retryTexture);
         missionImage = new Image(missionTexture);
 
 
         stage = new Stage(viewport, game.batch);
+
+        stage.addActor(backgroundImage);
 
         Gdx.input.setInputProcessor(stage);
     }

@@ -6,8 +6,10 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -30,6 +32,8 @@ public class StageClearedScreen implements Screen, InputProcessor {
     private int totalCurrency;
     private int highscore;
     private boolean isNewHighscore;
+    private Texture backgroundTexture;
+    private Image backgroundImage;
 
     public StageClearedScreen(final TDShooterGdxGame game, int earnedCurrency, int yourScore, String missionName, boolean isNewHighscore)
     {
@@ -61,9 +65,16 @@ public class StageClearedScreen implements Screen, InputProcessor {
         skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
         skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
 
+        backgroundTexture = game.assets.get("Menu/MissionSuccessful_Screen.png");
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.setWidth(VIEWPORTWIDTH);
+        backgroundImage.setHeight(VIEWPORTHEIGHT);
+
         stage = new Stage(viewport, game.batch);
 
         Gdx.input.setInputProcessor(this);
+
+        stage.addActor(backgroundImage);
     }
 
     @Override
@@ -84,7 +95,6 @@ public class StageClearedScreen implements Screen, InputProcessor {
     {
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
         table.top();
 
         Label stageClearedLabel = new Label("Stage Cleared!", skin);
@@ -102,7 +112,7 @@ public class StageClearedScreen implements Screen, InputProcessor {
         Label touchToContinueLabel = new Label("Touch to Continue.", skin);
         touchToContinueLabel.setFontScale(1.5f);
 
-        table.add(stageClearedLabel).left().spaceBottom(10.0f).padTop(300.0f);
+        table.add(stageClearedLabel).left().spaceBottom(10.0f).padTop(370.0f);
         table.row();
         table.add(currencyEarnedLabel).left();
         table.row();
