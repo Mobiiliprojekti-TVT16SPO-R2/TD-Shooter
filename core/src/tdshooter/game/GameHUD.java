@@ -57,8 +57,8 @@ public class GameHUD extends Stage
         topbarTexture = game.assets.get("Menu/pelitila-ylapalkki_v2.png");
         healthtbarTexture = game.assets.get("Menu/pelitila-healthbar_v2.png");
         healthtbarTexture2 = game.assets.get("Menu/pelitila-healthbar_jaljella_v3.png");
-        changeWeaponTexture = game.assets.get("Menu/pelitila-equipmentjuttu_v2.png");
-        nukeTexture = game.assets.get("Menu/pelitila-equipmentjuttu_mirrored.png");
+        changeWeaponTexture = game.assets.get("Menu/pelitila-equipmentjuttu_gun.png");
+        nukeTexture = game.assets.get("Menu/pelitila-equipmentjuttu_nuke.png");
         topbarImage = new Image(topbarTexture);
         changeWeaponImage = new Image(changeWeaponTexture);
         nukeImage = new Image(nukeTexture);
@@ -119,13 +119,14 @@ public class GameHUD extends Stage
         healthbarImage2.setPosition(healthbarImage.getX(), healthbarImage.getY());
         healthLabel.setPosition(healthbarImage.getX(), healthbarImage.getY());
 
-        scoreLabel.setPosition(game.VIEWPORTWIDTH / 2 - scoreLabel.getWidth() / 2, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - scoreLabel.getHeight() / 2);
-        missionLabel.setPosition(60, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - missionLabel.getHeight() / 2);
-        currencyLabel.setPosition(game.VIEWPORTWIDTH - 60 - currencyLabel.getWidth(), game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - currencyLabel.getHeight() / 2);
+        scoreLabel.setPosition(game.VIEWPORTWIDTH / 2 - scoreLabel.getWidth() / 2 - 40, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - scoreLabel.getHeight() / 2);
+        missionLabel.setPosition(80, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - missionLabel.getHeight() / 2);
+        currencyLabel.setPosition(game.VIEWPORTWIDTH - 100 - currencyLabel.getWidth(), game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - currencyLabel.getHeight() / 2);
 
         this.addActor(topbarImage);
         this.addActor(scoreLabel);
         this.addActor(missionLabel);
+        this.addActor(currencyLabel);
         this.addActor(changeWeaponImage);
         this.addActor(changeWeaponButton);
         this.addActor(nukeImage);
@@ -144,6 +145,7 @@ public class GameHUD extends Stage
         changeWeaponButton.setText("Gun: " + player.getWeaponChoice());
         superWeaponButton.setText("Nuke: " + player.getSuperWeaponInt());
         scoreLabel.setText("Score " + player.getPoints());
+        currencyLabel.setText("Currency: " + player.getCurrency());
         healthLabel.setText(player.getHitPoints() + "/" + player.getBaseMaxHitpoints());
     }
 

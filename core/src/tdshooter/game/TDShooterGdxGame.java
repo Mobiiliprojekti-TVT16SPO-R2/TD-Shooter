@@ -109,7 +109,9 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/startmenu-painike-pohjassa.png", Texture.class);
 		assets.load("Menu/pelitila-equipmentjuttu_v2.png", Texture.class);
         assets.load("Menu/pelitila-equipmentjuttu_mirrored.png", Texture.class);
-		assets.load("Menu/pelitila-healthbar_v2.png", Texture.class);
+        assets.load("Menu/pelitila-equipmentjuttu_gun.png", Texture.class);
+        assets.load("Menu/pelitila-equipmentjuttu_nuke.png", Texture.class);
+        assets.load("Menu/pelitila-healthbar_v2.png", Texture.class);
 		assets.load("Menu/pelitila-healthbar_jaljella_v3.png", Texture.class);
 		assets.load("Menu/pelitila-pausevalikko_v2.png", Texture.class);
 		assets.load("Menu/pelitila-ylapalkki_v2.png", Texture.class);
