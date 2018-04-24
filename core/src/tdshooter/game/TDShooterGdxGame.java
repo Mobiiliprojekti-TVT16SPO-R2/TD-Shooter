@@ -24,6 +24,8 @@ public class TDShooterGdxGame extends Game {
 	public final int VIEWPORTWIDTH = 720;
 	public final int VIEWPORTHEIGHT = 1280;
 
+//	private TextureAtlas atlas;
+
 	public void create() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/Teko-Medium.ttf"));
 		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
@@ -33,6 +35,8 @@ public class TDShooterGdxGame extends Game {
 		parameter.size = 50;
 		fontSkin = generator.generateFont(parameter);
 		generator.dispose();
+
+//		atlas = new TextureAtlas(Gdx.files.internal("Skin/glassy-ui.atlas"));
 
 		batch = new SpriteBatch();
         assets = new AssetManager();
@@ -165,12 +169,10 @@ public class TDShooterGdxGame extends Game {
 		assets.load("music/missionmusic1_amp.mp3", Music.class);
 		assets.load("music/missionmusic2_amp.mp3", Music.class);
 
-		assets.finishLoading();
-
 		skin = new Skin();
-		skin.add("font", fontSkin);
-		skin.addRegions((TextureAtlas) assets.get("Skin/glassy-ui.atlas"));
-		skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+
+//		skin.addRegions(atlas);
+
 
 		// Luodaan pelin eka ase, jos sitä ei vielä ole
 		Preferences prefs = Gdx.app.getPreferences("savedata");
@@ -203,10 +205,11 @@ public class TDShooterGdxGame extends Game {
 			prefs.flush();
 		}
 
-		this.setScreen(new MainMenuScreen(this));
+		this.setScreen(new LoadingScreen(this));
 	}
 
 	public void render() {
+
 		super.render(); //important!
 	}
 

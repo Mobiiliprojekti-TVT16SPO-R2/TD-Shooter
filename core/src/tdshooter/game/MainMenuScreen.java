@@ -68,6 +68,10 @@ public class MainMenuScreen implements Screen {
 
         skin = gam.skin;
 
+        skin.add("font", game.fontSkin);
+        skin.addRegions((TextureAtlas) game.assets.get("Skin/glassy-ui.atlas"));
+        skin.load(Gdx.files.internal("Skin/glassy-ui.json"));
+
         BitmapFont font = skin.getFont("font");
 
         menuBackground = game.assets.get("Menu/Background_StartMenu.png");
