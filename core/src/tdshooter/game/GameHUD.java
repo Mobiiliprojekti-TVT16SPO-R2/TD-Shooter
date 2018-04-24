@@ -3,6 +3,7 @@ package tdshooter.game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,6 +21,7 @@ public class GameHUD extends Stage
     private Player player;
     private Label scoreLabel;
     private Label missionLabel;
+    private Label currencyLabel;
     private Label healthLabel;
     private TextButton superWeaponButton;
     private TextButton changeWeaponButton;
@@ -43,8 +45,10 @@ public class GameHUD extends Stage
         super(viewport, batch);
         this.player = player;
 
+        BitmapFont font = skin.getFont("font");
+
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = game.font;
+        textButtonStyle.font = font;
         textButtonStyle.overFontColor = Color.YELLOW;
         textButtonStyle.downFontColor = Color.YELLOW;
         textButtonStyle.fontColor = Color.WHITE;
@@ -58,13 +62,13 @@ public class GameHUD extends Stage
         topbarImage = new Image(topbarTexture);
         changeWeaponImage = new Image(changeWeaponTexture);
         nukeImage = new Image(nukeTexture);
-        healthbarImage = new Image(healthtbarTexture);
-        healthbarImage2 = new Image(healthtbarTexture2);
+        healthbarImage = new Image(healthtbarTexture2);
+        healthbarImage2 = new Image(healthtbarTexture);
 
 
         superWeaponButton = new TextButton("Nuke: " + player.getSuperWeaponInt(), textButtonStyle);
         superWeaponButton.getLabel().setAlignment(Align.bottom);
-        superWeaponButton.pad(20);
+        superWeaponButton.pad(10);
         superWeaponButton.setWidth(250);
         superWeaponButton.setHeight(131);
         superWeaponButton.setPosition(0, 0);
@@ -80,7 +84,7 @@ public class GameHUD extends Stage
         });
         changeWeaponButton = new TextButton("Gun: " + player.getWeaponChoice(), textButtonStyle);
         changeWeaponButton.getLabel().setAlignment(Align.bottom);
-        changeWeaponButton.pad(20);
+        changeWeaponButton.pad(10);
         changeWeaponButton.setWidth(250);
         changeWeaponButton.setHeight(131);
         changeWeaponButton.setPosition(game.VIEWPORTWIDTH - changeWeaponButton.getWidth(), 0);
@@ -90,12 +94,19 @@ public class GameHUD extends Stage
                     player.swapWeapons();
             }
         });
-        scoreLabel = new Label("Score " + player.getPoints(), skin);
-        scoreLabel.setFontScale(0.5f);
+
         missionLabel = new Label("Mission " + missionNumber, skin);
-        missionLabel.setFontScale(0.5f);
+        missionLabel.setFontScale(0.9f);
+        scoreLabel = new Label("Score " + player.getPoints(), skin);
+        scoreLabel.setFontScale(0.9f);
+        currencyLabel = new Label("Currency " + player.getCurrency(), skin);
+        currencyLabel.setFontScale(0.9f);
+
         healthLabel = new Label(player.getHitPoints() + "/" + player.getBaseMaxHitpoints(), skin);
-        healthLabel.setFontScale(0.5f);
+        healthLabel.setFontScale(0.9f);
+
+        healthbarImage.setScale(1.5f);
+        healthbarImage2.setScale(1.5f);
 
         changeWeaponImage.setWidth(buttonWidth);
         changeWeaponImage.setPosition(changeWeaponButton.getX(), changeWeaponButton.getY());
@@ -108,9 +119,9 @@ public class GameHUD extends Stage
         healthbarImage2.setPosition(healthbarImage.getX(), healthbarImage.getY());
         healthLabel.setPosition(healthbarImage.getX(), healthbarImage.getY());
 
-        scoreLabel.setPosition(game.VIEWPORTWIDTH / 2, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - scoreLabel.getHeight() / 2);
-        missionLabel.setPosition(130, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - missionLabel.getHeight() / 2);
-
+        scoreLabel.setPosition(game.VIEWPORTWIDTH / 2 - scoreLabel.getWidth() / 2, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - scoreLabel.getHeight() / 2);
+        missionLabel.setPosition(60, game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - missionLabel.getHeight() / 2);
+        currencyLabel.setPosition(game.VIEWPORTWIDTH - 60 - currencyLabel.getWidth(), game.VIEWPORTHEIGHT - topbarImage.getHeight() / 2 - currencyLabel.getHeight() / 2);
 
         this.addActor(topbarImage);
         this.addActor(scoreLabel);

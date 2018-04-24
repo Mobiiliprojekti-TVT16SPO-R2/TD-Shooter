@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
@@ -495,9 +496,10 @@ public class GameScreen implements Screen, InputProcessor {
         int pauseMenuWidth = 550;
         int pauseMenuHeight = 750;
 
+        BitmapFont font = skin.getFont("font");
+
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.font = game.font;
-        textButtonStyle.font.getData().setScale(1.3f);
+        textButtonStyle.font = font;
         textButtonStyle.overFontColor = Color.YELLOW;
         textButtonStyle.downFontColor = Color.YELLOW;
         textButtonStyle.fontColor = Color.WHITE;
