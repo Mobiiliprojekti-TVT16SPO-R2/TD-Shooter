@@ -59,8 +59,8 @@ public class Boss extends ShootingEnemy {
         else if (this.index == 2){
             diveFlight = FlightPatternBuilder.create(FlightType.getByValue(8), this);
         } else if (this.index == 3) {
-            superWeapon1 = new Weapon(1, 7, cooldownTime, true, 0, super.firingSound1, super.firingImage1);
-            superWeapon2 = new Weapon(1, 7, cooldownTime, true, 0, super.firingSound1, super.firingImage1);
+            superWeapon1 = new Weapon(1, 7, cooldownTime, true, 0, super.firingSound1, super.firingImage1, this.assets);
+            superWeapon2 = new Weapon(1, 7, cooldownTime, true, 0, super.firingSound1, super.firingImage1, this.assets);
         }
     }
     public void spawnWeaklings(ArrayList<Encounter> enemyList) {

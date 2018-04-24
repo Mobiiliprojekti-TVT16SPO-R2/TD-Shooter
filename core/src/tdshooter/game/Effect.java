@@ -12,17 +12,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Effect {
     private Animation<TextureRegion> deathAnimation;
     private TextureAtlas animationAtlas;
+    private final TDShooterGdxGame game;
     private float stateTime;
     private float speed;
     private float x;
     private float y;
 
-    public Effect(float x, float y, float speed){
+    public Effect(float x, float y, float speed, final TDShooterGdxGame gam){
+        this.game = gam;
         this.x = x;
         this.y = y;
         this.speed = speed;
         stateTime = 0f;
-        animationAtlas = new TextureAtlas("effects/Explosion/explosion_alienplane_center.txt");
+        animationAtlas = game.assets.get("effects/Explosion/explosion_alienplane_center.txt");
         deathAnimation = new Animation<TextureRegion>(0.015f, animationAtlas.findRegions("AlienFighter_Death_Explosion")); // 0.015f
     }
 

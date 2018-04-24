@@ -1,6 +1,7 @@
 package tdshooter.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -31,7 +32,7 @@ class Weapon {
     Texture bulletImage6;
     Texture bulletImage7;
 
-    public Weapon(int turretCount, int projectileType, Long cooldownTime, boolean autoTargetting, int spread, Sound firingSound, Texture firingImage) {
+    public Weapon(int turretCount, int projectileType, Long cooldownTime, boolean autoTargetting, int spread, Sound firingSound, Texture firingImage, AssetManager assets) {
         this.turretCount = turretCount;
         this.projectileType = projectileType;
         this.cooldownTime = cooldownTime;
@@ -41,14 +42,16 @@ class Weapon {
         this.firingImage = firingImage;
         
         //load all bullet textures
-        bulletImage1 = new Texture(Gdx.files.internal("Bullets/Player_Bullet_Type_1_fixed.png"));
-        bulletImage2 = new Texture(Gdx.files.internal("Bullets/Player_Bullet_Type_2_fixed.png"));
-        bulletImage3 = new Texture(Gdx.files.internal("Bullets/Alien_Bullet_Type_1_fixed.png"));
-        bulletImage4 = new Texture(Gdx.files.internal("Bullets/Alien_Bullet_Type_2.png"));
-        //old graphics down here
-        bulletImage5 = new Texture(Gdx.files.internal("Bullets/bullet1_small.png"));
-        bulletImage6 = new Texture(Gdx.files.internal("Bullets/bullet1.png"));
-        bulletImage7 = new Texture(Gdx.files.internal("Bullets/alien_bullet_test.png"));
+        bulletImage1 = assets.get("Bullets/Player_Bullet_Type_1_fixed.png");
+        bulletImage2 = assets.get("Bullets/Player_Bullet_Type_2_fixed.png");
+        bulletImage3 = assets.get("Bullets/Alien_Bullet_Type_1_fixed.png");
+        bulletImage4 = assets.get("Bullets/Alien_Bullet_Type_2.png");
+//        //old graphics down here
+        bulletImage5 = assets.get("Bullets/bullet1_small.png");
+        bulletImage6 = assets.get("Bullets/bullet1.png");
+        bulletImage7 = assets.get("Bullets/alien_bullet_test.png");
+
+
 
         //first create bulletmodel by type
         switch (projectileType) {

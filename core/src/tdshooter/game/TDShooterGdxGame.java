@@ -53,11 +53,12 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Encounters/Boss/Boss_World1_AlienMother.png", Texture.class);
 		assets.load("Encounters/Boss/Boss_World2_CyborgBeast.png", Texture.class);
 		assets.load("Encounters/Boss/Boss_World3_FlagShip.png", Texture.class);
+		assets.load("Bullets/Player_Bullet_Type_1_fixed.png", Texture.class);
+		assets.load("Bullets/Player_Bullet_Type_2_fixed.png", Texture.class);
+		assets.load("Bullets/Alien_Bullet_Type_1_fixed.png", Texture.class);
+		assets.load("Bullets/Alien_Bullet_Type_2.png", Texture.class);
 		assets.load("Bullets/bullet1_small.png", Texture.class);
 		assets.load("Bullets/bullet1.png", Texture.class);
-		assets.load("Bullets/Player_Bullet_Type_1.png", Texture.class);
-		assets.load("Bullets/Player_Bullet_Type_2.png", Texture.class);
-		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("Bullets/alien_bullet_test.png", Texture.class);
 		assets.load("powerups/PowerUp_Armor.png", Texture.class);
 		assets.load("powerups/PowerUp_BulletAmountBoost_VERSION2.png", Texture.class);
@@ -116,6 +117,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Menu/pelitila-pausevalikko_v2.png", Texture.class);
 		assets.load("Menu/pelitila-ylapalkki_v2.png", Texture.class);
 		assets.load("Menu/Hangar_Dimming.png", Texture.class);
+		assets.load("Menu/Stage_Cleared_Background.png", Texture.class);
 		assets.load("shopitems/Item_Armor.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Bazooka.png", Texture.class);
 		assets.load("shopitems/SpecialWeapon_Laser.png", Texture.class);
@@ -155,6 +157,7 @@ public class TDShooterGdxGame extends Game {
 		assets.load("Sounds/flyby.wav", Sound.class);
 		assets.load("Sounds/start.wav", Sound.class);
 		assets.load("Sounds/money.wav", Sound.class);
+		assets.load("effects/Explosion/explosion_alienplane_center.txt", TextureAtlas.class);
 
 		assets.load("ambient/space_ambience.mp3", Music.class);
 		assets.load("ambient/rain.mp3", Music.class);

@@ -264,7 +264,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
             if (encounter.isDestroyed()){
                 if (encounterEffect){
-                    Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                    Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2, game);
                     effects.add(effect);
                     effectCounter ++;
                     if (encounter instanceof Boss) {
@@ -316,8 +316,9 @@ public class GameScreen implements Screen, InputProcessor {
     private void gameWon() {
         saveCurrency();
         updateLevelProgess();
-        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getPoints(), missionName, newHighscore));
         dispose();
+        game.setScreen(new StageClearedScreen(game, player.getCurrency(), player.getPoints(), missionName, newHighscore));
+
     }
 
     private void updateLevelProgess() {
@@ -331,8 +332,9 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void gameLost() {
-        game.setScreen(new StageFailedScreen(game, missionName, missionNumber));
         dispose();
+        game.setScreen(new StageFailedScreen(game, missionName, missionNumber));
+
     }
 
     private void drawAllObjects(float delta)
@@ -473,7 +475,7 @@ public class GameScreen implements Screen, InputProcessor {
                 encounter.getsDamage(250);
             }
             if (encounter.isDestroyed()) {
-                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2);
+                Effect effect = new Effect(encounter.hitbox.x + (encounter.hitbox.width / 2) - 64, encounter.hitbox.y + (encounter.hitbox.height / 2) - 64, encounter.speed / 2, game);
                 effects.add(effect);
                 effectCounter ++;
                 player.setPoints(encounter.getPoints());
@@ -552,8 +554,9 @@ public class GameScreen implements Screen, InputProcessor {
         exitButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                game.setScreen(new MissionsMenu(game));
                 dispose();
+                game.setScreen(new MissionsMenu(game));
+
             }
         });
         musicButton.addListener(new ClickListener(){
