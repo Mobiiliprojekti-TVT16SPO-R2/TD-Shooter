@@ -50,9 +50,6 @@ public class LoadingScreen implements Screen {
         if (game.assets.update()) {
             game.setScreen(new MainMenuScreen(game));
         }
-
-
-
     }
 
     @Override
